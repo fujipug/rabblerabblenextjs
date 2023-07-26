@@ -15,6 +15,7 @@
     "@heroicons/react": "^2.0.18",
     "@thirdweb-dev/react": "^3.14.20",
     "@thirdweb-dev/sdk": "^3.10.40",
+    "canvas-confetti": "^1.6.0",
     "ethers": "^5.7.2",
     "firebase": "^9.23.0",
     "moralis": "^2.22.4",
