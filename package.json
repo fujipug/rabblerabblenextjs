@@ -16,10 +16,13 @@
     "@thirdweb-dev/react": "^3.14.20",
     "@thirdweb-dev/sdk": "^3.10.40",
     "canvas-confetti": "^1.6.0",
+    "encoding": "^0.1.13",
     "ethers": "^5.7.2",
     "firebase": "^9.23.0",
+    "lokijs": "^1.5.12",
     "moralis": "^2.22.4",
     "next": "^13",
+    "pino-pretty": "^10.2.0",
     "react": "^18.2",
     "react-dom": "^18.2",
     "reactfire": "^4.2.3"

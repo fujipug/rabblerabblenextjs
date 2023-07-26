@@ -47,7 +47,7 @@ export default function Example() {
             <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
               <div className="-m-2 rounded-xl lg:-m-4 lg:rounded-2xl lg:p-4">
                 <Image
-                  src="images/avax-nfts(50).gif"
+                  src="/images/avax-nfts(50).gif"
                   alt="NFT gif"
                   width={1200}
                   height={700}
