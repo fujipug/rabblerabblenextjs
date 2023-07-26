@@ -138,8 +138,8 @@ export default function PrivateLobby() {
           <div className="flex justify-center items-center mt-12">
             <label className="swap swap-flip text-9xl">
               <input type="checkbox" />
-              <div className="swap-on"><Image alt="player amount" className="w-40 grayscale" src="/images/pokepixel.png" /></div>
-              <div className="swap-off"><Image alt="player amount" className="w-40" src="/images/pokepixel.png" /></div>
+              <div className="swap-on"><Image alt="player amount" width={160} height={160} className="w-40 grayscale" src="/images/pokepixel.png" /></div>
+              <div className="swap-off"><Image alt="player amount" width={160} height={160} className="w-40" src="/images/pokepixel.png" /></div>
             </label>
           </div>
         </div>
@@ -163,7 +163,7 @@ export default function PrivateLobby() {
                             <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
                           </video>
                           :
-                          <Image className="rounded-lg drop-shadow-md"
+                          <img className="rounded-lg drop-shadow-md"
                             src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
                             alt="NFT image unreachable" width={100} height={100} />
                         }
