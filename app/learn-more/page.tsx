@@ -9,7 +9,6 @@ export default function LearnMore() {
           <div>
             <h1 className="text-5xl font-bold">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble!</span></h1>
             <p className="py-6 text-lg sm:text-xl">A thrilling NFT gambling experience with your friends!</p>
-            {/* Press <kbd className="kbd kbd-sm">F</kbd> to pay respects. */}
           </div>
         </div>
       </div>

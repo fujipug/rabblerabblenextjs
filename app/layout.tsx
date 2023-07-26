@@ -1,6 +1,6 @@
 'use client'
 import { ThirdwebProvider } from "@thirdweb-dev/react";
-import { Avalanche } from "@thirdweb-dev/chains";
+import { AvalancheFuji } from "@thirdweb-dev/chains";
 import "../styles/globals.css";
 
 export default function RootLayout(
@@ -11,7 +11,7 @@ export default function RootLayout(
   }) {
 
   return (
-    <ThirdwebProvider activeChain={Avalanche} clientId='47b85169fbc1fed3da3fbb5c45a4c2e3'>
+    <ThirdwebProvider activeChain={AvalancheFuji} clientId='47b85169fbc1fed3da3fbb5c45a4c2e3'>
       <html>
         <body>
           <main>

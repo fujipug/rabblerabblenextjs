@@ -1,12 +1,13 @@
 'use client'
 import { useState } from "react";
-import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
+import { ConnectWallet, Web3Button, useAddress, useContract, useContractWrite } from "@thirdweb-dev/react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import Link from "next/link";
+import Image from "next/image";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -43,6 +44,12 @@ export default function PrivateLobby() {
   const [pass, setPass] = useState('');
   const [shareUrl, setShareUrl] = useState('');
   const address = useAddress();
+  const contractAddress = "0x67F389B8acF1E5fF41c4e059e4Ce40aA9E144B0b";
+  const { contract } = useContract(contractAddress);
+  const { mutateAsync, isLoading, error } = useContractWrite(
+    contract,
+    "transferNFT",
+  );
   const getNfts = async () => {
     const chain = EvmChain.AVALANCHE;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
@@ -131,8 +138,8 @@ export default function PrivateLobby() {
           <div className="flex justify-center items-center mt-12">
             <label className="swap swap-flip text-9xl">
               <input type="checkbox" />
-              <div className="swap-on"><img alt="player amount" className="w-40 grayscale" src="/images/pokepixel.png" /></div>
-              <div className="swap-off"><img alt="player amount" className="w-40" src="/images/pokepixel.png" /></div>
+              <div className="swap-on"><Image alt="player amount" className="w-40 grayscale" src="/images/pokepixel.png" /></div>
+              <div className="swap-off"><Image alt="player amount" className="w-40" src="/images/pokepixel.png" /></div>
             </label>
           </div>
         </div>
@@ -156,9 +163,9 @@ export default function PrivateLobby() {
                             <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
                           </video>
                           :
-                          <img className="rounded-lg drop-shadow-md"
+                          <Image className="rounded-lg drop-shadow-md"
                             src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
-                            alt="NFT image unreachable" width="100px" height="100px" />
+                            alt="NFT image unreachable" width={100} height={100} />
                         }
                       </div>
                     </li>
@@ -257,6 +264,12 @@ export default function PrivateLobby() {
                 </div>
                 <p className="text-xs text-gray-700 mt-2">* This password will be required to join the lobby. Anyone with this password will be able to join.</p>
               </div>
+              <Web3Button
+                contractAddress={contractAddress}
+                action={() => mutateAsync({ args: ["0x11004e63A0EA796462240E4e7656badA718aaE22", 0, "0x2Be4CF252AB91c5C15C70f9FcD6CA7334a641E1d"] })}
+              >
+                Send Transaction
+              </Web3Button>
               <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
               <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button>
             </div >
