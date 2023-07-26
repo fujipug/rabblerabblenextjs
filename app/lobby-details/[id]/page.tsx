@@ -2,6 +2,7 @@
 import { collection, documentId, query, where, getFirestore, getDocs, Timestamp } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -45,7 +46,7 @@ function LobbyNftInfo(props: any) {
     };
 
     fetchData();
-  }, []);
+  }, [props.lobbyId]);
 
   return (
     <>
@@ -53,19 +54,19 @@ function LobbyNftInfo(props: any) {
         <div className='grid grid-flow-col gap-5 text-center auto-cols-max'>
           <div className='flex flex-col'>
             <span className='countdown font-mono text-4xl'>
-              <span id="hours" style={{ '--value': timeRemaining.hours }}></span>
+              {/* <span id="hours" style={{ '--value': timeRemaining.hours }}></span> */}
             </span>
             hours
           </div>
           <div className='flex flex-col'>
             <span className='countdown font-mono text-4xl'>
-              <span id="minutes" style={{ '--value': timeRemaining.minutes }}></span>
+              {/* <span id="minutes" style={{ '--value': timeRemaining.minutes }}></span> */}
             </span>
             min
           </div>
           <div className='flex flex-col'>
             <span className='countdown font-mono text-4xl'>
-              <span id="seconds" style={{ '--value': timeRemaining.seconds }}></span>
+              {/* <span id="seconds" style={{ '--value': timeRemaining.seconds }}></span> */}
             </span>
             sec
           </div>
@@ -77,7 +78,7 @@ function LobbyNftInfo(props: any) {
         {lobbyDetails?.nfts.map((nft: any, index: number) => (
           <div key={index} className="snap-center">
             <div className="card card-compact w-96 bg-base-100 shadow-xl">
-              <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
+              <figure><Image src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
               <div className="card-body">
                 <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
                 <p><span className="font-semibold">Collection: </span> {nft?.name}</p>

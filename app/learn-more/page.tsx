@@ -1,11 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LearnMore() {
   return (
     <>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <img src="https://placebear.com/500/700" className="max-w-sm rounded-lg shadow-2xl" alt="Hero Image" />
+          <Image src="https://placebear.com/500/700" className="max-w-sm rounded-lg shadow-2xl" alt="Hero Image" />
           <div>
             <h1 className="text-5xl font-bold">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble!</span></h1>
             <p className="py-6 text-lg sm:text-xl">A thrilling NFT gambling experience with your friends!</p>
