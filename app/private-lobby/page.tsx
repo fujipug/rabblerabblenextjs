@@ -1,6 +1,5 @@
 'use client'
 import { useState } from "react";
-import { ConnectWallet, Web3Button, useAddress, useContract, useContractWrite } from "@thirdweb-dev/react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
 import { Timestamp, addDoc, collection } from "firebase/firestore";
@@ -8,6 +7,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import Link from "next/link";
 import Image from "next/image";
+import { getAccount } from '@wagmi/core'
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -20,12 +20,12 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const runApp = async () => {
-  await Moralis.start({
-    apiKey: 'E88APZ59qtx9G5LJjPEjLgSjSK5ldhaYs8qvI7g9CTYkh2hWSK9omFd3NLgJzA76',
-  });
-};
-runApp();
+// const runApp = async () => {
+//   await Moralis.start({
+//     apiKey: 'E88APZ59qtx9G5LJjPEjLgSjSK5ldhaYs8qvI7g9CTYkh2hWSK9omFd3NLgJzA76',
+//   });
+// };
+// runApp();
 
 declare global {
   interface Window {
@@ -43,17 +43,13 @@ export default function PrivateLobby() {
   const [showPass, setShowPass] = useState(false);
   const [pass, setPass] = useState('');
   const [shareUrl, setShareUrl] = useState('');
-  const address = useAddress();
-  const contractAddress = "0x67F389B8acF1E5fF41c4e059e4Ce40aA9E144B0b";
-  const { contract } = useContract(contractAddress);
-  const { mutateAsync, isLoading, error } = useContractWrite(
-    contract,
-    "transferNFT",
-  );
+  const account = getAccount();
+
+
   const getNfts = async () => {
     const chain = EvmChain.AVALANCHE;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
-      address: address as string,
+      address: account.address as string,
       chain,
       mediaItems: true,
       normalizeMetadata: true,
@@ -148,10 +144,10 @@ export default function PrivateLobby() {
       {/* step 2 */}
       {(step == 2) &&
         <div className="mt-12 text-center">
-          {address ?
+          {account.address && account.isConnected ?
             <>
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-              <span className="hidden sm:block">{address}</span>
+              <span className="hidden sm:block">{account.address}</span>
               {/* <span className="block sm:hidden">{address | pipe}</span> */}
               <div className="flex justify-center">
                 <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7 mt-6">
@@ -178,7 +174,6 @@ export default function PrivateLobby() {
             :
             <>
               <h1 className="font-semibold text-2xl mb-4">Sign into your NFT wallet</h1>
-              <ConnectWallet />
             </>
           }
         </div>
@@ -265,12 +260,6 @@ export default function PrivateLobby() {
                 </div>
                 <p className="text-xs text-gray-700 mt-2">* This password will be required to join the lobby. Anyone with this password will be able to join.</p>
               </div>
-              <Web3Button
-                contractAddress={contractAddress}
-                action={() => mutateAsync({ args: ["0x11004e63A0EA796462240E4e7656badA718aaE22", 0, "0x2Be4CF252AB91c5C15C70f9FcD6CA7334a641E1d"] })}
-              >
-                Send Transaction
-              </Web3Button>
               <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
               <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button>
             </div >

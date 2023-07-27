@@ -1,7 +1,8 @@
 'use client'
-import { ConnectWallet } from "@thirdweb-dev/react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 import React from "react";
+
 
 // function ThemeComponent() {
 //   const [theme, setTheme] = React.useState('cupcake');
@@ -23,16 +24,10 @@ import React from "react";
 
 export default function Navbar(props: { showButton?: boolean }) {
   return (
-    <div className="navbar bg-base-100 flex justify-between drop-shadow-md">
-      <div>
-        <Link href="/" className="btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble</Link>
-      </div>
-      <ConnectWallet
-        dropdownPosition={{
-          side: "bottom",
-          align: "center",
-        }}
-      />
+    <div className="navbar bg-base-100 flex justify-between drop-shadow-md items-center">
+      <Link href="/" className="hidden sm:flex btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble</Link>
+      <Link href="/" className="flex sm:hidden btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">R R</Link>
+      <ConnectButton />
     </div>
 
   )
