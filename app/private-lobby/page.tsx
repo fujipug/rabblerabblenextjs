@@ -74,7 +74,7 @@ export default function PrivateLobby() {
   const firebaseLobby = async (lobby: any) => {
     addDoc(collection(db, 'lobbies'), lobby).then((response) => {
       setStep(4);
-      setShareUrl(`https://rabblerabble.xyz/lobby-details/${response.id}`);
+      setShareUrl(`https://vercel.com/fujipug/rabblerabblenextjs/6h3Cj1De1e9QkLPYD2LqTDZN1nuh/lobby-details/${response.id}`);
     }).catch((error) => {
       console.error("Error adding document: ", error);
     });
@@ -172,7 +172,8 @@ export default function PrivateLobby() {
                   ))
                   }
                 </ul>
-              </div >
+              </div>
+              <span className="text-sm">* If some images are missing it might be due to your ad blocker</span>
             </>
             :
             <>
@@ -180,7 +181,7 @@ export default function PrivateLobby() {
               <ConnectWallet />
             </>
           }
-        </div >
+        </div>
       }
 
       {/* step 3 */}

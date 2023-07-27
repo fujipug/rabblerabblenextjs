@@ -27,7 +27,12 @@ export default function Navbar(props: { showButton?: boolean }) {
       <div>
         <Link href="/" className="btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble</Link>
       </div>
-      <ConnectWallet theme="dark" />
+      <ConnectWallet
+        dropdownPosition={{
+          side: "bottom",
+          align: "center",
+        }}
+      />
     </div>
 
   )

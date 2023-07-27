@@ -22,7 +22,7 @@ const RotatingGIF = () => {
 
   const currentGIF = gifList[currentGifIndex];
 
-  return <Image src={currentGIF} className="w-full h-screen" alt="Rotating GIF" />;
+  return <Image src={currentGIF} className="w-full h-screen" width={100} height={100} alt="Rotating GIF" />;
 };
 
 export default function RafflePage() {
