@@ -95,19 +95,20 @@ function LobbyNftInfo(props: any) {
         <div className='grid grid-flow-col gap-5 text-center auto-cols-max'>
           <div className='flex flex-col'>
             <span className='countdown font-mono text-4xl'>
-              <span id="hours" style={{ '--value': countdownTimeRemaining.hours }}></span>
+              {/* <span id="hours" style={{ '--value': countdownTimeRemaining.hours }}></span> */}
+              <span id="hours"></span>
             </span>
             hours
           </div>
           <div className='flex flex-col'>
             <span className='countdown font-mono text-4xl'>
-              <span id="minutes" style={{ '--value': countdownTimeRemaining.minutes }}></span>
+              <span id="minutes"></span>
             </span>
             min
           </div>
           <div className='flex flex-col'>
             <span className='countdown font-mono text-4xl'>
-              <span id="seconds" style={{ "--value": countdownTimeRemaining.seconds }}></span>
+              <span id="seconds"></span>
             </span>
             sec
           </div>
