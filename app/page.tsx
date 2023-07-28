@@ -72,19 +72,21 @@ export default function Home() {
             <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-6xl">Raffle <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">NFTs</span> with the boys</h1>
             <p className="mt-6 text-lg leading-8"><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span> is a fun and exciting way to wager your NFTs with friends.</p>
             <div className="mt-10 flex items-center gap-x-6">
-              <Link href="/private-lobby" className="btn btn-secondary drop-shadow-lg">Start A Lobby</Link>
+              <Link href="/private-lobby" className="btn btn-secondary drop-shadow-lg z-50">Start A Lobby</Link>
               <Link href="/learn-more" className="btn btn-ghost">Learn more <span aria-hidden="true">→</span></Link>
             </div>
           </div>
           <div className="hidden mx-auto mt-16 sm:flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">
             <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
               <div className="-m-2 rounded-xl lg:-m-4 lg:rounded-2xl lg:p-4">
+                <div className="transform animate-moveUpDown z-0 -mt-4 fixed"><Image src="/images/Face_2.png" alt="Quokka Face" width={200} height={200}></Image></div>
+                <div className="z-30 -mt-7 fixed"><Image src="/images/Hands_2.png" alt="Quokka Hands" width={200} height={200}></Image></div>
                 <Image
                   src="/images/avax-nfts(50).gif"
                   alt="NFT gif"
                   width={1200}
                   height={700}
-                  className="w-[40rem] rounded-md drop-shadow-2xl"
+                  className="w-[40rem] rounded-md drop-shadow-2xl z-20"
                 />
               </div>
             </div>

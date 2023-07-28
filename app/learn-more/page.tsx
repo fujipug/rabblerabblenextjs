@@ -2,6 +2,25 @@
 import Link from "next/link";
 import Image from "next/image";
 import ThemeToggle from "../../components/theme-toggle";
+import { useEffect, useState } from "react";
+
+function Tweets() {
+  const tweets = ['rabblet', 'giraffe'];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalDelay = 4200; // Time in milliseconds between each iteration
+
+  useEffect(() => {
+    const iterateArray = () => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % tweets.length);
+    };
+    const intervalId = setInterval(iterateArray, intervalDelay);
+
+    return () => clearInterval(intervalId);
+  }, [tweets.length, intervalDelay]);
+  return (
+    <Image src={`/images/${tweets[currentIndex]}.gif`} width={350} height={100} className="mt-6" alt="Tweet" />
+  )
+}
 
 export default function LearnMore() {
   return (
@@ -24,7 +43,7 @@ export default function LearnMore() {
 
             <h1 className="text-5xl font-bold">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span></h1>
             <p className="py-6 text-lg sm:text-xl">A thrilling NFT Raffling experience with your friends!</p>
-            <Image src={'/images/rabblet.gif'} width={350} height={100} className="mt-6" alt="Tweet" />
+            <Tweets />
           </div>
         </div>
       </div>
