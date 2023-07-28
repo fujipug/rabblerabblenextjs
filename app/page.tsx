@@ -6,6 +6,7 @@ import confetti from 'canvas-confetti';
 import { DocumentData, collection, getDocs, getFirestore, limitToLast, orderBy, query } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
+import Countdown from "../components/countdown";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -125,7 +126,7 @@ export default function Home() {
                     </span>
                   }
                 </td>
-                <td>time</td>
+                <td><Countdown endTime={lobby.data.endDate} size={'small'} /></td>
                 {lobby.data.status === 'Expired' &&
                   <td>N/A</td>
                 }

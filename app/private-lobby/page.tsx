@@ -280,7 +280,7 @@ export default function PrivateLobby() {
                     </>
                   }
                 </div>
-                <p className="text-xs text-gray-700 mt-2">* This password will be required to join the lobby. Anyone with this password will be able to join.</p>
+                <p className="text-xs mt-2">* This password will be required to join the lobby. Anyone with this password will be able to join.</p>
               </div>
               <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
               <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button>

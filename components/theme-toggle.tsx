@@ -7,7 +7,6 @@ export default function ThemeToggle() {
       : "dracula"
   );
 
-
   // update state on toggle
   const handleToggle = (e: any) => {
     if (e.target.checked) {

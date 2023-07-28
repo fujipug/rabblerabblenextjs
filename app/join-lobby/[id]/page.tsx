@@ -10,6 +10,7 @@ import converter from 'number-to-words';
 import localFont from 'next/font/local'
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 import Image from "next/image";
+import Countdown from "../../../components/countdown";
 
 declare global {
   interface Window {
@@ -126,6 +127,11 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
             </div>
 
             <div className="col-span-1 relative mt-4 sm:mt-0">
+              <div className="mb-4">
+                <h2 className="font-semibold">Time Remaining</h2>
+                <Countdown endTime={lobbyDetails?.endDate} size={'medium'} />
+              </div>
+
               <div className="mb-4">
                 <h2 className="font-semibold">EVM Chain</h2>
                 <p>{lobbyDetails.evmChain} </p>

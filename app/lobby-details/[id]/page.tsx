@@ -1,9 +1,10 @@
 'use client'
 import { collection, documentId, query, where, getFirestore, getDocs, Timestamp } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import converter from 'number-to-words';
 import localFont from 'next/font/local'
+import Countdown from "../../../components/countdown";
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 
 const firebaseConfig = {
@@ -27,7 +28,6 @@ declare global {
 function LobbyNftInfo(props: any) {
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const [placeholders, setPlaceholders] = useState([]) as any;
-  let countdownTimeRemaining = { hours: 0, minutes: 0, seconds: 0 };
 
   useEffect(() => {
     async function fetchData() {
@@ -35,9 +35,8 @@ function LobbyNftInfo(props: any) {
         const q = query(collection(db, 'lobbies'), where(documentId(), '==', props.lobbyId));
         const querySnapshot = await getDocs(q);
         for (const doc of querySnapshot.docs) {
-          console.log(doc.data());
+          console.log('fetch');
           setLobbyDetails(doc.data())
-          initCountdown(doc.data().endDate, doc.data().status);
           const blanks = [];
           for (let i = 0; i < doc.data().totalPlayers - doc.data().confirmedPlayers; i++)
             blanks.push({ collection: doc.data().collection })
@@ -51,68 +50,10 @@ function LobbyNftInfo(props: any) {
     fetchData();
   }, [props.lobbyId]);
 
-  function initCountdown(endDate: Timestamp, status: string) {
-    if (status === 'Active') {
-      const expiration = endDate.seconds;
-      const now = Timestamp.now().seconds;
-      const timeRemaining = expiration - now;
-      const hours = Math.floor(timeRemaining / 3600);
-      const minutes = Math.floor((timeRemaining % 3600) / 60);
-      const seconds = Math.floor((timeRemaining % 3600) % 60);
-      countdownTimeRemaining = ({ hours, minutes, seconds });
-      // timeTracker();
-    }
-  }
-
-  // function timeTracker() {
-  setInterval(() => {
-    if (countdownTimeRemaining.seconds > 0) {
-      countdownTimeRemaining.seconds--;
-      document.getElementById('seconds')?.style.setProperty('--value', countdownTimeRemaining.seconds.toString());
-    } else {
-      countdownTimeRemaining.seconds = 59;
-      if (countdownTimeRemaining.minutes > 0) {
-        countdownTimeRemaining.minutes--;
-        document.getElementById('minutes')?.style.setProperty('--value', countdownTimeRemaining.minutes.toString());
-      } else {
-        countdownTimeRemaining.minutes = 59;
-        if (countdownTimeRemaining.hours > 0) {
-          countdownTimeRemaining.hours--;
-          document.getElementById('hours')?.style.setProperty('--value', countdownTimeRemaining.hours.toString());
-        } else {
-          countdownTimeRemaining.hours = 0;
-          countdownTimeRemaining.minutes = 0;
-          countdownTimeRemaining.seconds = 0;
-        }
-      }
-    }
-  }, 1000);
-  // }
-
   return (
     <>
       <div className="flex justify-between items-center mb-4">
-        <div className='grid grid-flow-col gap-5 text-center auto-cols-max'>
-          <div className='flex flex-col'>
-            <span className='countdown font-mono text-4xl'>
-              {/* <span id="hours" style={{ '--value': countdownTimeRemaining.hours }}></span> */}
-              <span id="hours"></span>
-            </span>
-            hours
-          </div>
-          <div className='flex flex-col'>
-            <span className='countdown font-mono text-4xl'>
-              <span id="minutes"></span>
-            </span>
-            min
-          </div>
-          <div className='flex flex-col'>
-            <span className='countdown font-mono text-4xl'>
-              <span id="seconds"></span>
-            </span>
-            sec
-          </div>
-        </div>
+        <Countdown endTime={lobbyDetails?.endDate} size={'large'} />
         <button onClick={() => window.privateLobbyModal?.showModal()} className="btn btn-secondary drop-shadow-md">Join Lobby</button>
       </div>
 
