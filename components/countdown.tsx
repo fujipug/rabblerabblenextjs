@@ -7,6 +7,14 @@ export default function Countdown(props: { endTime: Timestamp, size: string }) {
   let countdownMinutes = countdownTimeRemaining.minutes;
   let countdownSeconds = countdownTimeRemaining.seconds;
 
+  interface CustomStyle extends React.CSSProperties {
+    '--value'?: number | string;
+  }
+
+  const customHours: CustomStyle = { '--value': countdownHours };
+  const customMinutes: CustomStyle = { '--value': countdownMinutes };
+  const customSeconds: CustomStyle = { '--value': countdownSeconds };
+
   useEffect(() => {
     const expiration = props.endTime?.seconds;
     const now = Timestamp.now().seconds;
@@ -50,19 +58,19 @@ export default function Countdown(props: { endTime: Timestamp, size: string }) {
           <div className='grid grid-flow-col gap-5 text-center auto-cols-max'>
             <div className='flex flex-col'>
               <span className='countdown font-mono text-4xl'>
-                <span id="hours" style={{ '--value': countdownHours }}></span>
+                <span id="hours" style={customHours}></span>
               </span>
               hours
             </div>
             <div className='flex flex-col'>
               <span className='countdown font-mono text-4xl'>
-                <span id="minutes" style={{ '--value': countdownMinutes }}></span>
+                <span id="minutes" style={customMinutes}></span>
               </span>
               min
             </div>
             <div className='flex flex-col'>
               <span className='countdown font-mono text-4xl'>
-                <span id="seconds" style={{ '--value': countdownSeconds }}></span>
+                <span id="seconds" style={customSeconds}></span>
               </span>
               sec
             </div>
@@ -71,16 +79,16 @@ export default function Countdown(props: { endTime: Timestamp, size: string }) {
       }
       {props.size === 'medium' &&
         <span className="countdown font-mono text-xl">
-          <span id="hours" style={{ "--value": countdownHours }}></span>h
-          <span id="minutes" style={{ "--value": countdownMinutes }}></span>m
-          <span id="seconds" style={{ "--value": countdownSeconds }}></span>s
+          <span id="hours" style={customHours}></span>h
+          <span id="minutes" style={customMinutes}></span>m
+          <span id="seconds" style={customSeconds}></span>s
         </span>
       }
       {props.size === 'small' &&
         <span className="countdown">
-          <span style={{ "--value": countdownHours }}></span> h
-          <span style={{ "--value": countdownMinutes }}></span> m
-          {/* <span style={{ "--value": countdownSeconds }}></span>s */}
+          <span style={customHours}></span> h
+          <span style={customMinutes}></span> m
+          {/* <span style={customSeconds}></span>s */}
         </span>
       }
     </>
