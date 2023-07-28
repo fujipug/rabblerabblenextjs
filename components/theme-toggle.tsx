@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "dracula"
+    typeof localStorage !== "undefined" && localStorage.getItem("theme")
+      ? localStorage.getItem("theme")
+      : "dracula"
   );
 
 
