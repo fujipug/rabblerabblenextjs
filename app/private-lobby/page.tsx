@@ -57,6 +57,10 @@ export default function PrivateLobby() {
   const { address, isConnected } = useAccount();
   const [showClipboardToast, setShowClipboardToast] = useState(false);
   const { SVG } = useQRCode();
+  const [showQuokkas, setShowQuokkas] = useState(5);
+  const quokkas = [
+    'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
+    'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
 
   useEffect(() => {
     if (address && isConnected)
@@ -136,33 +140,44 @@ export default function PrivateLobby() {
         <div className="mt-12 text-center">
           <h1 className="font-semibold text-2xl mb-4">Choose the number of players</h1>
           <div className="hidden sm:block join drop-shadow-md">
-            <button onClick={() => processStep2(3)} className="btn btn-secondary join-item">3 Players</button>
-            <button onClick={() => processStep2(5)} className="btn btn-secondary join-item">5 Players</button>
-            <button onClick={() => processStep2(7)} className="btn btn-secondary join-item">7 Players</button>
-            <button onClick={() => processStep2(10)} className="btn btn-secondary join-item">10 Players</button>
+            <button onClick={() => processStep2(3)} onMouseEnter={() => setShowQuokkas(3)} className="btn btn-secondary join-item">3 Players</button>
+            <button onClick={() => processStep2(5)} onMouseEnter={() => setShowQuokkas(5)} className="btn btn-secondary join-item">5 Players</button>
+            <button onClick={() => processStep2(7)} onMouseEnter={() => setShowQuokkas(7)} className="btn btn-secondary join-item">7 Players</button>
+            <button onClick={() => processStep2(10)} onMouseEnter={() => setShowQuokkas(10)} className="btn btn-secondary join-item">10 Players</button>
           </div>
           <div className="block sm:hidden">
             <div className="join drop-shadow-md mb-4">
-              <button onClick={() => processStep2(3)} className="btn btn-secondary join-item">3 Players</button>
-              <button onClick={() => processStep2(5)} className="btn btn-secondary join-item">5 Players</button>
+              <button onClick={() => processStep2(3)} onMouseEnter={() => setShowQuokkas(3)} className="btn btn-secondary join-item">3 Players</button>
+              <button onClick={() => processStep2(5)} onMouseEnter={() => setShowQuokkas(5)} className="btn btn-secondary join-item">5 Players</button>
             </div>
             <div className="join drop-shadow-md">
-              <button onClick={() => processStep2(7)} className="btn btn-secondary join-item">7 Players</button>
-              <button onClick={() => processStep2(10)} className="btn btn-secondary join-item">10 Players</button>
+              <button onClick={() => processStep2(7)} onMouseEnter={() => setShowQuokkas(7)} className="btn btn-secondary join-item">7 Players</button>
+              <button onClick={() => processStep2(10)} onMouseEnter={() => setShowQuokkas(10)} className="btn btn-secondary join-item">10 Players</button>
             </div>
           </div>
           <div className="flex justify-center items-center mt-12">
-            <label className="swap swap-flip text-9xl">
-              <input type="checkbox" />
-              <div className="swap-on"><Image alt="player amount" width={160} height={160} className="w-40 grayscale" src="/images/pokepixel.png" /></div>
-              <div className="swap-off"><Image alt="player amount" width={160} height={160} className="w-40" src="/images/pokepixel.png" /></div>
-            </label>
+            <div className="grid grid-cols-5 gap-1">
+              {quokkas.map((quokka: any, index: any) => (
+                <div key={index}>
+                  {index < showQuokkas &&
+                    <div className="col-span-1">
+                      <label className="swap swap-flip text-9xl">
+                        <input type="checkbox" />
+                        <div className="swap-on"><Image alt="player amount" width={80} height={80} src={`/images/${quokka}.png`} /></div>
+                        <div className="swap-off"><Image alt="player amount" width={80} height={80} src={`/images/${quokka}.png`} /></div>
+                      </label>
+                    </div>
+                  }
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </div >
       }
 
       {/* step 2 */}
-      {(step == 2) &&
+      {
+        (step == 2) &&
         <div className="mt-12 text-center">
           {address && isConnected ?
             <>
@@ -202,7 +217,8 @@ export default function PrivateLobby() {
       }
 
       {/* step 3 */}
-      {(step == 3) &&
+      {
+        (step == 3) &&
         <div className="mt-12">
           <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
             <div className="col-span-1 flex justify-center">
@@ -290,7 +306,8 @@ export default function PrivateLobby() {
       }
 
       {/* step 4 */}
-      {(step == 4) &&
+      {
+        (step == 4) &&
         <div className="mt-12">
           <div className="text-center">
             <h1 className="font-semibold text-xl mb-4">Share QR Code</h1>

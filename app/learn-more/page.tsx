@@ -8,7 +8,7 @@ export default function LearnMore() {
     <>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <Image src="https://placebear.com/500/700" width={500} height={700} className="max-w-sm rounded-lg shadow-2xl" alt="Hero Image" />
+          <Image src={'/images/Quokka_Wave.png'} width={400} height={400} className="max-w-sm" alt="Quokka Wave" />
           <div>
             <div className="flex justify-between items-center">
               <Link href="/" className="inline-flex space-x-6 cursor-pointer">
@@ -24,7 +24,7 @@ export default function LearnMore() {
 
             <h1 className="text-5xl font-bold">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span></h1>
             <p className="py-6 text-lg sm:text-xl">A thrilling NFT Raffling experience with your friends!</p>
-            <Image src={'/images/rabblet.gif'} width={350} height={100} className="mt-6" alt="Hero Image" />
+            <Image src={'/images/rabblet.gif'} width={350} height={100} className="mt-6" alt="Tweet" />
           </div>
         </div>
       </div>
