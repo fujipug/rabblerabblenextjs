@@ -9,6 +9,7 @@ import { initializeApp } from "firebase/app";
 import converter from 'number-to-words';
 import localFont from 'next/font/local'
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
+import Image from "next/image";
 
 declare global {
   interface Window {
@@ -65,7 +66,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       getNfts().then((nfts) => {
         fetchData(nfts);
       });
-  }, []);
+  }, [address, isConnected]);
 
   return (
     <>
@@ -150,9 +151,12 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                 <div className="divider"></div>
               </div>
 
-              <div className="mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">
-                <h2 className="font-semibold text-3xl"><span className={myFont.className}>Good Luck</span></h2>
-                <p className="text-xl"><span className={myFont.className}>Player {converter.toWords(lobbyDetails?.confirmedPlayers + 1)}</span></p>
+              <div className="mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center">
+                <div className="mr-4">
+                  <h2 className="font-semibold text-3xl"><span className={myFont.className}>Good Luck</span></h2>
+                  <p className="text-xl"><span className={myFont.className}>Player {converter.toWords(lobbyDetails?.confirmedPlayers + 1)}</span></p>
+                </div>
+                <Image src="/images/gl-banan.gif" width={60} height={60} alt="Good Luck Banana"></Image>
               </div>
 
               <button className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Join

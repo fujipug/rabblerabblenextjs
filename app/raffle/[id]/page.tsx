@@ -31,7 +31,7 @@ export default function RafflePage() {
     <div className="w-full">
       <RotatingGIF />
       <div className="bottom-left bg-white rounded p-4 drop-shadow-md">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600 rpo text-3xl mb-4">Ready Players!</span>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Ready Players!</span>
       </div>
     </div >
   )

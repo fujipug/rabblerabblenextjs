@@ -20,6 +20,7 @@
     "lokijs": "^1.5.12",
     "moralis": "^2.22.4",
     "next": "^13",
+    "next-qrcode": "^2.5.0",
     "number-to-words": "^1.2.4",
     "pino-pretty": "^10.2.0",
     "react": "^18.2",

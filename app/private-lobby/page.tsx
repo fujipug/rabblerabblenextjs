@@ -1,5 +1,5 @@
 'use client'
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
 import { Timestamp, addDoc, collection } from "firebase/firestore";
@@ -10,6 +10,7 @@ import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useAccount } from "wagmi";
+import { useQRCode } from "next-qrcode";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -54,6 +55,8 @@ export default function PrivateLobby() {
   const [pass, setPass] = useState('');
   const [shareUrl, setShareUrl] = useState('');
   const { address, isConnected } = useAccount();
+  const [showClipboardToast, setShowClipboardToast] = useState(false);
+  const { SVG } = useQRCode();
 
   useEffect(() => {
     if (address && isConnected)
@@ -110,14 +113,21 @@ export default function PrivateLobby() {
       // TODO: error message
     }
   }
+  const clipboardlink = () => {
+    setShowClipboardToast(true);
+    navigator.clipboard.writeText(shareUrl);
+    setTimeout(() => {
+      setShowClipboardToast(false);
+    }, 3000);
+  }
 
   return (
     <>
       <div className="flex justify-center">
         <ul className="steps">
-          <li className={step >= 1 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}># Players</li>
-          <li className={step >= 2 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Select NFT</li>
-          <li className={step >= 3 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Final Details</li>
+          <li onClick={() => (step > 1 && step !== 4) && setStep(1)} className={step >= 1 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}># Players</li>
+          <li onClick={() => (step > 2 && step !== 4) && setStep(2)} className={step >= 2 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Select NFT</li>
+          <li onClick={() => (step > 3 && step !== 4) && setStep(3)} className={step >= 3 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Final Details</li>
           <li className={step === 4 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Share</li>
         </ul>
       </div>
@@ -283,31 +293,41 @@ export default function PrivateLobby() {
       {(step == 4) &&
         <div className="mt-12">
           <div className="text-center">
-            <h1 className="font-semibold text-2xl mb-4">Share QR Code</h1>
+            <h1 className="font-semibold text-xl mb-4">Share QR Code</h1>
           </div>
           <div className="flex justify-center">
             <div className="qrcodeImage">
-              {/* <qrcode *ngIf="shareLink" [qrdata]="shareLink" [allowEmptyString]="true" [cssClass]="'center'"
-          [colorDark]="'#000000ff'" [colorLight]="'#ffffffff'" [elementType]="'svg'"
-                [errorCorrectionLevel]="'M'" [scale]="1" [width]="300"></qrcode> */}
+              <SVG
+                text={shareUrl}
+                options={{
+                  margin: 2,
+                  width: 200,
+                  color: {
+                    dark: '#000',
+                    light: '#fff',
+                  },
+                }}
+              />
             </div>
           </div >
           <div className="text-center mt-4">
             <h1 className="font-semibold text-xl mb-2">Share Link</h1>
             <div className="flex justify-center">
               <Link className="mr-4 hover:underline" href={shareUrl}>{shareUrl}</Link>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 cursor-pointer">
+              <svg onClick={() => clipboardlink()} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 cursor-pointer">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
               </svg>
 
             </div >
           </div >
 
-          <div className="toast toast-center">
-            <div className="alert alert-success">
-              <span>Link copied to clipboard</span>
-            </div>
-          </div >
+          {showClipboardToast &&
+            <div className="toast toast-center">
+              <div className="alert alert-success">
+                <span>Link copied to clipboard</span>
+              </div>
+            </div >
+          }
         </div >
       }
 

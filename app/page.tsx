@@ -62,14 +62,14 @@ export default function Home() {
           <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:flex-shrink-0 lg:pt-8">
             <div className="mt-24 sm:mt-32 lg:mt-16">
               <a onClick={() => fireAction()} className="inline-flex space-x-6 cursor-pointer">
-                <div className="badge badge-neutral badge-outline p-3">What&apos;s new</div>
+                <div className="badge badge-outline p-3">What&apos;s new</div>
                 <span className="inline-flex items-center space-x-2 text-sm font-medium leading-6">
                   <span>Just shipped v1.0  🎉</span>
                 </span>
               </a>
             </div>
-            <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-6xl">Raffle <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">NFTs</span> with the boys</h1>
-            <p className="mt-6 text-lg leading-8"><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble</span> is a fun and exciting way to wager your NFTs with friends.</p>
+            <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-6xl">Raffle <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">NFTs</span> with the boys</h1>
+            <p className="mt-6 text-lg leading-8"><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span> is a fun and exciting way to wager your NFTs with friends.</p>
             <div className="mt-10 flex items-center gap-x-6">
               <Link href="/private-lobby" className="btn btn-secondary drop-shadow-lg">Start A Lobby</Link>
               <Link href="/learn-more" className="btn btn-ghost">Learn more <span aria-hidden="true">→</span></Link>
@@ -106,7 +106,7 @@ export default function Home() {
           <tbody>
             {lobbies.map((lobby: DocumentData, index: number) => (
               <tr key={index}>
-                <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">{lobby.id}</Link></th>
+                <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{lobby.id}</Link></th>
                 <td>{lobby.data.collection}</td>
                 <td>
                   {lobby.data.status === 'Expired' &&

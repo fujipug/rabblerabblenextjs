@@ -3,10 +3,61 @@
 @tailwind utilities;
 
 .back {
-    background: #ECE9E6;
-    /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #ECE9E6, #FFFFFF);
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #ECE9E6, #FFFFFF);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #ECE9E6;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #ECE9E6, #FFFFFF);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #ECE9E6, #FFFFFF);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.goodluck {
+  background: linear-gradient(83deg, #ff5f6d, #ffc371);
+  background-size: 400% 400%;
+
+  -webkit-animation: good-luck 3s ease infinite;
+  -moz-animation: good-luck 3s ease infinite;
+  animation: good-luck 3s ease infinite;
+}
+
+@-webkit-keyframes good-luck {
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+@-moz-keyframes good-luck {
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+@keyframes good-luck {
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
 }
