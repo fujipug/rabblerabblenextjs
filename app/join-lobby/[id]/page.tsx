@@ -100,8 +100,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
             </>
             :
             <>
-              <div className="justify-center text-center">
-                <h1 className="font-semibold text-2xl mb-4">Sign into your NFT wallet</h1>
+              <h1 className="font-semibold text-2xl mb-4">Sign into your NFT wallet</h1>
+              <div className="w-full flex justify-center">
                 <ConnectButton />
               </div>
             </>

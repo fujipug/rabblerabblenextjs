@@ -6,10 +6,11 @@ export default function LearnMore() {
     <>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <Image src="https://placebear.com/500/700" width={100} height={100} className="max-w-sm rounded-lg shadow-2xl" alt="Hero Image" />
+          <Image src="https://placebear.com/500/700" width={500} height={700} className="max-w-sm rounded-lg shadow-2xl" alt="Hero Image" />
           <div>
             <h1 className="text-5xl font-bold">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble!</span></h1>
             <p className="py-6 text-lg sm:text-xl">A thrilling NFT Raffling experience with your friends!</p>
+            <Image src={'/images/rabblet.gif'} width={350} height={100} className="mt-6" alt="Hero Image" />
           </div>
         </div>
       </div>
@@ -17,10 +18,10 @@ export default function LearnMore() {
       <div className="collapse bg-base-200 my-4">
         <input type="radio" name="my-accordion-1" />
         <div className="collapse-title text-xl font-medium">
-          How does Rabble Rabble work?
+          How does <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble</span> work?
         </div>
         <div className="collapse-content">
-          <p>Rabble Rabble is an engaging and interactive raffle platform where one person creates a lobby to bet their NFTs against their friends.</p>
+          <p><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble</span> is an engaging and interactive raffle platform where one person creates a lobby to bet their NFTs against their friends.</p>
         </div>
       </div>
 
@@ -86,11 +87,15 @@ export default function LearnMore() {
       </div>
 
       <div className="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="red" className="w-5 h-5 mr-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={1.0} stroke="black" className="w-5 h-5 mr-2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
         </svg>
-        <span>Developed by Pugs0x & Nobs</span>
-      </div>
+        <span>Developed by
+          <Link className="cursor-pointer hover:text-indigo-500" href="https://twitter.com/pugs0x"> Pugs0x</Link>,
+          <Link className="cursor-pointer hover:text-sky-500" href="https://twitter.com/nobsfud"> Nobs</Link> &
+          <Link className="cursor-pointer hover:text-emerald-500" href="https://twitter.com/0xPrimata"> 0xPrimata</Link>
+        </span>
+      </div >
     </>
   )
 }
