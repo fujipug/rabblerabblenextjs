@@ -16,7 +16,6 @@ import { publicProvider } from 'wagmi/providers/public';
 import { coinbaseWallet, injectedWallet, metaMaskWallet, omniWallet, rabbyWallet, rainbowWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
 import Moralis from 'moralis';
 
-
 const projectId = '5ebeded86a2892064a847992b9c2ab4b';
 const appName = 'Rabble Rabble';
 const { chains, publicClient } = configureChains(

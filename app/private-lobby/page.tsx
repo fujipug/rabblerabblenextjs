@@ -8,6 +8,8 @@ import { getFirestore } from "firebase/firestore";
 import Link from "next/link";
 import Image from "next/image";
 import { getAccount } from '@wagmi/core'
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import confetti from "canvas-confetti";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -20,12 +22,21 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-// const runApp = async () => {
-//   await Moralis.start({
-//     apiKey: 'E88APZ59qtx9G5LJjPEjLgSjSK5ldhaYs8qvI7g9CTYkh2hWSK9omFd3NLgJzA76',
-//   });
-// };
-// runApp();
+const fireConfetti = (particleRatio: number, opts: any) => {
+  const defaults = {
+    origin: { y: 0.7 }
+  };
+  confetti(Object.assign({}, defaults, opts, {
+    particleCount: Math.floor(200 * particleRatio)
+  }));
+};
+function fireAction() {
+  fireConfetti(0.25, { spread: 26, startVelocity: 55 });
+  fireConfetti(0.2, { spread: 60 });
+  fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+  fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+  fireConfetti(0.1, { spread: 120, startVelocity: 45 });
+}
 
 declare global {
   interface Window {
@@ -39,7 +50,6 @@ export default function PrivateLobby() {
   const [nfts, setNfts] = useState([] as EvmNft[]);
   const [selectedNft, setSelectedNft] = useState({} as EvmNft);
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
-  const [avaxDollar, setAvaxDollar] = useState(0);
   const [showPass, setShowPass] = useState(false);
   const [pass, setPass] = useState('');
   const [shareUrl, setShareUrl] = useState('');
@@ -59,14 +69,10 @@ export default function PrivateLobby() {
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
     setStep(2);
-    getNfts();
+    if (account.address && account.isConnected)
+      getNfts();
   }
-  const avaxEqualToOneUsd = async () => {
-    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=avalanche-2&vs_currencies=usd');
-    response.json().then((data) => {
-      setAvaxDollar(1 / data['avalanche-2'].usd);
-    });
-  }
+
   const firebaseLobby = async (lobby: any) => {
     addDoc(collection(db, 'lobbies'), lobby).then((response) => {
       setStep(4);
@@ -95,7 +101,9 @@ export default function PrivateLobby() {
       }
 
       //TODO: Create wallet/vault for lobby
-      firebaseLobby(lobby);
+      firebaseLobby(lobby).then((response) => {
+        fireAction();
+      });
     } else {
       // TODO: error message
     }
@@ -173,7 +181,10 @@ export default function PrivateLobby() {
             </>
             :
             <>
-              <h1 className="font-semibold text-2xl mb-4">Sign into your NFT wallet</h1>
+              <div className="justify-center text-center">
+                <h1 className="font-semibold text-2xl mb-4">Sign into your NFT wallet</h1>
+                <ConnectButton />
+              </div>
             </>
           }
         </div>
@@ -228,7 +239,7 @@ export default function PrivateLobby() {
 
               <div className="mb-4">
                 <h2 className="font-semibold">Lobby Fee</h2>
-                <p>{avaxDollar} AVAX (~$1.00)</p>
+                <p>0.1 AVAX</p>
               </div>
 
               <div className="flex flex-col w-full border-opacity-50">
@@ -325,8 +336,8 @@ export default function PrivateLobby() {
               <div className="divider"></div>
               <p><span className="font-semibold">Symbol:</span> {selectedNft?.symbol}</p>
               <p><span className="font-semibold">Token ID:</span> {selectedNft?.tokenId}</p>
-              <button onClick={() => { setConfirmNft(selectedNft), setStep(3); avaxEqualToOneUsd() }} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Confirm</button>
-              <button onClick={() => { setConfirmNft(selectedNft); setStep(3); avaxEqualToOneUsd() }} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">Confirm</button>
+              <button onClick={() => { setConfirmNft(selectedNft), setStep(3) }} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Confirm</button>
+              <button onClick={() => { setConfirmNft(selectedNft); setStep(3) }} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">Confirm</button>
             </div>
           </div >
         </form >

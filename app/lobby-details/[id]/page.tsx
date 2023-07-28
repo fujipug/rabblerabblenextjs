@@ -2,7 +2,9 @@
 import { collection, documentId, query, where, getFirestore, getDocs, Timestamp } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import converter from 'number-to-words';
+import localFont from 'next/font/local'
+const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -78,7 +80,7 @@ function LobbyNftInfo(props: any) {
         {lobbyDetails?.nfts.map((nft: any, index: number) => (
           <div key={index} className="snap-center">
             <div className="card card-compact w-96 bg-base-100 shadow-xl">
-              <figure><Image src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
+              <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
               <div className="card-body">
                 <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
                 <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
@@ -91,7 +93,7 @@ function LobbyNftInfo(props: any) {
           <div key={index} className="snap-center">
             <div className="card card-compact w-96 bg-base-100 shadow-xl">
               <figure><div className="bg-gray-200 flex justify-center items-center w-[384px] h-[384px]">
-                <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Player {index + 1}</span>
+                <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600"><span className={myFont.className}>Player {converter.toWords(index + 2)}</span></span>
               </div></figure>
               <div className="card-body">
                 <h2 className="card-title">Waiting for player to join<span className="loading loading-dots loading-xs -mb-3"></span></h2>

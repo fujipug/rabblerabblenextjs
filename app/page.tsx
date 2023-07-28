@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+import confetti from 'canvas-confetti';
 
 // function ThemeComponent() {
 //   const [theme, setTheme] = React.useState('cupcake');
@@ -20,6 +21,21 @@ import React from "react";
 //     </label>
 //   );
 // }
+const fireConfetti = (particleRatio: number, opts: any) => {
+  const defaults = {
+    origin: { y: 0.7 }
+  };
+  confetti(Object.assign({}, defaults, opts, {
+    particleCount: Math.floor(200 * particleRatio)
+  }));
+};
+function fireAction() {
+  fireConfetti(0.25, { spread: 26, startVelocity: 55 });
+  fireConfetti(0.2, { spread: 60 });
+  fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+  fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+  fireConfetti(0.1, { spread: 120, startVelocity: 45 });
+}
 
 export default function Example() {
   return (
@@ -28,7 +44,7 @@ export default function Example() {
         <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-40">
           <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:flex-shrink-0 lg:pt-8">
             <div className="mt-24 sm:mt-32 lg:mt-16">
-              <a className="inline-flex space-x-6 cursor-pointer">
+              <a onClick={() => fireAction()} className="inline-flex space-x-6 cursor-pointer">
                 <div className="badge badge-neutral badge-outline p-3">What&apos;s new</div>
                 <span className="inline-flex items-center space-x-2 text-sm font-medium leading-6">
                   <span>Just shipped v1.0  🎉</span>

@@ -1,5 +1,203 @@
-export default function JoinLobbyPage() {
+'use client'
+import { useEffect, useState } from "react";
+import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
+import Moralis from "moralis";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import { collection, documentId, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import converter from 'number-to-words';
+import localFont from 'next/font/local'
+const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
+
+declare global {
+  interface Window {
+    selectNftModal: any;
+  }
+}
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
+  authDomain: "rabble-rabble.firebaseapp.com",
+  projectId: "rabble-rabble",
+  storageBucket: "rabble-rabble.appspot.com",
+  messagingSenderId: "835781447787",
+  appId: "1:835781447787:web:84e6b4123aa0b77b5f212e",
+  measurementId: "G-T8GBPL2SXJ"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export default function JoinLobbyPage({ params }: { params: { id: string } }) {
+  const [step, setStep] = useState(1);
+  const [nfts, setNfts] = useState([] as EvmNft[]);
+  const [selectedNft, setSelectedNft] = useState({} as EvmNft);
+  const [confirmNft, setConfirmNft] = useState({} as EvmNft);
+  const { address, isConnected } = useAccount();
+  const [lobbyDetails, setLobbyDetails] = useState() as any;
+  const getNfts = async () => {
+    const chain = EvmChain.AVALANCHE;
+    const response = await Moralis.EvmApi.nft.getWalletNFTs({
+      address: address as string,
+      chain,
+      mediaItems: true,
+      normalizeMetadata: true,
+    });
+    console.log('tst');
+    return response.result;
+  }
+  const fetchData = async (results: any) => {
+    try {
+      const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
+      const querySnapshot = await getDocs(q);
+      for (const doc of querySnapshot.docs) {
+        const filtered = results.filter((nft: any) => nft.name == doc.data().collection);
+        console.log(doc.data());
+        setNfts(filtered);
+        setLobbyDetails(doc.data());
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
+    if (address && isConnected)
+      getNfts().then((nfts) => {
+        fetchData(nfts);
+      });
+  }, []);
+
   return (
-    <div className="w-full"></div>
+    <>
+      {(step == 1) &&
+        <div className="mt-12 text-center">
+          {address && isConnected ?
+            <>
+              <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
+              <span className="hidden sm:block">{address}</span>
+              {/* <span className="block sm:hidden">{address | pipe}</span> */}
+              <div className="flex justify-center">
+                <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7 mt-6">
+                  {nfts.map((nft: any, index: any) => (
+                    <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
+                      <div className="w-[100px] h-[100px]">
+                        {nft.media?.mimetype === 'video/mp4' ?
+                          <video className="rounded-lg drop-shadow-md" width="100" height="100" muted loop autoPlay>
+                            <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
+                          </video>
+                          :
+                          <img className="rounded-lg drop-shadow-md"
+                            src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
+                            alt="NFT image unreachable" width={100} height={100} />
+                        }
+                      </div>
+                    </li>
+                  ))
+                  }
+                </ul>
+              </div>
+              <span className="text-sm">* If some images are missing it might be due to your ad blocker</span>
+            </>
+            :
+            <>
+              <div className="justify-center text-center">
+                <h1 className="font-semibold text-2xl mb-4">Sign into your NFT wallet</h1>
+                <ConnectButton />
+              </div>
+            </>
+          }
+        </div>
+      }
+
+      {(step == 2) &&
+        <div className="mt-12">
+          <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
+            <div className="col-span-1 flex justify-center">
+              <div className="card card-compact w-96 bg-base-100 shadow-xl">
+                <figure><img
+                  src={confirmNft?.media?.mediaCollection?.high?.url ? confirmNft?.media?.mediaCollection?.high?.url : confirmNft?.media?.originalMediaUrl}
+                  alt="NFT Image" /></figure>
+                <div className="card-body">
+                  <h2 className="card-title">{confirmNft?.name} #{confirmNft?.tokenId}</h2>
+                  <p><span className="font-semibold">Symbol: </span> {confirmNft?.symbol}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-span-1 relative mt-4 sm:mt-0">
+              <div className="mb-4">
+                <h2 className="font-semibold">EVM Chain</h2>
+                <p>{lobbyDetails.evmChain} </p>
+              </div>
+
+              <div className="mb-4">
+                <h2 className="font-semibold">Raffle Collection
+                  <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                    </svg>
+                  </div>
+                </h2>
+                <p>{lobbyDetails.collection}</p>
+              </div>
+
+              <div className="mb-4">
+                <h2 className="font-semibold">Lobby Fee</h2>
+                <p>0.1 AVAX</p>
+              </div>
+
+              <div className="flex flex-col w-full border-opacity-50">
+                <div className="divider"></div>
+              </div>
+
+              <div className="mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">
+                <h2 className="font-semibold text-3xl"><span className={myFont.className}>Good Luck</span></h2>
+                <p className="text-xl"><span className={myFont.className}>Player {converter.toWords(lobbyDetails?.confirmedPlayers + 1)}</span></p>
+              </div>
+
+              <button className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Join
+                Game</button>
+              <button className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">Join
+                Game</button>
+            </div>
+          </div>
+        </div>
+      }
+
+
+
+      {/* Open the modal using ID.showModal() method */}
+      <dialog id="selectNftModal" className="modal">
+        <form method="dialog" className="modal-box">
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          <div className="grid grid-cols-1 mt-4 sm:grid-cols-2 sm:space-x-6">
+            <div className="col-span-1">
+              {selectedNft?.media?.mimetype === 'video/mp4' ?
+                <figure>
+                  <video className="rounded-lg drop-shadow-md" width="500" height="500" autoPlay muted loop>
+                    <source src={selectedNft?.media?.mediaCollection?.high?.url} type="video/mp4" />
+                  </video>
+                </figure>
+                :
+                <figure>
+                  <img className="rounded-lg drop-shadow-md"
+                    src={selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl}
+                    alt="NFT image unreachable" />
+                </figure>
+              }
+            </div>
+
+            <div className="col-span-1 mt-4 sm:mt-0 relative">
+              <p><span className="font-semibold">Collection:</span> {selectedNft?.name}</p>
+              <div className="divider"></div>
+              <p><span className="font-semibold">Symbol:</span> {selectedNft?.symbol}</p>
+              <p><span className="font-semibold">Token ID:</span> {selectedNft?.tokenId}</p>
+              <button onClick={() => { setConfirmNft(selectedNft), setStep(2) }} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Confirm</button>
+              <button onClick={() => { setConfirmNft(selectedNft); setStep(2) }} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">Confirm</button>
+            </div>
+          </div >
+        </form >
+      </dialog >
+    </>
   )
 }

@@ -6,10 +6,10 @@ export default function LearnMore() {
     <>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <Image src="https://placebear.com/500/700" className="max-w-sm rounded-lg shadow-2xl" alt="Hero Image" />
+          <Image src="https://placebear.com/500/700" width={100} height={100} className="max-w-sm rounded-lg shadow-2xl" alt="Hero Image" />
           <div>
             <h1 className="text-5xl font-bold">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Rabble Rabble!</span></h1>
-            <p className="py-6 text-lg sm:text-xl">A thrilling NFT gambling experience with your friends!</p>
+            <p className="py-6 text-lg sm:text-xl">A thrilling NFT Raffling experience with your friends!</p>
           </div>
         </div>
       </div>
@@ -17,10 +17,10 @@ export default function LearnMore() {
       <div className="collapse bg-base-200 my-4">
         <input type="radio" name="my-accordion-1" />
         <div className="collapse-title text-xl font-medium">
-          How does Rabble work?
+          How does Rabble Rabble work?
         </div>
         <div className="collapse-content">
-          <p>Rabble is an engaging and interactive raffle platform where one person creates a lobby to bet their NFTs against their friends.</p>
+          <p>Rabble Rabble is an engaging and interactive raffle platform where one person creates a lobby to bet their NFTs against their friends.</p>
         </div>
       </div>
 
@@ -30,7 +30,7 @@ export default function LearnMore() {
           Ensuring fairness with Chainlink VRF:
         </div>
         <div className="collapse-content">
-          <p>To maintain absolute fairness, we utilize Chainlink VRF for random selection.</p>
+          <p>To maintain absolute fairness, we utilize <Link className="text-indigo-500 hover:text-indigo-600" href="https://docs.chain.link/vrf/v2/introduction">Chainlink VRF</Link> for random selection.</p>
         </div>
       </div>
 
@@ -40,7 +40,7 @@ export default function LearnMore() {
           Simple participation fee:
         </div>
         <div className="collapse-content">
-          <p>For each participant joining or creating a lobby, there is a nominal $1 charge.</p>
+          <p>For each participant joining or creating a lobby, there is a nominal 0.1 AVAX charge.</p>
         </div>
       </div>
 
