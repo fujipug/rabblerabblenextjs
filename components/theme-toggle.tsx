@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState("dracula");
-
-  useEffect(() => {
+  const [theme, setTheme] = useState(
     localStorage.getItem("theme") ? localStorage.getItem("theme") : "dracula"
-  }, []);
+  );
+
 
   // update state on toggle
   const handleToggle = (e: any) => {

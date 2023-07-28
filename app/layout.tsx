@@ -16,6 +16,7 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { coinbaseWallet, coreWallet, injectedWallet, metaMaskWallet, rabbyWallet, rainbowWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
 import Moralis from 'moralis';
+import { useEffect, useState } from "react";
 
 const projectId = '5ebeded86a2892064a847992b9c2ab4b';
 const appName = 'Rabble Rabble';
@@ -62,13 +63,12 @@ export default function RootLayout(
     children: React.ReactNode;
   }) {
 
-  const theme = localStorage.getItem("theme") === 'cupcake' ? lightTheme() : darkTheme();
   return (
     <html>
       <body>
         <main>
           <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider chains={chains} theme={theme}>
+            <RainbowKitProvider chains={chains} theme={darkTheme()}>
               {children}
             </RainbowKitProvider>
           </WagmiConfig>
