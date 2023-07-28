@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
 import { Timestamp, addDoc, collection } from "firebase/firestore";
@@ -55,6 +55,11 @@ export default function PrivateLobby() {
   const [shareUrl, setShareUrl] = useState('');
   const { address, isConnected } = useAccount();
 
+  useEffect(() => {
+    if (address && isConnected)
+      getNfts();
+  }, [address, isConnected]);
+
   const getNfts = async () => {
     const chain = EvmChain.AVALANCHE;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
@@ -68,14 +73,12 @@ export default function PrivateLobby() {
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
     setStep(2);
-    if (address && isConnected)
-      getNfts();
   }
 
   const firebaseLobby = async (lobby: any) => {
     addDoc(collection(db, 'lobbies'), lobby).then((response) => {
       setStep(4);
-      setShareUrl(`https://vercel.com/fujipug/rabblerabblenextjs/6h3Cj1De1e9QkLPYD2LqTDZN1nuh/lobby-details/${response.id}`);
+      setShareUrl(`${window.location.href.split('/private')[0]}/lobby-details/${response.id}`);
     }).catch((error) => {
       console.error("Error adding document: ", error);
     });
