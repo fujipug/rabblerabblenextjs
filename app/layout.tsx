@@ -14,9 +14,8 @@ import {
 } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { coinbaseWallet, injectedWallet, metaMaskWallet, omniWallet, rabbyWallet, rainbowWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
+import { coinbaseWallet, coreWallet, injectedWallet, metaMaskWallet, rabbyWallet, rainbowWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
 import Moralis from 'moralis';
-import { useState } from "react";
 
 const projectId = '5ebeded86a2892064a847992b9c2ab4b';
 const appName = 'Rabble Rabble';
@@ -33,8 +32,8 @@ const connectors = connectorsForWallets([
     groupName: 'Recommended',
     wallets: [
       metaMaskWallet({ projectId, chains }),
-      omniWallet({ projectId, chains }),
       rabbyWallet({ chains }),
+      coreWallet({ projectId, chains }),
       coinbaseWallet({ appName, chains }),
       injectedWallet({ chains }),
       rainbowWallet({ projectId, chains }),

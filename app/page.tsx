@@ -106,7 +106,7 @@ export default function Home() {
           <tbody>
             {lobbies.map((lobby: DocumentData, index: number) => (
               <tr key={index}>
-                <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`}>{lobby.id}</Link></th>
+                <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">{lobby.id}</Link></th>
                 <td>{lobby.data.collection}</td>
                 <td>
                   {lobby.data.status === 'Expired' &&
