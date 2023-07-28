@@ -1,8 +1,22 @@
 'use client'
 import Link from "next/link";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import confetti from 'canvas-confetti';
+import { DocumentData, collection, getDocs, getFirestore, orderBy, query } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
+  authDomain: "rabble-rabble.firebaseapp.com",
+  projectId: "rabble-rabble",
+  storageBucket: "rabble-rabble.appspot.com",
+  messagingSenderId: "835781447787",
+  appId: "1:835781447787:web:84e6b4123aa0b77b5f212e",
+  measurementId: "G-T8GBPL2SXJ"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // function ThemeComponent() {
 //   const [theme, setTheme] = React.useState('cupcake');
@@ -21,6 +35,7 @@ import confetti from 'canvas-confetti';
 //     </label>
 //   );
 // }
+
 const fireConfetti = (particleRatio: number, opts: any) => {
   const defaults = {
     origin: { y: 0.7 }
@@ -38,6 +53,24 @@ function fireAction() {
 }
 
 export default function Example() {
+  const [lobbies, setLobbies] = useState([]) as any;
+  const fetchData = async () => {
+    try {
+      const q = query(collection(db, 'lobbies'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const lobbies = [];
+      for (const doc of querySnapshot.docs) {
+        lobbies.push({ id: doc.id, data: doc.data() });
+      }
+      console.log(lobbies);
+      setLobbies(lobbies);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <>
       <div className="relative isolate overflow-hidden bg-base-200 sm:h-screen drop-shadow-md">
@@ -87,12 +120,39 @@ export default function Example() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th>1</th>
-              <td>Cy Ganderton</td>
-              <td>Quality Control Specialist</td>
-              <td>Blue</td>
-            </tr>
+            {lobbies.map((lobby: DocumentData, index: number) => (
+              <tr key={index}>
+                <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`}>{lobby.id}</Link></th>
+                <td>{lobby.data.collection}</td>
+                <td>
+                  {lobby.data.status === 'Expired' &&
+                    <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/10">
+                      {lobby.data.status}
+                    </span>
+                  }
+                  {lobby.data.status === 'Active' &&
+                    <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-600/10">
+                      {lobby.data.status}
+                    </span>
+                  }
+                  {lobby.data.status === 'Completed' &&
+                    <span className="inline-flex items-center rounded-full bg-lime-50 px-2 py-1 text-xs font-medium text-lime-700 ring-1 ring-inset ring-lime-600/10">
+                      {lobby.data.status}
+                    </span>
+                  }
+                </td>
+                <td>time</td>
+                {lobby.data.status === 'Expired' &&
+                  <td>N/A</td>
+                }
+                {lobby.data.status === 'Active' &&
+                  <td>TBA</td>
+                }
+                {lobby.data.status === 'Completed' && lobby.data.winner &&
+                  <td>{lobby.data.winner}</td>
+                }
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

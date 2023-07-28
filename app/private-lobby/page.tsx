@@ -7,9 +7,9 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import Link from "next/link";
 import Image from "next/image";
-import { getAccount } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
+import { useAccount } from "wagmi";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -53,13 +53,12 @@ export default function PrivateLobby() {
   const [showPass, setShowPass] = useState(false);
   const [pass, setPass] = useState('');
   const [shareUrl, setShareUrl] = useState('');
-  const account = getAccount();
-
+  const { address, isConnected } = useAccount();
 
   const getNfts = async () => {
     const chain = EvmChain.AVALANCHE;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
-      address: account.address as string,
+      address: address as string,
       chain,
       mediaItems: true,
       normalizeMetadata: true,
@@ -69,7 +68,7 @@ export default function PrivateLobby() {
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
     setStep(2);
-    if (account.address && account.isConnected)
+    if (address && isConnected)
       getNfts();
   }
 
@@ -152,10 +151,10 @@ export default function PrivateLobby() {
       {/* step 2 */}
       {(step == 2) &&
         <div className="mt-12 text-center">
-          {account.address && account.isConnected ?
+          {address && isConnected ?
             <>
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-              <span className="hidden sm:block">{account.address}</span>
+              <span className="hidden sm:block">{address}</span>
               {/* <span className="block sm:hidden">{address | pipe}</span> */}
               <div className="flex justify-center">
                 <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7 mt-6">
@@ -173,8 +172,7 @@ export default function PrivateLobby() {
                         }
                       </div>
                     </li>
-                  ))
-                  }
+                  ))}
                 </ul>
               </div>
               <span className="text-sm">* If some images are missing it might be due to your ad blocker</span>
