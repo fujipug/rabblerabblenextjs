@@ -4,13 +4,13 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState(
     typeof localStorage !== "undefined" && localStorage.getItem("theme")
       ? localStorage.getItem("theme")
-      : "dracula"
+      : "night"
   );
 
   // update state on toggle
   const handleToggle = (e: any) => {
     if (e.target.checked) {
-      setTheme("dracula");
+      setTheme("night");
     } else {
       setTheme("cupcake");
     }

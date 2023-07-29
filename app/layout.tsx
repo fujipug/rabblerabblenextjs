@@ -73,7 +73,7 @@ export default function RootLayout(
           </WagmiConfig>
           <footer className="footer p-10 bg-base-200 text-base-content">
             <div>
-              <Image src="/images/Quokka_Cool.png" alt="Rabble Rabble Logo" width={60} height={60} />
+              <Image src="/images/Face_2.png" alt="Rabble Rabble Logo" width={60} height={60} />
               <p><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span><br />Raffle NFTs With The Boys</p>
             </div>
             <div>
