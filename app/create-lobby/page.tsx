@@ -40,7 +40,7 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
-function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
+function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const contractAddress = '0xc6c08823a324278c621c8D625d904700BFFE3d1b';
   const { address, isConnected } = useAccount();
@@ -73,14 +73,12 @@ declare global {
   }
 }
 
-export default function PrivateLobby() {
+export default function CreateLobby() {
   const [playerAmount, setPlayerAmount] = useState(0);
   const [step, setStep] = useState(1);
   const [nfts, setNfts] = useState([] as EvmNft[]);
   const [selectedNft, setSelectedNft] = useState({} as EvmNft);
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
-  const [showPass, setShowPass] = useState(false);
-  const [pass, setPass] = useState('');
   const [shareUrl, setShareUrl] = useState('');
   const { address, isConnected } = useAccount();
   const [showClipboardToast, setShowClipboardToast] = useState(false);
@@ -120,31 +118,24 @@ export default function PrivateLobby() {
   }
   const createLobby = async () => {
     console.log('selected data', confirmNft);
-    if (pass.length >= 6) {
-      const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-      const lobby = {
-        collection: confirmNft?.name,
-        createdAt: Timestamp.now(),
-        confirmedPlayers: 1,
-        endDate: Timestamp.fromDate(endDate),
-        evmChain: 'Mumbai',
-        isPrivate: true,
-        nfts: [confirmNft.toJSON()],
-        password: pass,
-        timeLimit: 24, // Update when time limits are added
-        status: 'Active',
-        totalPlayers: playerAmount,
-        // vaultAddress: '',
-        // pk: '',
-      }
-
-      //TODO: Create wallet/vault for lobby
-      firebaseLobby(lobby).then((response) => {
-        fireAction();
-      });
-    } else {
-      // TODO: error message
+    const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+    const lobby = {
+      collection: confirmNft?.name,
+      createdAt: Timestamp.now(),
+      confirmedPlayers: 1,
+      endDate: Timestamp.fromDate(endDate),
+      evmChain: 'Mumbai',
+      isPrivate: true,
+      nfts: [confirmNft.toJSON()],
+      timeLimit: 24, // Update when time limits are added
+      status: 'Active',
+      totalPlayers: playerAmount,
     }
+
+    //TODO: Create wallet/vault for lobby
+    firebaseLobby(lobby).then((response) => {
+      fireAction();
+    });
   }
   const clipboardlink = () => {
     setShowClipboardToast(true);
@@ -298,36 +289,7 @@ export default function PrivateLobby() {
                 <p>0.1 AVAX</p>
               </div>
 
-              <div className="flex flex-col w-full border-opacity-50">
-                <div className="divider">Lobby Password</div>
-              </div>
-
-              <div className="mb-4">
-                <div className="flex items-center">
-                  {!showPass ?
-                    <>
-                      <input placeholder="Min. 6 characters" onChange={e => { setPass(e.currentTarget.value) }} type="password" className="input input-bordered w-full drop-shadow-md" />
-                      <span onClick={() => setShowPass(true)} className="label-text-alt cursor-pointer ml-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                      </span>
-                    </>
-                    :
-                    <>
-                      <input placeholder="Min. 6 characters" onChange={e => { setPass(e.currentTarget.value) }} type="text" className="input input-bordered w-full drop-shadow-md" />
-                      <span onClick={() => setShowPass(false)} className="label-text-alt cursor-pointer ml-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                        </svg>
-                      </span>
-                    </>
-                  }
-                </div>
-                <p className="text-xs mt-2">* This password will be required to join the lobby. Anyone with this password will be able to join.</p>
-              </div>
-              <CreateLobby confirmedNft={confirmNft} paricipants={playerAmount} />
+              <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
               <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
               <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button>
             </div >

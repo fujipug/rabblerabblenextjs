@@ -174,8 +174,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
         </div>
       }
 
-
-
       {/* Open the modal using ID.showModal() method */}
       <dialog id="selectNftModal" className="modal">
         <form method="dialog" className="modal-box">
