@@ -137,6 +137,7 @@ export default function CreateLobby() {
       fireAction();
     });
   }
+  const unmutableNfts = nfts; // Fix this later to unmutable
   const nftCollections = () => {
     const uniqueArray: any[] = [];
 
@@ -148,10 +149,9 @@ export default function CreateLobby() {
 
     return uniqueArray;
   }
-  const unmutableNfts = nfts; // Fix this
   function filterCollection(collection: string) {
     console.log('collection', collection);
-    const filtered = unmutableNfts.filter((nft: any) => nft.name === collection);
+    const filtered = nfts.filter((nft: any) => nft.name === collection);
     setNfts(filtered);
   }
   const clipboardlink = () => {
@@ -234,23 +234,20 @@ export default function CreateLobby() {
                       <li key={index}><a onClick={() => filterCollection(collection)}>{collection}</a></li>
                     ))}
                     <li><a onClick={() => filterCollection('Test')}>Test</a></li>
-
                   </ul>
-
                 </div>
-
               </div>
-              <div className="flex justify-center bg-base-200 rounded p-3 mt-2 drop-shadow-md">
+              <div className="flex justify-center bg-base-200 rounded-lg p-3 mt-2 drop-shadow-md">
                 <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
                   {nfts.map((nft: any, index: any) => (
                     <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
                       <div className="w-[100px] h-[100px]">
                         {nft.media?.mimetype === 'video/mp4' ?
-                          <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent" width="100" height="100" muted loop autoPlay>
+                          <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
                             <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
                           </video>
                           :
-                          <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent"
+                          <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success"
                             src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
                             alt="NFT image unreachable" width={100} height={100} />
                         }
@@ -259,7 +256,7 @@ export default function CreateLobby() {
                   ))}
                 </ul>
               </div>
-              <span className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</span>
+              <div className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</div>
             </>
             :
             <>
