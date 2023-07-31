@@ -78,17 +78,17 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
               <span className="hidden sm:block">{address}</span>
               {/* <span className="block sm:hidden">{address | pipe}</span> */}
-              <div className="flex justify-center">
-                <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7 mt-6">
+              <div className="flex justify-center bg-base-200 rounded p-3 mt-6 drop-shadow-md">
+                <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
                   {nfts.map((nft: any, index: any) => (
                     <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
                       <div className="w-[100px] h-[100px]">
                         {nft.media?.mimetype === 'video/mp4' ?
-                          <video className="rounded-lg drop-shadow-md" width="100" height="100" muted loop autoPlay>
+                          <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent" width="100" height="100" muted loop autoPlay>
                             <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
                           </video>
                           :
-                          <img className="rounded-lg drop-shadow-md"
+                          <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent"
                             src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
                             alt="NFT image unreachable" width={100} height={100} />
                         }
@@ -98,7 +98,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                   }
                 </ul>
               </div>
-              <span className="text-sm">* If some images are missing it might be due to your ad blocker</span>
+              <span className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</span>
             </>
             :
             <>
@@ -173,8 +173,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       }
-
-
 
       {/* Open the modal using ID.showModal() method */}
       <dialog id="selectNftModal" className="modal">

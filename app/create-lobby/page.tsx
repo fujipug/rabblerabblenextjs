@@ -11,8 +11,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
-import { rabbleAbi } from '../../utils/config.ts';
-import { useRabbleAddress } from '../../utils/hooks.ts';
+import { rabbleRabbleAbi } from "../../contracts/rabblerabble-abi";
+import { parseEther } from "viem";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -40,7 +40,7 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
-function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
+function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const contractAddress = '0xc6c08823a324278c621c8D625d904700BFFE3d1b';
   const { address, isConnected } = useAccount();
@@ -49,13 +49,13 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
     abi: rabbleRabbleAbi,
     functionName: 'createPrivateRaffle',
     args: [
-      '0x97A989405Ad7be8c5907F76c96b93132C03A0D58',
+      props.confirmedNft?.tokenAddress.lowercase,
       props.paricipants,
-      0,
+      props.confirmedNft?.tokenId,
       isConnected && [address],
-      Math.floor(Number(Timestamp.fromDate(endDate))),
+      1000,
     ],
-    value: 100000000000000000n,
+    value: parseEther('0.01')
   })
 
   return (
@@ -73,14 +73,12 @@ declare global {
   }
 }
 
-export default function PrivateLobby() {
+export default function CreateLobby() {
   const [playerAmount, setPlayerAmount] = useState(0);
   const [step, setStep] = useState(1);
   const [nfts, setNfts] = useState([] as EvmNft[]);
   const [selectedNft, setSelectedNft] = useState({} as EvmNft);
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
-  const [showPass, setShowPass] = useState(false);
-  const [pass, setPass] = useState('');
   const [shareUrl, setShareUrl] = useState('');
   const { address, isConnected } = useAccount();
   const [showClipboardToast, setShowClipboardToast] = useState(false);
@@ -120,31 +118,41 @@ export default function PrivateLobby() {
   }
   const createLobby = async () => {
     console.log('selected data', confirmNft);
-    if (pass.length >= 6) {
-      const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-      const lobby = {
-        collection: confirmNft?.name,
-        createdAt: Timestamp.now(),
-        confirmedPlayers: 1,
-        endDate: Timestamp.fromDate(endDate),
-        evmChain: 'Mumbai',
-        isPrivate: true,
-        nfts: [confirmNft.toJSON()],
-        password: pass,
-        timeLimit: 24, // Update when time limits are added
-        status: 'Active',
-        totalPlayers: playerAmount,
-        // vaultAddress: '',
-        // pk: '',
-      }
-
-      //TODO: Create wallet/vault for lobby
-      firebaseLobby(lobby).then((response) => {
-        fireAction();
-      });
-    } else {
-      // TODO: error message
+    const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+    const lobby = {
+      collection: confirmNft?.name,
+      createdAt: Timestamp.now(),
+      confirmedPlayers: 1,
+      endDate: Timestamp.fromDate(endDate),
+      evmChain: 'Mumbai',
+      isPrivate: true,
+      nfts: [confirmNft.toJSON()],
+      timeLimit: 24, // Update when time limits are added
+      status: 'Active',
+      totalPlayers: playerAmount,
     }
+
+    //TODO: Create wallet/vault for lobby
+    firebaseLobby(lobby).then((response) => {
+      fireAction();
+    });
+  }
+  const nftCollections = () => {
+    const uniqueArray: any[] = [];
+
+    nfts.map((item: any) => {
+      if (!uniqueArray.includes(item.name)) {
+        uniqueArray.push(item.name);
+      }
+    });
+
+    return uniqueArray;
+  }
+  const unmutableNfts = nfts; // Fix this
+  function filterCollection(collection: string) {
+    console.log('collection', collection);
+    const filtered = unmutableNfts.filter((nft: any) => nft.name === collection);
+    setNfts(filtered);
   }
   const clipboardlink = () => {
     setShowClipboardToast(true);
@@ -213,17 +221,36 @@ export default function PrivateLobby() {
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
               <span className="hidden sm:block">{address}</span>
               {/* <span className="block sm:hidden">{address | pipe}</span> */}
-              <div className="flex justify-center">
-                <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7 mt-6">
+              <div className="flex justify-start items-center mt-6">
+                <div className="dropdown">
+                  <label tabIndex={0} className="btn m-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                    </svg>
+                    Filter by collection
+                  </label>
+                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 bg-base-100 rounded-box w-52 mt-2">
+                    {nftCollections().map((collection: string, index: any) => (
+                      <li key={index}><a onClick={() => filterCollection(collection)}>{collection}</a></li>
+                    ))}
+                    <li><a onClick={() => filterCollection('Test')}>Test</a></li>
+
+                  </ul>
+
+                </div>
+
+              </div>
+              <div className="flex justify-center bg-base-200 rounded p-3 mt-2 drop-shadow-md">
+                <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
                   {nfts.map((nft: any, index: any) => (
                     <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
                       <div className="w-[100px] h-[100px]">
                         {nft.media?.mimetype === 'video/mp4' ?
-                          <video className="rounded-lg drop-shadow-md" width="100" height="100" muted loop autoPlay>
+                          <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent" width="100" height="100" muted loop autoPlay>
                             <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
                           </video>
                           :
-                          <img className="rounded-lg drop-shadow-md"
+                          <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent"
                             src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
                             alt="NFT image unreachable" width={100} height={100} />
                         }
@@ -232,7 +259,7 @@ export default function PrivateLobby() {
                   ))}
                 </ul>
               </div>
-              <span className="text-sm">* If some images are missing it might be due to your ad blocker</span>
+              <span className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</span>
             </>
             :
             <>
@@ -242,7 +269,7 @@ export default function PrivateLobby() {
               </div>
             </>
           }
-        </div>
+        </div >
       }
 
       {/* step 3 */}
@@ -298,36 +325,7 @@ export default function PrivateLobby() {
                 <p>0.1 AVAX</p>
               </div>
 
-              <div className="flex flex-col w-full border-opacity-50">
-                <div className="divider">Lobby Password</div>
-              </div>
-
-              <div className="mb-4">
-                <div className="flex items-center">
-                  {!showPass ?
-                    <>
-                      <input placeholder="Min. 6 characters" onChange={e => { setPass(e.currentTarget.value) }} type="password" className="input input-bordered w-full drop-shadow-md" />
-                      <span onClick={() => setShowPass(true)} className="label-text-alt cursor-pointer ml-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                      </span>
-                    </>
-                    :
-                    <>
-                      <input placeholder="Min. 6 characters" onChange={e => { setPass(e.currentTarget.value) }} type="text" className="input input-bordered w-full drop-shadow-md" />
-                      <span onClick={() => setShowPass(false)} className="label-text-alt cursor-pointer ml-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                        </svg>
-                      </span>
-                    </>
-                  }
-                </div>
-                <p className="text-xs mt-2">* This password will be required to join the lobby. Anyone with this password will be able to join.</p>
-              </div>
-              <CreateLobby confirmedNft={confirmNft} paricipants={playerAmount} />
+              <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
               <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
               <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button>
             </div >

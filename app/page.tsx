@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import confetti from 'canvas-confetti';
-import { DocumentData, collection, getDocs, getFirestore, limitToLast, orderBy, query } from "firebase/firestore";
+import { DocumentData, collection, getDocs, getFirestore, limit, orderBy, query } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
@@ -40,13 +40,12 @@ export default function Home() {
   const [lobbies, setLobbies] = useState([]) as any;
   const fetchData = async () => {
     try {
-      const q = query(collection(db, 'lobbies'), orderBy('createdAt', 'desc'), limitToLast(10));
+      const q = query(collection(db, 'lobbies'), orderBy('createdAt', 'desc'), limit(10));
       const querySnapshot = await getDocs(q);
       const lobbies = [];
       for (const doc of querySnapshot.docs) {
         lobbies.push({ id: doc.id, data: doc.data() });
       }
-      console.log(lobbies);
       setLobbies(lobbies);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -72,7 +71,7 @@ export default function Home() {
             <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-6xl">Raffle <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">NFTs</span> with the boys</h1>
             <p className="mt-6 text-lg leading-8"><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span> is a fun and exciting way to wager your NFTs with friends.</p>
             <div className="mt-10 flex items-center gap-x-6">
-              <Link href="/private-lobby" className="btn btn-secondary drop-shadow-lg z-50">Start A Lobby</Link>
+              <Link href="/create-lobby" className="btn btn-secondary drop-shadow-lg z-50">Start A Lobby</Link>
               <Link href="/learn-more" className="btn btn-ghost">Learn more <span aria-hidden="true">→</span></Link>
             </div>
           </div>
