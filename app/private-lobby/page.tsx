@@ -11,7 +11,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
-import * as rabbleAbi from '../../contracts/rabblerabble-abi.json';
+import * as rabbleRabbleAbi from '../../contracts/rabblerabble-abi.json';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -40,23 +40,19 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
 function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
-  console.log('props', props);
-  const abi = [rabbleAbi.result] as const;
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-
+  const contractAddress = '0xc6c08823a324278c621c8D625d904700BFFE3d1b';
   const { address, isConnected } = useAccount();
   const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: '0xc6c08823a324278c621c8D625d904700BFFE3d1b',
-    abi: abi,
+    address: contractAddress,
+    abi: [rabbleRabbleAbi],
     functionName: 'createPrivateRaffle',
     args: [
-      props.confirmedNft.tokenAddress,
+      '0x97A989405Ad7be8c5907F76c96b93132C03A0D58',
       props.paricipants,
-      props.paricipants,
-      props.confirmedNft.tokenId,
+      0,
       isConnected && [address],
       Timestamp.fromDate(endDate),
-
     ],
     value: 100000000000000000n,
   })
@@ -99,7 +95,7 @@ export default function PrivateLobby() {
   }, [address, isConnected]);
 
   const getNfts = async () => {
-    const chain = EvmChain.AVALANCHE;
+    const chain = EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
       chain,
@@ -130,7 +126,7 @@ export default function PrivateLobby() {
         createdAt: Timestamp.now(),
         confirmedPlayers: 1,
         endDate: Timestamp.fromDate(endDate),
-        evmChain: 'Avalanche',
+        evmChain: 'Mumbai',
         isPrivate: true,
         nfts: [confirmNft.toJSON()],
         password: pass,
@@ -266,7 +262,7 @@ export default function PrivateLobby() {
             <div className="col-span-1 relative mt-4">
               <div className="mb-4">
                 <h2 className="font-semibold">EVM Chain</h2>
-                <p>Avalanche</p>
+                <p>Mumbai</p>
               </div>
 
               <div className="mb-4">
