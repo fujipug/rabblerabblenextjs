@@ -9,7 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
-import { useAccount, useContractWrite } from "wagmi";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
 import * as rabbleAbi from '../../contracts/rabblerabble-abi.json';
 
@@ -43,11 +43,12 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   console.log('props', props);
   const abi = [rabbleAbi.result] as const;
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+
   const { address, isConnected } = useAccount();
   const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: '0x93E91F90Fe28f93E6f996ecFB6Be08521b272A46',
+    address: '0xc6c08823a324278c621c8D625d904700BFFE3d1b',
     abi: abi,
-    functionName: 'createPrivateLobby',
+    functionName: 'createPrivateRaffle',
     args: [
       props.confirmedNft.tokenAddress,
       props.paricipants,
@@ -55,7 +56,9 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
       props.confirmedNft.tokenId,
       isConnected && [address],
       Timestamp.fromDate(endDate),
+
     ],
+    value: 100000000000000000n,
   })
 
   return (
