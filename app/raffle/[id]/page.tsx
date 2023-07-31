@@ -28,10 +28,11 @@ const RotatingGIF = () => {
 export default function RafflePage() {
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <RotatingGIF />
-      <div className="bottom-left bg-white rounded p-4 drop-shadow-md">
+      <div className="absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Ready Players!</span>
+        <p>Test</p>
       </div>
     </div >
   )

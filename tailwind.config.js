@@ -12,7 +12,7 @@ module.exports = {
     // extend: {},
     extend: {
       animation: {
-        moveUpDown: 'moveUpDown 8s ease-in-out infinite', // Adjust the duration as needed
+        moveUpDown: 'moveUpDown 10s ease-in-out infinite', // Adjust the duration as needed
       },
       keyframes: {
         moveUpDown: {
@@ -20,7 +20,7 @@ module.exports = {
             transform: 'translateY(0)',
           },
           '50%': {
-            transform: 'translateY(-125px)', // Adjust the distance the image moves up
+            transform: 'translateY(-115px)', // Adjust the distance the image moves up
           }
         }
       }
@@ -28,6 +28,6 @@ module.exports = {
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ['cupcake', "night"],
+    themes: ['bumblebee', "night"],
   }
 }

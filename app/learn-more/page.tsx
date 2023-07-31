@@ -18,7 +18,7 @@ function Tweets() {
     return () => clearInterval(intervalId);
   }, [tweets.length, intervalDelay]);
   return (
-    <Image src={`/images/${tweets[currentIndex]}.gif`} width={350} height={100} className="mt-6" alt="Tweet" />
+    <Image src={`/images/${tweets[currentIndex]}.gif`} width={350} height={100} className="mt-6 drop-shadow-md rounded-lg" alt="Tweet" />
   )
 }
 
@@ -27,12 +27,12 @@ export default function LearnMore() {
     <>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <Image src={'/images/Quokka_Wave.png'} width={400} height={400} className="max-w-sm" alt="Quokka Wave" />
+          <Image src={'/images/Quokka_Wave.png'} width={400} height={400} className="hidden sm:block max-w-sm" alt="Quokka Wave" />
           <div>
             <div className="flex justify-between items-center">
               <Link href="/" className="inline-flex space-x-6 cursor-pointer">
                 <div className="badge badge-outline p-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 mr-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="hidden sm:block w-6 h-6 mr-1">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
                   </svg>
                   Home

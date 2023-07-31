@@ -9,8 +9,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
-import { useAccount } from "wagmi";
+import { useAccount, useContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
+import * as rabbleAbi from '../../contracts/rabblerabble-abi.json';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -37,6 +38,33 @@ function fireAction() {
   fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
   fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
+}
+function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
+  console.log('props', props);
+  const abi = [rabbleAbi.result] as const;
+  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+  const { address, isConnected } = useAccount();
+  const { data, isLoading, isSuccess, write } = useContractWrite({
+    address: '0x93E91F90Fe28f93E6f996ecFB6Be08521b272A46',
+    abi: abi,
+    functionName: 'createPrivateLobby',
+    args: [
+      props.confirmedNft.tokenAddress,
+      props.paricipants,
+      props.paricipants,
+      props.confirmedNft.tokenId,
+      isConnected && [address],
+      Timestamp.fromDate(endDate),
+    ],
+  })
+
+  return (
+    <div>
+      <button onClick={() => write()}>Click me pls</button>
+      {isLoading && <div>Check Wallet</div>}
+      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+    </div>
+  )
 }
 
 declare global {
@@ -91,6 +119,7 @@ export default function PrivateLobby() {
     });
   }
   const createLobby = async () => {
+    console.log('selected data', confirmNft);
     if (pass.length >= 6) {
       const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
       const lobby = {
@@ -298,6 +327,7 @@ export default function PrivateLobby() {
                 </div>
                 <p className="text-xs mt-2">* This password will be required to join the lobby. Anyone with this password will be able to join.</p>
               </div>
+              <CreateLobby confirmedNft={confirmNft} paricipants={playerAmount} />
               <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
               <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button>
             </div >
