@@ -11,7 +11,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
-import * as rabbleRabbleAbi from '../../contracts/rabblerabble-abi.json';
+import { rabblerabbleabi } from '../../contracts/rabblerabble-abi.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -45,14 +45,14 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const { address, isConnected } = useAccount();
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: contractAddress,
-    abi: [rabbleRabbleAbi],
+    abi: rabblerabbleabi,
     functionName: 'createPrivateRaffle',
     args: [
       '0x97A989405Ad7be8c5907F76c96b93132C03A0D58',
       props.paricipants,
       0,
       isConnected && [address],
-      Timestamp.fromDate(endDate),
+      Math.floor(Number(Timestamp.fromDate(endDate))),
     ],
     value: 100000000000000000n,
   })
