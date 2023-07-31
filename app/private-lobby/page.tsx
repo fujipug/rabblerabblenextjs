@@ -11,7 +11,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useAccount, useContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
-import * as rabbleRabbleAbi from '../../contracts/rabblerabble-abi.json';
+import { rabbleRabbleAbi } from "../../contracts/rabblerabble-abi";
+import { parseEther } from "viem";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -41,20 +42,20 @@ function fireAction() {
 }
 function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  const contractAddress = '0x93E91F90Fe28f93E6f996ecFB6Be08521b272A46';
+  const contractAddress = '0xc6c08823a324278c621c8D625d904700BFFE3d1b';
   const { address, isConnected } = useAccount();
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: contractAddress,
-    abi: [rabbleRabbleAbi],
+    abi: rabbleRabbleAbi,
     functionName: 'createPrivateRaffle',
     args: [
-      '0x97A989405Ad7be8c5907F76c96b93132C03A0D58',
+      props.confirmedNft?.tokenAddress.lowercase,
       props.paricipants,
-      props.paricipants,
-      0,
+      props.confirmedNft?.tokenId,
       isConnected && [address],
-      1,
+      1000,
     ],
+    value: parseEther('0.01')
   })
 
   return (
