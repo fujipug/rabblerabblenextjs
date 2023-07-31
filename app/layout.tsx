@@ -8,8 +8,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import {
-  avalanche,
-  avalancheFuji,
+  polygonMumbai
 } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
@@ -20,7 +19,7 @@ import Image from 'next/image';
 const projectId = '5ebeded86a2892064a847992b9c2ab4b';
 const appName = 'Rabble Rabble';
 const { chains, publicClient } = configureChains(
-  [avalanche, avalancheFuji],
+  [polygonMumbai],
   [
     alchemyProvider({ apiKey: 'Fh3FbYFfhvNgUpnJ-pzgRoIFRunkpA08' }),
     publicProvider()

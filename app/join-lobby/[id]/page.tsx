@@ -38,7 +38,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const { address, isConnected } = useAccount();
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const getNfts = async () => {
-    const chain = EvmChain.AVALANCHE;
+    const chain = EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
       chain,

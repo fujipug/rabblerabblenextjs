@@ -9,7 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
-import { useAccount, useContractRead, useContractWrite } from "wagmi";
+import { useAccount, useContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
 import * as rabbleRabbleAbi from '../../contracts/rabblerabble-abi.json';
 
@@ -46,7 +46,7 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: contractAddress,
     abi: [rabbleRabbleAbi],
-    functionName: 'createPrivateLobby',
+    functionName: 'createPrivateRaffle',
     args: [
       '0x97A989405Ad7be8c5907F76c96b93132C03A0D58',
       props.paricipants,
@@ -95,7 +95,7 @@ export default function PrivateLobby() {
   }, [address, isConnected]);
 
   const getNfts = async () => {
-    const chain = EvmChain.AVALANCHE;
+    const chain = EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
       chain,
@@ -126,7 +126,7 @@ export default function PrivateLobby() {
         createdAt: Timestamp.now(),
         confirmedPlayers: 1,
         endDate: Timestamp.fromDate(endDate),
-        evmChain: 'Avalanche',
+        evmChain: 'Mumbai',
         isPrivate: true,
         nfts: [confirmNft.toJSON()],
         password: pass,
@@ -262,7 +262,7 @@ export default function PrivateLobby() {
             <div className="col-span-1 relative mt-4">
               <div className="mb-4">
                 <h2 className="font-semibold">EVM Chain</h2>
-                <p>Avalanche</p>
+                <p>Mumbai</p>
               </div>
 
               <div className="mb-4">
