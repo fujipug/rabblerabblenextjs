@@ -69,20 +69,17 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
   })
 
   return (
-
     <>
-      <WagmiConfig config={wagmiConfig}>
-        <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
-          {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
-        </button >
-        {
-          isSuccess && (
-            <div>
-              DONE
-            </div>
-          )
-        }
-      </WagmiConfig>
+      <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()}>
+        {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
+      </button >
+      {
+        isSuccess && (
+          <div>
+            DONE
+          </div>
+        )
+      }
     </>
   )
 }
