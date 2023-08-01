@@ -9,11 +9,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
-import { useAccount, useContractWrite } from "wagmi";
+import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import { useQRCode } from "next-qrcode";
 import { rabbleRabbleAbi } from "../../contracts/rabblerabble-abi";
 import { rabbleAbi, fee } from '../../utils/config.ts';
-import { useRabbleContract, verifyApproval } from '../../utils/hooks.ts';
+import { useRabbleContract } from '../../utils/hooks.ts';
 
 //Initialize firebase backend
 const firebaseConfig = {
@@ -45,12 +45,11 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
 
-// Finalize and create lobby in the blockchain and firebase
-function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
+export function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const { address, isConnected } = useAccount();
   const rabbleContract = useRabbleContract();
-  const { data, isLoading, write } = useContractWrite({
+  const { config } = usePrepareContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
     functionName: 'createPrivateRaffle',
@@ -63,22 +62,63 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
     ],
     value: 100000000000000000n,
   })
+  const { data, write } = useContractWrite(config)
 
-  const handleCreate = async () => {
-    const approval = await verifyApproval(props.confirmedNft.tokenAddress).then((response) => {
-      fireAction();
-      console.log(response);
-    });
-    write();
-  }
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  })
 
   return (
-    <div>
-      <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => handleCreate()}>Click me pls</button>
-      {isLoading && <div>Check Wallet</div>}
-    </div>
+
+    <>
+      <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
+        {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
+      </button >
+      {
+        isSuccess && (
+          <div>
+            DONE
+          </div>
+        )
+      }
+    </>
   )
 }
+
+// Finalize and create lobby in the blockchain and firebase
+// function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
+//   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+//   const { address, isConnected } = useAccount();
+//   const rabbleContract = useRabbleContract();
+//   const { data, isLoading, write } = useContractWrite({
+//     address: rabbleContract?.address,
+//     abi: rabbleAbi,
+//     functionName: 'createPrivateRaffle',
+//     args: [
+//       props.confirmedNft?.tokenAddress.lowercase,
+//       props.paricipants,
+//       props.confirmedNft?.tokenId,
+//       isConnected && [address],
+//       Math.floor(Number(Timestamp.fromDate(endDate))),
+//     ],
+//     value: 100000000000000000n,
+//   })
+
+//   const handleCreate = async () => {
+//     const approval = await verifyApproval(props.confirmedNft.tokenAddress).then((response) => {
+//       fireAction();
+//       console.log(response);
+//     });
+//     // write();
+//   }
+
+//   return (
+//     <div>
+//       <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => handleCreate()}>Click me pls</button>
+//       {isLoading && <div>Check Wallet</div>}
+//     </div>
+//   )
+// }
 
 declare global {
   interface Window {
@@ -366,8 +406,6 @@ export default function CreateLobby() {
               </div>
 
               <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
-              {/* <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
-              <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button> */}
             </div >
           </div >
         </div >
