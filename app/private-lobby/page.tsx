@@ -53,7 +53,7 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
     args: [
       '0x2b23F8d611B3F5f978660c1E0E252C10C13A6c03',
       props.paricipants,
-      0,
+      props.confirmedNft.tokenId,
       isConnected && [address],
       Math.floor(Number(Timestamp.fromDate(endDate))),
     ],
@@ -61,7 +61,8 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   })
 
   const handleCreate = async () => {
-    await verifyApproval(props.confirmedNft.tokenAddress);
+    const approval = await verifyApproval(props.confirmedNft.tokenAddress);
+
     write();
   }
 

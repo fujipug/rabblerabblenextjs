@@ -34,7 +34,8 @@ export const verifyApproval = async (
         address,
         true,
       ]);
-      await tx.wait();
+      console.log(tx);
+      return await tx.wait();
     }
   } catch (e) {
     console.log("approval error", e);
