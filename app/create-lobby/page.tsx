@@ -14,6 +14,7 @@ import { useQRCode } from "next-qrcode";
 import { rabbleRabbleAbi } from "../../contracts/rabblerabble-abi";
 import { parseEther } from "viem";
 
+//Initialize firebase backend
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
   authDomain: "rabble-rabble.firebaseapp.com",
@@ -25,6 +26,8 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// Confetti helper animation
 const fireConfetti = (particleRatio: number, opts: any) => {
   const defaults = {
     origin: { y: 0.7 }
@@ -40,6 +43,8 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
+
+// Finalize and create lobby in the blockchain and firebase
 function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const contractAddress = '0x266A71D77336F614B0E79Ef55faA5DF8FFFAd01f';
@@ -90,12 +95,16 @@ export default function CreateLobby() {
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
+  const processStep2 = async (amount: number) => {
+    setPlayerAmount(amount);
+    setStep(2);
+  }
 
+  // Get Nfts by calling the Moralis API
   useEffect(() => {
     if (address && isConnected)
       getNfts();
   }, [address, isConnected]);
-
   const getNfts = async () => {
     const chain = EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
@@ -106,10 +115,6 @@ export default function CreateLobby() {
     });
     setNfts(response.result);
     setImutableNftList(response.result);
-  }
-  const processStep2 = async (amount: number) => {
-    setPlayerAmount(amount);
-    setStep(2);
   }
 
   const firebaseLobby = async (lobby: any) => {
@@ -136,28 +141,34 @@ export default function CreateLobby() {
       totalPlayers: playerAmount,
     }
 
-    //TODO: Create wallet/vault for lobby
     firebaseLobby(lobby).then((response) => {
       fireAction();
     });
   }
 
+  // Get dropdown list of collections filter
   useEffect(() => {
     const uniqueArray: any[] = [];
-    nfts.map((item: any) => {
+    imutableNftList.map((item: any) => {
       if (!uniqueArray.includes(item.name)) {
         uniqueArray.push(item.name);
       }
       setCollectionList(uniqueArray);
     });
-  }, [nfts]);
+  }, [imutableNftList]);
 
+  // Filter NFT grid by collection
   function filterCollection(collection: string) {
     const resetNftList = imutableNftList;
-    const filtered = resetNftList.filter((nft: any) => nft.name === collection);
-    setNfts(filtered);
+    if (collection !== 'all') {
+      const filtered = resetNftList.filter((nft: any) => nft.name === collection);
+      setNfts(filtered);
+    } else {
+      setNfts(resetNftList);
+    }
   }
 
+  // Save share link to clipboard
   const clipboardlink = () => {
     setShowClipboardToast(true);
     navigator.clipboard.writeText(shareUrl);
@@ -176,6 +187,7 @@ export default function CreateLobby() {
           <li className={step === 4 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Share</li>
         </ul>
       </div>
+
       {/* step 1 */}
       {(step == 1) &&
         <div className="mt-12 text-center">
@@ -217,8 +229,7 @@ export default function CreateLobby() {
       }
 
       {/* step 2 */}
-      {
-        (step == 2) &&
+      {(step == 2) &&
         <div className="mt-12 text-center">
           {address && isConnected ?
             <>
@@ -237,6 +248,7 @@ export default function CreateLobby() {
                     {collectionList.map((collection: string, index: any) => (
                       <li key={index}><a onClick={() => filterCollection(collection)}>{collection}</a></li>
                     ))}
+                    <li><a onClick={() => filterCollection('all')}>Show All</a></li>
                   </ul>
                 </div>
                 <button className="btn btn-secondary drop-shadow-md" onClick={() => window.rulesModal.showModal()}>
@@ -295,8 +307,7 @@ export default function CreateLobby() {
       }
 
       {/* step 3 */}
-      {
-        (step == 3) &&
+      {(step == 3) &&
         <div className="mt-12">
           <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
             <div className="col-span-1 flex justify-center">
@@ -356,8 +367,7 @@ export default function CreateLobby() {
       }
 
       {/* step 4 */}
-      {
-        (step == 4) &&
+      {(step == 4) &&
         <div className="mt-12">
           <div className="text-center">
             <h1 className="font-semibold text-xl mb-4">Share QR Code</h1>
@@ -435,7 +445,26 @@ export default function CreateLobby() {
         <form method="dialog" className="modal-box">
           <h3 className="font-bold text-lg">Raffle Rules</h3>
           <ol className="py-4">
-            <li>1. Players must have the same NFT collection</li>
+            <div className="chat chat-start mb-2">
+              <div className="chat-bubble chat-bubble-primary">Players must have the same NFT collection</div>
+            </div>
+            <div className="chat chat-end mb-2">
+              <div className="chat-bubble chat-bubble-secondary">The lobby will be accesible to anyone with the &apos;Share Link&apos;
+                <span className="text-gray-50"> (Only share with people you want to play with)</span>
+              </div>
+            </div>
+            <div className="chat chat-start mb-2">
+              <div className="chat-bubble chat-bubble-primary">The lobby will be open for 24 hours from the time it is created</div>
+            </div>
+            <div className="chat chat-end mb-2">
+              <div className="chat-bubble chat-bubble-secondary">A winner will be chosen when all players have joined the lobby</div>
+            </div>
+            <div className="chat chat-start mb-2">
+              <div className="chat-bubble chat-bubble-primary">If all players have not joined the lobby by 24 hours, NFTs will be returned to original owners</div>
+            </div>
+            <div className="chat chat-end">
+              <div className="chat-bubble chat-bubble-secondary">GLHF!</div>
+            </div>
           </ol>
           <div className="modal-action">
             {/* if there is a button in form, it will close the modal */}
