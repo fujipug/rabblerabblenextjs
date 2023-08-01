@@ -1,5 +1,5 @@
-export const rabbleAddress = "";
-export const rabbleTestAddress = "";
+export const rabbleAddress = "0xc6c08823a324278c621c8D625d904700BFFE3d1b";
+export const rabbleTestAddress = "0xc6c08823a324278c621c8D625d904700BFFE3d1b";
 export const fee = 0.1;
 export const rabbleAbi = [
   {

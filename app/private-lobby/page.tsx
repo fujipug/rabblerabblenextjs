@@ -11,8 +11,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
-import { rabbleAbi } from '../../utils/config.ts';
-import { useRabbleAddress } from '../../utils/hooks.ts';
+import { rabbleAbi, fee } from '../../utils/config.ts';
+import { useRabbleContract, verifyApproval } from '../../utils/hooks.ts';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -25,6 +25,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 const fireConfetti = (particleRatio: number, opts: any) => {
   const defaults = {
     origin: { y: 0.7 }
@@ -33,6 +34,7 @@ const fireConfetti = (particleRatio: number, opts: any) => {
     particleCount: Math.floor(200 * particleRatio)
   }));
 };
+
 function fireAction() {
   fireConfetti(0.25, { spread: 26, startVelocity: 55 });
   fireConfetti(0.2, { spread: 60 });
@@ -42,14 +44,14 @@ function fireAction() {
 }
 function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  const contractAddress = '0xc6c08823a324278c621c8D625d904700BFFE3d1b';
   const { address, isConnected } = useAccount();
+  const rabbleContract = useRabbleContract();
   const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: contractAddress,
-    abi: rabbleRabbleAbi,
+    address: rabbleContract?.address,
+    abi: rabbleAbi,
     functionName: 'createPrivateRaffle',
     args: [
-      '0x97A989405Ad7be8c5907F76c96b93132C03A0D58',
+      '0x2b23F8d611B3F5f978660c1E0E252C10C13A6c03',
       props.paricipants,
       0,
       isConnected && [address],
@@ -58,9 +60,14 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
     value: 100000000000000000n,
   })
 
+  const handleCreate = async () => {
+    await verifyApproval(props.confirmedNft.tokenAddress);
+    write();
+  }
+
   return (
     <div>
-      <button onClick={() => write()}>Click me pls</button>
+      <button onClick={() => handleCreate()}>Click me pls</button>
       {isLoading && <div>Check Wallet</div>}
       {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
     </div>
@@ -295,7 +302,7 @@ export default function PrivateLobby() {
 
               <div className="mb-4">
                 <h2 className="font-semibold">Lobby Fee</h2>
-                <p>0.1 AVAX</p>
+                <p>{fee} AVAX</p>
               </div>
 
               <div className="flex flex-col w-full border-opacity-50">

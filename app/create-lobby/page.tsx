@@ -55,7 +55,7 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
       isConnected && [address],
       1000,
     ],
-    value: parseEther('0.01')
+    value: parseEther('0.1')
   })
 
   return (
