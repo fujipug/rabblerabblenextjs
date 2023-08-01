@@ -46,45 +46,45 @@ function fireAction() {
 }
 
 function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
-  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  const { address, isConnected } = useAccount();
-  const rabbleContract = useRabbleContract();
-  const { config } = usePrepareContractWrite({
-    address: rabbleContract?.address,
-    abi: rabbleAbi,
-    functionName: 'createPrivateRaffle',
-    args: [
-      props.confirmedNft?.tokenAddress.lowercase,
-      props.paricipants,
-      props.confirmedNft?.tokenId,
-      isConnected && [address],
-      Math.floor(Number(Timestamp.fromDate(endDate))),
-    ],
-    value: 100000000000000000n,
-  })
-  const { data, write } = useContractWrite(config)
+  // const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+  // const { address, isConnected } = useAccount();
+  // const rabbleContract = useRabbleContract();
+  // const { config } = usePrepareContractWrite({
+  //   address: rabbleContract?.address,
+  //   abi: rabbleAbi,
+  //   functionName: 'createPrivateRaffle',
+  //   args: [
+  //     props.confirmedNft?.tokenAddress.lowercase,
+  //     props.paricipants,
+  //     props.confirmedNft?.tokenId,
+  //     isConnected && [address],
+  //     Math.floor(Number(Timestamp.fromDate(endDate))),
+  //   ],
+  //   value: 100000000000000000n,
+  // })
+  // const { data, write } = useContractWrite(config)
 
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-  })
+  // const { isLoading, isSuccess } = useWaitForTransaction({
+  //   hash: data?.hash,
+  // })
 
-  return (
+  // return (
 
-    <>
-      <WagmiConfig config={wagmiConfig}>
-        <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
-          {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
-        </button >
-        {
-          isSuccess && (
-            <div>
-              DONE
-            </div>
-          )
-        }
-      </WagmiConfig>
-    </>
-  )
+  //   <>
+  //     <WagmiConfig config={wagmiConfig}>
+  //       <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
+  //         {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
+  //       </button >
+  //       {
+  //         isSuccess && (
+  //           <div>
+  //             DONE
+  //           </div>
+  //         )
+  //       }
+  //     </WagmiConfig>
+  //   </>
+  // )
 }
 
 // Finalize and create lobby in the blockchain and firebase
