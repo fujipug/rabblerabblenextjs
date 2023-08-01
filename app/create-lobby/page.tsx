@@ -49,19 +49,19 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const { address, isConnected } = useAccount();
   const rabbleContract = useRabbleContract();
-  // const { config } = usePrepareContractWrite({
-  //   address: rabbleContract?.address,
-  //   abi: rabbleAbi,
-  //   functionName: 'createPrivateRaffle',
-  //   args: [
-  //     props.confirmedNft?.tokenAddress.lowercase,
-  //     props.paricipants,
-  //     props.confirmedNft?.tokenId,
-  //     isConnected && [address],
-  //     Math.floor(Number(Timestamp.fromDate(endDate))),
-  //   ],
-  //   value: 100000000000000000n,
-  // })
+  const { config } = usePrepareContractWrite({
+    address: rabbleContract?.address,
+    abi: rabbleAbi,
+    functionName: 'createPrivateRaffle',
+    args: [
+      props.confirmedNft?.tokenAddress.lowercase,
+      props.paricipants,
+      props.confirmedNft?.tokenId,
+      isConnected && [address],
+      Math.floor(Number(Timestamp.fromDate(endDate))),
+    ],
+    value: 100000000000000000n,
+  })
   // const { data, write } = useContractWrite(config)
 
   // const { isLoading, isSuccess } = useWaitForTransaction({
