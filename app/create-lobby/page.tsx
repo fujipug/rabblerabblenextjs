@@ -9,10 +9,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
-import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { WagmiConfig, useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import { useQRCode } from "next-qrcode";
-import { rabbleAbi, fee } from '../../utils/config.ts';
+import { rabbleAbi } from '../../utils/config.ts';
 import { useRabbleContract } from '../../utils/hooks.ts';
+import { wagmiConfig } from "../../utils/wagmi-config.ts";
 
 //Initialize firebase backend
 const firebaseConfig = {
@@ -70,16 +71,18 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   return (
 
     <>
-      <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
-        {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
-      </button >
-      {
-        isSuccess && (
-          <div>
-            DONE
-          </div>
-        )
-      }
+      <WagmiConfig config={wagmiConfig}>
+        <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
+          {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
+        </button >
+        {
+          isSuccess && (
+            <div>
+              DONE
+            </div>
+          )
+        }
+      </WagmiConfig>
     </>
   )
 }

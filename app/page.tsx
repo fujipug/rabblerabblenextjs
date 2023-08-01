@@ -92,7 +92,6 @@ export default function Home() {
             <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-6xl">Raffle <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">NFTs</span> with the boys</h1>
             <p className="mt-6 text-lg leading-8"><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span> is a fun and exciting way to wager your NFTs with friends.</p>
             <div className="mt-10 flex items-center gap-x-6">
-              TEST: {raffleCounter}
               <Link href="/create-lobby" className="btn btn-secondary drop-shadow-lg z-50">Start A Lobby</Link>
               <Link href="/learn-more" className="btn btn-ghost">Learn more <span aria-hidden="true">→</span></Link>
             </div>
