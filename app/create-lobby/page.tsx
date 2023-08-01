@@ -11,7 +11,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import { useQRCode } from "next-qrcode";
-import { rabbleRabbleAbi } from "../../contracts/rabblerabble-abi";
 import { rabbleAbi, fee } from '../../utils/config.ts';
 import { useRabbleContract } from '../../utils/hooks.ts';
 
