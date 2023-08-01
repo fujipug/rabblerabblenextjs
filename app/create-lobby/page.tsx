@@ -45,7 +45,7 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
 
-function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
+function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const { address, isConnected } = useAccount();
   const rabbleContract = useRabbleContract();
@@ -407,7 +407,7 @@ export default function CreateLobby() {
                 <p>0.1 AVAX</p>
               </div>
 
-              {/* <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} /> */}
+              <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
             </div >
           </div >
         </div >
