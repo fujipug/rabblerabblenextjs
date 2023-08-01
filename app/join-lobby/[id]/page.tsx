@@ -78,17 +78,28 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
               <span className="hidden sm:block">{address}</span>
               {/* <span className="block sm:hidden">{address | pipe}</span> */}
-              <div className="flex justify-center bg-base-200 rounded p-3 mt-6 drop-shadow-md">
+              <div className="flex justify-start items-center mt-6">
+                <div className="dropdown">
+                  <label tabIndex={0} className="btn m-1 cursor-default">
+                    {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                    </svg> */}
+                    <span className="font-bold">Collection:</span> {lobbyDetails?.collection}
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex justify-center bg-base-200 rounded-lg p-3 mt-2 drop-shadow-md">
                 <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
                   {nfts.map((nft: any, index: any) => (
                     <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
                       <div className="w-[100px] h-[100px]">
                         {nft.media?.mimetype === 'video/mp4' ?
-                          <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent" width="100" height="100" muted loop autoPlay>
+                          <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
                             <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
                           </video>
                           :
-                          <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent"
+                          <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success"
                             src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
                             alt="NFT image unreachable" width={100} height={100} />
                         }
@@ -98,7 +109,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                   }
                 </ul>
               </div>
-              <span className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</span>
+              <div className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</div>
             </>
             :
             <>
