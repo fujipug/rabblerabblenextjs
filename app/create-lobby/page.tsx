@@ -46,9 +46,9 @@ function fireAction() {
 }
 
 function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
-  // const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  // const { address, isConnected } = useAccount();
-  // const rabbleContract = useRabbleContract();
+  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+  const { address, isConnected } = useAccount();
+  const rabbleContract = useRabbleContract();
   // const { config } = usePrepareContractWrite({
   //   address: rabbleContract?.address,
   //   abi: rabbleAbi,
@@ -68,23 +68,23 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   //   hash: data?.hash,
   // })
 
-  // return (
+  return (
 
-  //   <>
-  //     <WagmiConfig config={wagmiConfig}>
-  //       <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
-  //         {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
-  //       </button >
-  //       {
-  //         isSuccess && (
-  //           <div>
-  //             DONE
-  //           </div>
-  //         )
-  //       }
-  //     </WagmiConfig>
-  //   </>
-  // )
+    <>
+      {/* <WagmiConfig config={wagmiConfig}>
+        <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
+          {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
+        </button >
+        {
+          isSuccess && (
+            <div>
+              DONE
+            </div>
+          )
+        }
+      </WagmiConfig> */}
+    </>
+  )
 }
 
 // Finalize and create lobby in the blockchain and firebase
@@ -407,7 +407,7 @@ export default function CreateLobby() {
                 <p>0.1 AVAX</p>
               </div>
 
-              <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
+              {/* <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} /> */}
             </div >
           </div >
         </div >
