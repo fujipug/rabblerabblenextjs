@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { nftAbi, rabbleAbi, rabbleAddress, rabbleTestAddress } from "./config";
+import { EvmAddress } from "@moralisweb3/common-evm-utils";
 import {
   getAccount,
   getContract,
@@ -11,7 +12,7 @@ const { chain, chains } = getNetwork();
 const account = getAccount();
 
 export const verifyApproval = async (
-  collection: string,
+  collection: EvmAddress,
 ) => {
   const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
   const walletClient = await getWalletClient({
@@ -19,7 +20,7 @@ export const verifyApproval = async (
   });
 
   const collectionContract = getContract({
-    address: collection.checksum,
+    address: collection.checksum as `0x${string}`,
     abi: nftAbi,
     walletClient,
   });

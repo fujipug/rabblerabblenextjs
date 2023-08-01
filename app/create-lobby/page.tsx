@@ -9,10 +9,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useAccount, useContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
 import { rabbleRabbleAbi } from "../../contracts/rabblerabble-abi";
-import { parseEther } from "viem";
+import { rabbleAbi, fee } from '../../utils/config.ts';
+import { useRabbleContract, verifyApproval } from '../../utils/hooks.ts';
 
 //Initialize firebase backend
 const firebaseConfig = {
@@ -47,25 +48,30 @@ function fireAction() {
 // Finalize and create lobby in the blockchain and firebase
 function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  const contractAddress = '0x266A71D77336F614B0E79Ef55faA5DF8FFFAd01f';
   const { address, isConnected } = useAccount();
+  const rabbleContract = useRabbleContract();
   const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: contractAddress,
-    abi: rabbleRabbleAbi,
+    address: rabbleContract?.address,
+    abi: rabbleAbi,
     functionName: 'createPrivateRaffle',
     args: [
       props.confirmedNft?.tokenAddress.lowercase,
       props.paricipants,
       props.confirmedNft?.tokenId,
-      isConnected && [address],
-      1000,
+      // isConnected && [address],
+      Math.floor(Number(Timestamp.fromDate(endDate))),
     ],
-    value: parseEther('0.1')
+    value: 100000000000000000n,
   })
+
+  const handleCreate = async () => {
+    const approval = await verifyApproval(props.confirmedNft.tokenAddress);
+    write();
+  }
 
   return (
     <div>
-      <button onClick={() => write()}>Click me pls</button>
+      <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => handleCreate()}>Click me pls</button>
       {isLoading && <div>Check Wallet</div>}
       {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
     </div>
@@ -359,8 +365,8 @@ export default function CreateLobby() {
               </div>
 
               <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
-              <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
-              <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button>
+              {/* <button onClick={() => createLobby()} className="hidden sm:block btn btn-accent drop-shadow-md mt-6">Create Lobby</button>
+              <button onClick={() => createLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-6 w-full">Create Lobby</button> */}
             </div >
           </div >
         </div >
@@ -460,7 +466,7 @@ export default function CreateLobby() {
               <div className="chat-bubble chat-bubble-secondary">A winner will be chosen when all players have joined the lobby</div>
             </div>
             <div className="chat chat-start mb-2">
-              <div className="chat-bubble chat-bubble-primary">If all players have not joined the lobby by 24 hours, NFTs will be returned to original owners</div>
+              <div className="chat-bubble chat-bubble-primary">If all players have not joined the lobby by 24 hours, NFTs will be returned to their original owners</div>
             </div>
             <div className="chat chat-end">
               <div className="chat-bubble chat-bubble-secondary">GLHF!</div>
