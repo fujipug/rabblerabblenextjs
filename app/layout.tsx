@@ -17,7 +17,7 @@ import Moralis from 'moralis';
 import Image from 'next/image';
 import Link from "next/link";
 
-const projectId = '5ebeded86a2892064a847992b9c2ab4b';
+const projectId = '5ebeded86a2892064a847992b9c2ab4b'; // connect cloud wallet
 const appName = 'Rabble Rabble';
 const { chains, publicClient } = configureChains(
   [polygonMumbai],

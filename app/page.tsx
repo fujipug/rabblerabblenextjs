@@ -7,6 +7,9 @@ import { DocumentData, collection, getDocs, getFirestore, limit, orderBy, query 
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
+import { recentLobbies } from "../utils/hooks";
+import { readContract } from "@wagmi/core";
+import { rabbleAbi, rabbleTestAddress } from "../utils/config";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -53,7 +56,25 @@ export default function Home() {
   };
   useEffect(() => {
     fetchData();
+    fetchDataFromContract();
   }, []);
+
+  const [raffleCounter, setRaffleCounter] = useState(0);
+  const fetchDataFromContract = async () => {
+    try {
+      // Call the readContract function to get data from the smart contract
+      const contractDataResponse = await readContract({
+        address: rabbleTestAddress,
+        abi: rabbleAbi,
+        functionName: "raffleCounter",
+      });
+      setRaffleCounter(contractDataResponse as any);
+      console.log('Raffle Counter:', contractDataResponse);
+    } catch (error) {
+      console.error('Error fetching data from contract:', error);
+    }
+  };
+
   return (
     <>
       <div className="relative isolate overflow-hidden bg-base-200 sm:h-screen drop-shadow-md">
@@ -71,6 +92,7 @@ export default function Home() {
             <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-6xl">Raffle <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">NFTs</span> with the boys</h1>
             <p className="mt-6 text-lg leading-8"><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span> is a fun and exciting way to wager your NFTs with friends.</p>
             <div className="mt-10 flex items-center gap-x-6">
+              TEST: {raffleCounter}
               <Link href="/create-lobby" className="btn btn-secondary drop-shadow-lg z-50">Start A Lobby</Link>
               <Link href="/learn-more" className="btn btn-ghost">Learn more <span aria-hidden="true">→</span></Link>
             </div>
@@ -85,6 +107,7 @@ export default function Home() {
                   alt="NFT gif"
                   width={1200}
                   height={700}
+                  priority={true}
                   className="w-[40rem] rounded-md drop-shadow-2xl z-20"
                 />
               </div>

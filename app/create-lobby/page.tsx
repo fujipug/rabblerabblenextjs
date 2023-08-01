@@ -50,7 +50,7 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const { address, isConnected } = useAccount();
   const rabbleContract = useRabbleContract();
-  const { data, isLoading, isSuccess, write } = useContractWrite({
+  const { data, isLoading, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
     functionName: 'createPrivateRaffle',
@@ -58,14 +58,17 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
       props.confirmedNft?.tokenAddress.lowercase,
       props.paricipants,
       props.confirmedNft?.tokenId,
-      // isConnected && [address],
+      isConnected && [address],
       Math.floor(Number(Timestamp.fromDate(endDate))),
     ],
     value: 100000000000000000n,
   })
 
   const handleCreate = async () => {
-    const approval = await verifyApproval(props.confirmedNft.tokenAddress);
+    const approval = await verifyApproval(props.confirmedNft.tokenAddress).then((response) => {
+      fireAction();
+      console.log(response);
+    });
     write();
   }
 
@@ -73,7 +76,6 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
     <div>
       <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => handleCreate()}>Click me pls</button>
       {isLoading && <div>Check Wallet</div>}
-      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
     </div>
   )
 }
@@ -131,8 +133,7 @@ export default function CreateLobby() {
       console.error("Error adding document: ", error);
     });
   }
-  const createLobby = async () => {
-    console.log('selected data', confirmNft);
+  const createFirebaseLobby = async () => {
     const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
     const lobby = {
       collection: confirmNft?.name,
@@ -147,9 +148,9 @@ export default function CreateLobby() {
       totalPlayers: playerAmount,
     }
 
-    firebaseLobby(lobby).then((response) => {
-      fireAction();
-    });
+    // firebaseLobby(lobby).then((response) => {
+    //   fireAction();
+    // });
   }
 
   // Get dropdown list of collections filter

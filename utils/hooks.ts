@@ -6,6 +6,7 @@ import {
   getContract,
   getNetwork,
   getWalletClient,
+  readContract
 } from "@wagmi/core";
 
 const { chain, chains } = getNetwork();
@@ -22,7 +23,7 @@ export const verifyApproval = async (
   const collectionContract = getContract({
     address: collection.checksum as `0x${string}`,
     abi: nftAbi,
-    walletClient,
+    walletClient: walletClient as any,
   });
   const approved = await collectionContract.read.isApprovedForAll([
     account.address,
@@ -42,6 +43,41 @@ export const verifyApproval = async (
     console.log("approval error", e);
   }
 };
+
+// Limit to latest 10 lobbies
+export const recentLobbies = () => {
+  const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+
+  const test = readContract({
+    address: address,
+    abi: rabbleAbi,
+    functionName: "raffleCounter",
+  })
+
+  return test;
+
+  // .then((count) => {
+  //   console.log('count', count);
+  //   let counter = count as number;
+
+  //   for (let i = 0; i < 10 && counter > 0; i++) {
+  //     counter--; // Subtracting 1 from k in each iteration
+  //     readContract({
+  //       address: address,
+  //       abi: rabbleAbi,
+  //       functionName: "raffles",
+  //       args: [counter],
+  //     }).then((raffle) => {
+  //       lobbies.push(raffle);
+  //       console.log('raffle', raffle);
+  //     });
+  //     setRaffles(lobbies);
+  //   }
+
+  //   return raffles;
+  // });
+};
+
 
 export const useRabbleContract = () => {
   const [contract, setContract] = useState<any | null>(null);
