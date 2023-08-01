@@ -62,16 +62,16 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
     ],
     value: 100000000000000000n,
   })
-  // const { data, write } = useContractWrite(config)
+  const { data, write } = useContractWrite(config)
 
-  // const { isLoading, isSuccess } = useWaitForTransaction({
-  //   hash: data?.hash,
-  // })
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  })
 
   return (
 
     <>
-      {/* <WagmiConfig config={wagmiConfig}>
+      <WagmiConfig config={wagmiConfig}>
         <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()} disabled={!write || isLoading}>
           {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
         </button >
@@ -82,7 +82,7 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
             </div>
           )
         }
-      </WagmiConfig> */}
+      </WagmiConfig>
     </>
   )
 }
