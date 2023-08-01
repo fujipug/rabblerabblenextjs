@@ -51,7 +51,7 @@ function CreateLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
     abi: rabbleAbi,
     functionName: 'createPrivateRaffle',
     args: [
-      '0x2b23F8d611B3F5f978660c1E0E252C10C13A6c03',
+      props.confirmedNft.tokenAddress,
       props.paricipants,
       props.confirmedNft.tokenId,
       isConnected && [address],
