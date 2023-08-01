@@ -42,7 +42,7 @@ function fireAction() {
 }
 function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  const contractAddress = '0xc6c08823a324278c621c8D625d904700BFFE3d1b';
+  const contractAddress = '0x266A71D77336F614B0E79Ef55faA5DF8FFFAd01f';
   const { address, isConnected } = useAccount();
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: contractAddress,
@@ -70,6 +70,7 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants: number }) {
 declare global {
   interface Window {
     selectNftModal: any;
+    rulesModal: any;
   }
 }
 
@@ -84,6 +85,8 @@ export default function CreateLobby() {
   const [showClipboardToast, setShowClipboardToast] = useState(false);
   const { SVG } = useQRCode();
   const [showQuokkas, setShowQuokkas] = useState(5);
+  const [collectionList, setCollectionList] = useState([] as string[]);
+  const [imutableNftList, setImutableNftList] = useState([] as EvmNft[]);
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
@@ -102,6 +105,7 @@ export default function CreateLobby() {
       normalizeMetadata: true,
     });
     setNfts(response.result);
+    setImutableNftList(response.result);
   }
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
@@ -111,7 +115,7 @@ export default function CreateLobby() {
   const firebaseLobby = async (lobby: any) => {
     addDoc(collection(db, 'lobbies'), lobby).then((response) => {
       setStep(4);
-      setShareUrl(`${window.location.href.split('/private')[0]}/lobby-details/${response.id}`);
+      setShareUrl(`${window.location.href.split('/create')[0]}/lobby-details/${response.id}`);
     }).catch((error) => {
       console.error("Error adding document: ", error);
     });
@@ -137,23 +141,23 @@ export default function CreateLobby() {
       fireAction();
     });
   }
-  const unmutableNfts = nfts; // Fix this later to unmutable
-  const nftCollections = () => {
-    const uniqueArray: any[] = [];
 
+  useEffect(() => {
+    const uniqueArray: any[] = [];
     nfts.map((item: any) => {
       if (!uniqueArray.includes(item.name)) {
         uniqueArray.push(item.name);
       }
+      setCollectionList(uniqueArray);
     });
+  }, [nfts]);
 
-    return uniqueArray;
-  }
   function filterCollection(collection: string) {
-    console.log('collection', collection);
-    const filtered = nfts.filter((nft: any) => nft.name === collection);
+    const resetNftList = imutableNftList;
+    const filtered = resetNftList.filter((nft: any) => nft.name === collection);
     setNfts(filtered);
   }
+
   const clipboardlink = () => {
     setShowClipboardToast(true);
     navigator.clipboard.writeText(shareUrl);
@@ -221,35 +225,56 @@ export default function CreateLobby() {
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
               <span className="hidden sm:block">{address}</span>
               {/* <span className="block sm:hidden">{address | pipe}</span> */}
-              <div className="flex justify-start items-center mt-6">
+              <div className="flex justify-between items-center mt-6">
                 <div className="dropdown">
                   <label tabIndex={0} className="btn m-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
                     </svg>
-                    Filter by collection
+                    Filter<span className="hidden sm:flex">by collection</span>
                   </label>
                   <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 bg-base-100 rounded-box w-52 mt-2">
-                    {nftCollections().map((collection: string, index: any) => (
+                    {collectionList.map((collection: string, index: any) => (
                       <li key={index}><a onClick={() => filterCollection(collection)}>{collection}</a></li>
                     ))}
-                    <li><a onClick={() => filterCollection('Test')}>Test</a></li>
                   </ul>
                 </div>
+                <button className="btn btn-secondary drop-shadow-md" onClick={() => window.rulesModal.showModal()}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                  </svg>
+                  <span className="hidden sm:flex">Raffle Rules</span>
+                </button>
               </div>
-              <div className="flex justify-center bg-base-200 rounded-lg p-3 mt-2 drop-shadow-md">
+              <div className="flex justify-center bg-base-200 rounded-lg p-5 mt-2 drop-shadow-md">
                 <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
                   {nfts.map((nft: any, index: any) => (
                     <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
-                      <div className="w-[100px] h-[100px]">
+                      <div>
                         {nft.media?.mimetype === 'video/mp4' ?
-                          <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
-                            <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
-                          </video>
+                          <div className="relative group">
+                            <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
+                              <source src={nft.media?.media_collection?.medium.url} type="video/mp4" />
+                            </video>
+                            <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                            </div>
+                            <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-lg font-bold truncate px-2">{nft.name}</p>
+                            </div>
+                          </div>
                           :
-                          <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success"
-                            src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
-                            alt="NFT image unreachable" width={100} height={100} />
+                          <div className="relative group">
+                            <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
+                              src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
+                              alt="NFT image unreachable" width={150} height={150} />
+                            <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                            </div>
+                            <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-lg font-bold truncate px-2">{nft.name}</p>
+                            </div>
+                          </div>
                         }
                       </div>
                     </li>
@@ -405,6 +430,19 @@ export default function CreateLobby() {
           </div >
         </form >
       </dialog >
+
+      <dialog id="rulesModal" className="modal">
+        <form method="dialog" className="modal-box">
+          <h3 className="font-bold text-lg">Raffle Rules</h3>
+          <ol className="py-4">
+            <li>1. Players must have the same NFT collection</li>
+          </ol>
+          <div className="modal-action">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn">Close</button>
+          </div>
+        </form>
+      </dialog>
 
     </>
   )

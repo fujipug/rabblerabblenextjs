@@ -89,19 +89,35 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
 
-              <div className="flex justify-center bg-base-200 rounded-lg p-3 mt-2 drop-shadow-md">
+              <div className="flex justify-center bg-base-200 rounded-lg p-5 mt-2 drop-shadow-md">
                 <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
                   {nfts.map((nft: any, index: any) => (
                     <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
-                      <div className="w-[100px] h-[100px]">
+                      <div>
                         {nft.media?.mimetype === 'video/mp4' ?
-                          <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
-                            <source src={nft.media?.media_collection?.low.url} type="video/mp4" />
-                          </video>
+                          <div className="relative group">
+                            <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
+                              <source src={nft.media?.media_collection?.medium.url} type="video/mp4" />
+                            </video>
+                            <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                            </div>
+                            <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-lg font-bold truncate px-2">{nft.name}</p>
+                            </div>
+                          </div>
                           :
-                          <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success"
-                            src={nft.media?.mediaCollection?.low.url ? nft.media?.mediaCollection?.low.url : nft?.media?.originalMediaUrl}
-                            alt="NFT image unreachable" width={100} height={100} />
+                          <div className="relative group">
+                            <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
+                              src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
+                              alt="NFT image unreachable" width={150} height={150} />
+                            <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                            </div>
+                            <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-lg font-bold truncate px-2">{nft.name}</p>
+                            </div>
+                          </div>
                         }
                       </div>
                     </li>
