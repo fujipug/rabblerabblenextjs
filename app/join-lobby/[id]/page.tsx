@@ -3,14 +3,16 @@ import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from "moralis";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
-import { collection, documentId, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { Timestamp, collection, documentId, getDocs, getFirestore, query, where } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import converter from 'number-to-words';
 import localFont from 'next/font/local'
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 import Image from "next/image";
 import Countdown from "../../../components/countdown";
+import { rabbleAbi } from '../../../utils/config.ts';
+import { useRabbleContract } from '../../../utils/hooks.ts';
 
 declare global {
   interface Window {
@@ -29,6 +31,42 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+function FinalizeJoinLobby(props: { confirmedNft?: EvmNft, lobbyId?: string }) {
+  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+  const { address, isConnected } = useAccount();
+  const rabbleContract = useRabbleContract();
+  const { config } = usePrepareContractWrite({
+    address: rabbleContract?.address,
+    abi: rabbleAbi,
+    functionName: 'joinRaffle',
+    args: [
+      props.lobbyId,
+      props.confirmedNft?.tokenId,
+    ],
+    value: 100000000000000000n,
+  })
+  const { data, write } = useContractWrite(config)
+
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  })
+
+  return (
+    <>
+      <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()}>
+        {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Lobby'}
+      </button >
+      {
+        isSuccess && (
+          <div>
+            DONE
+          </div>
+        )
+      }
+    </>
+  )
+}
 
 export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const [step, setStep] = useState(1);
