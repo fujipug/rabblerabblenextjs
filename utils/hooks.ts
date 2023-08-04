@@ -12,38 +12,38 @@ import {
 const { chain, chains } = getNetwork();
 const account = getAccount();
 
-// export const verifyApproval = async (
-//   collection: EvmAddress,
-// ) => {
-//   const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
-//   const walletClient = await getWalletClient({
-//     chainId: chain?.id,
-//   });
+export const verifyApproval = async (
+  collection: EvmAddress,
+) => {
+  const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const walletClient = await getWalletClient({
+    chainId: chain?.id,
+  });
 
-//   const collectionContract = getContract({
-//     address: collection.checksum as `0x${string}`,
-//     abi: nftAbi,
-//     walletClient: walletClient as any,
-//   });
-//   const approved = await collectionContract.read.isApprovedForAll([
-//     account.address,
-//     address,
-//   ]);
+  const collectionContract = getContract({
+    address: collection.checksum as `0x${string}`,
+    abi: nftAbi,
+    walletClient: walletClient as any,
+  });
+  const approved = await collectionContract.read.isApprovedForAll([
+    account.address,
+    address,
+  ]);
 
-//   try {
-//     if (!approved) {
-//       const tx = await collectionContract.write.setApprovalForAll([
-//         address,
-//         true,
-//       ]);
+  try {
+    if (!approved) {
+      const tx = await collectionContract.write.setApprovalForAll([
+        address,
+        true,
+      ]);
 
-//       console.log(tx);
-//       return await tx.wait();
-//     }
-//   } catch (e) {
-//     console.log("approval error", e);
-//   }
-// };
+      console.log(tx);
+      return await tx.wait();
+    }
+  } catch (e) {
+    console.log("approval error", e);
+  }
+};
 
 // Limit to latest 10 lobbies
 export const recentLobbies = () => {
