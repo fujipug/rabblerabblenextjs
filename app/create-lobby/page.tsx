@@ -78,11 +78,7 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
   return (
     <>
       {/* <WagmiConfig config={wagmiConfig}> */}
-      <div>
-        <button onClick={() => handleCreate()}>Click me pls</button>
-        {isLoading && <div>Check Wallet</div>}
-        {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-      </div>
+      <button className="button" onClick={() => handleCreate()}>Click me pls</button>
       {/* </WagmiConfig> */}
     </>
   )
