@@ -45,7 +45,7 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
 
-function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants?: number }) {
+function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const { address, isConnected } = useAccount();
   const rabbleContract = useRabbleContract();
@@ -54,9 +54,9 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants?: number }) {
     abi: rabbleAbi,
     functionName: 'createPrivateRaffle',
     args: [
-      props.confirmedNft.tokenAddress.lowercase,
+      props.confirmedNft ? props.confirmedNft.tokenAddress.lowercase : '',
       props.paricipants,
-      props.confirmedNft.tokenId,
+      props.confirmedNft ? props.confirmedNft.tokenId : '',
       isConnected && [address],
       Math.floor(Number(Timestamp.fromDate(endDate))),
     ],
