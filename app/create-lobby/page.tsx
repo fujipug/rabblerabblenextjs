@@ -46,35 +46,35 @@ function fireAction() {
 }
 
 function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants?: number }) {
-  // const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  // const rabbleContract = useRabbleContract();
-  // const { data, isLoading, isSuccess, write } = useContractWrite({
-  //   address: rabbleContract?.address,
-  //   abi: rabbleAbi,
-  //   functionName: 'createPublicRaffle',
-  //   args: [
-  //     props.confirmedNft.tokenAddress.lowercase,
-  //     props.paricipants,
-  //     props.confirmedNft.tokenId,
-  //     Math.floor(Number(Timestamp.fromDate(endDate))),
-  //   ],
-  //   value: 100000000000000000n,
-  // })
+  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+  const rabbleContract = useRabbleContract();
+  const { data, isLoading, isSuccess, write } = useContractWrite({
+    address: rabbleContract?.address,
+    abi: rabbleAbi,
+    functionName: 'createPublicRaffle',
+    args: [
+      props.confirmedNft.tokenAddress.lowercase,
+      props.paricipants,
+      props.confirmedNft.tokenId,
+      Math.floor(Number(Timestamp.fromDate(endDate))),
+    ],
+    value: 100000000000000000n,
+  })
 
-  // const handleCreate = async () => {
-  //   if (props.confirmedNft) {
-  //     await verifyApproval(props.confirmedNft.tokenAddress);
-  //     write();
-  //   }
-  // }
+  const handleCreate = async () => {
+    if (props.confirmedNft) {
+      await verifyApproval(props.confirmedNft.tokenAddress);
+      write();
+    }
+  }
 
-  // return (
-  //   <>
-  //     {/* <WagmiConfig config={wagmiConfig}> */}
-  //     {/* <button className="button" onClick={() => handleCreate()}>Click me pls</button> */}
-  //     {/* </WagmiConfig> */}
-  //   </>
-  // )
+  return (
+    <>
+      {/* <WagmiConfig config={wagmiConfig}> */}
+      <button className="button" onClick={() => handleCreate()}>Click me pls</button>
+      {/* </WagmiConfig> */}
+    </>
+  )
 }
 
 declare global {
@@ -364,7 +364,7 @@ export default function CreateLobby() {
                     <p>0.1 AVAX</p>
                   </div>
 
-                  {/* <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} /> */}
+                  <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
                 </div >
               </div >
             </>
