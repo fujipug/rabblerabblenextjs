@@ -9,10 +9,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
-import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { WagmiConfig, useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
 import { useRabbleContract, verifyApproval } from '../../utils/hooks.ts';
+import { wagmiConfig } from "../../utils/wagmi-config.ts";
 
 //Initialize firebase backend
 const firebaseConfig = {
@@ -66,10 +67,6 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants?: number }) {
     if (props.confirmedNft) {
       await verifyApproval(props.confirmedNft.tokenAddress);
       write();
-
-      if (isSuccess) {
-        // createFirebaseLobby();
-      }
     }
 
   }
@@ -194,16 +191,16 @@ export default function CreateLobby() {
       confirmedPlayers: 1,
       endDate: Timestamp.fromDate(endDate),
       evmChain: 'Mumbai',
-      isPrivate: false,
+      isPrivate: true,
       nfts: [confirmNft.toJSON()],
       timeLimit: 24, // Update when time limits are added
       status: 'Active',
       totalPlayers: playerAmount,
     }
 
-    firebaseLobby(lobby).then((response) => {
-      fireAction();
-    });
+    // firebaseLobby(lobby).then((response) => {
+    //   fireAction();
+    // });
   }
 
   // Get dropdown list of collections filter
