@@ -70,7 +70,8 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
 
   return (
     <>
-      <WagmiConfig config={wagmiConfig}>
+      <button onClick={() => write?.()}>Click me Nobs</button>
+      {/* <WagmiConfig config={wagmiConfig}>
         <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()}>
           {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
         </button >
@@ -81,7 +82,7 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
             </div>
           )
         }
-      </WagmiConfig>
+      </WagmiConfig> */}
     </>
   )
 }
