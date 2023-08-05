@@ -45,19 +45,17 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
 
-function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
+function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants?: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  const { address, isConnected } = useAccount();
   const rabbleContract = useRabbleContract();
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
-    functionName: 'createPrivateRaffle',
+    functionName: 'createPublicRaffle',
     args: [
-      props.confirmedNft ? props.confirmedNft.tokenAddress.lowercase : '',
+      props.confirmedNft.tokenAddress.lowercase,
       props.paricipants,
-      props.confirmedNft ? props.confirmedNft.tokenId : '',
-      isConnected && [address],
+      props.confirmedNft.tokenId,
       Math.floor(Number(Timestamp.fromDate(endDate))),
     ],
     value: 100000000000000000n,
@@ -68,14 +66,13 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
       await verifyApproval(props.confirmedNft.tokenAddress);
       write();
     }
-
   }
 
   return (
     <>
-      {/* <WagmiConfig config={wagmiConfig}>
-        <button className="button" onClick={() => handleCreate()}>Click me pls</button>
-      </WagmiConfig> */}
+      {/* <WagmiConfig config={wagmiConfig}> */}
+      <button className="button" onClick={() => handleCreate()}>Click me pls</button>
+      {/* </WagmiConfig> */}
     </>
   )
 }
