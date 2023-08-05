@@ -73,9 +73,9 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
 
   return (
     <>
-      <WagmiConfig config={wagmiConfig}>
+      {/* <WagmiConfig config={wagmiConfig}>
         <button className="button" onClick={() => handleCreate()}>Click me pls</button>
-      </WagmiConfig>
+      </WagmiConfig> */}
     </>
   )
 }
