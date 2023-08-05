@@ -45,49 +45,34 @@ function fireAction() {
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
 }
 
-function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
+function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants?: number }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const { address, isConnected } = useAccount();
   const rabbleContract = useRabbleContract();
-  const { config } = usePrepareContractWrite({
+  const { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
-    functionName: 'createPublicRaffle',
+    functionName: 'createPrivateRaffle',
     args: [
-      props.confirmedNft?.tokenAddress.lowercase,
+      props.confirmedNft.tokenAddress.lowercase,
       props.paricipants,
-      props.confirmedNft?.tokenId,
+      props.confirmedNft.tokenId,
       isConnected && [address],
       Math.floor(Number(Timestamp.fromDate(endDate))),
     ],
     value: 100000000000000000n,
   })
-  const { data, write } = useContractWrite(config)
 
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-  })
-
-  // OG way
   const handleCreate = async () => {
-    const approval = await verifyApproval(props.confirmedNft?.tokenAddress);
+    const approval = await verifyApproval(props.confirmedNft.tokenAddress);
 
     write();
   }
 
   return (
     <>
-      {/* OG way  */}
-      <div>
-        <button onClick={() => handleCreate()}>Click me pls</button>
-        {isLoading && <div>Check Wallet</div>}
-        {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-      </div>
-
-
-
-      <WagmiConfig config={wagmiConfig}>
-        <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()}>
+      {/* <WagmiConfig config={wagmiConfig}>
+        <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => handleCreate()}>
           {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
         </button >
         {
@@ -97,7 +82,12 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
             </div>
           )
         }
-      </WagmiConfig>
+      </WagmiConfig> */}
+      <div>
+        <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => handleCreate()}>Click me pls</button>
+        {isLoading && <div>Check Wallet</div>}
+        {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+      </div>
     </>
   )
 }
