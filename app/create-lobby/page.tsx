@@ -67,30 +67,23 @@ function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants?: number }) {
     if (props.confirmedNft) {
       await verifyApproval(props.confirmedNft.tokenAddress);
       write();
+
+      if (isSuccess) {
+        fireAction();
+      }
     }
 
   }
 
   return (
     <>
-      <div>
-        <button onClick={() => handleCreate()}>Click me pls</button>
-        {isLoading && <div>Check Wallet</div>}
-        {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-      </div>
-      {/* <button onClick={() => write?.()}>Click me Nobs</button> */}
-      {/* <WagmiConfig config={wagmiConfig}>
-        <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()}>
-          {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
-        </button >
-        {
-          isSuccess && (
-            <div>
-              DONE
-            </div>
-          )
-        }
-      </WagmiConfig> */}
+      <WagmiConfig config={wagmiConfig}>
+        <div>
+          <button onClick={() => handleCreate()}>Click me pls</button>
+          {isLoading && <div>Check Wallet</div>}
+          {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+        </div>
+      </WagmiConfig>
     </>
   )
 }
@@ -191,7 +184,7 @@ export default function CreateLobby() {
       confirmedPlayers: 1,
       endDate: Timestamp.fromDate(endDate),
       evmChain: 'Mumbai',
-      isPrivate: true,
+      isPrivate: false,
       nfts: [confirmNft.toJSON()],
       timeLimit: 24, // Update when time limits are added
       status: 'Active',
