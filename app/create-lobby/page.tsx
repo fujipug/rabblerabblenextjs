@@ -67,10 +67,6 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
     if (props.confirmedNft) {
       await verifyApproval(props.confirmedNft.tokenAddress);
       write();
-
-      if (isSuccess) {
-        fireAction();
-      }
     }
 
   }
