@@ -368,7 +368,7 @@ export default function CreateLobby() {
                     <p>0.1 AVAX</p>
                   </div>
 
-                  <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
+                  {/* <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} /> */}
                 </div >
               </div >
             </>
