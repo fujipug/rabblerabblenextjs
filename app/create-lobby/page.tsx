@@ -52,12 +52,11 @@ function FinalizeLobby(props: { confirmedNft?: EvmNft, paricipants?: number }) {
   const { config } = usePrepareContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
-    functionName: 'createPrivateRaffle',
+    functionName: 'createPublicRaffle',
     args: [
       props.confirmedNft?.tokenAddress.lowercase,
       props.paricipants,
       props.confirmedNft?.tokenId,
-      isConnected && [address],
       Math.floor(Number(Timestamp.fromDate(endDate))),
     ],
     value: 100000000000000000n,
