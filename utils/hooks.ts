@@ -21,7 +21,7 @@ export const verifyApproval = async (
   });
 
   const collectionContract = getContract({
-    address: collection.checksum as `0x${string}`,
+    address: collection.checksum as any,
     abi: nftAbi,
     walletClient: walletClient as any,
   });

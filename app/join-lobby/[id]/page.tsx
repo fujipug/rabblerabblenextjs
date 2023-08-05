@@ -12,7 +12,7 @@ const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 import Image from "next/image";
 import Countdown from "../../../components/countdown";
 import { rabbleAbi } from '../../../utils/config.ts';
-import { useRabbleContract } from '../../../utils/hooks.ts';
+import { useRabbleContract, verifyApproval } from '../../../utils/hooks.ts';
 
 declare global {
   interface Window {
@@ -32,29 +32,37 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-function FinalizeJoinLobby(props: { confirmedNft?: EvmNft, lobbyId?: string }) {
+function FinalizeJoinLobby(props: { confirmedNft: EvmNft, lobbyId?: string }) {
   const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   const { address, isConnected } = useAccount();
   const rabbleContract = useRabbleContract();
-  const { config } = usePrepareContractWrite({
+  const { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
     functionName: 'joinRaffle',
     args: [
-      props.lobbyId,
-      props.confirmedNft?.tokenId,
+      // props.lobbyId,
+      11,
+      props.confirmedNft.tokenId,
     ],
     value: 100000000000000000n,
   })
-  const { data, write } = useContractWrite(config)
 
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-  })
+  const handleCreate = async () => {
+    if (props.confirmedNft) {
+      await verifyApproval(props.confirmedNft.tokenAddress);
+      write();
+    }
+  }
 
   return (
     <>
-      <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()}>
+      <div>
+        <button onClick={() => handleCreate()}>Join Lobby</button>
+        {isLoading && <div>Check Wallet</div>}
+        {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+      </div>
+      {/* <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()}>
         {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Lobby'}
       </button >
       {
@@ -63,7 +71,7 @@ function FinalizeJoinLobby(props: { confirmedNft?: EvmNft, lobbyId?: string }) {
             DONE
           </div>
         )
-      }
+      } */}
     </>
   )
 }
