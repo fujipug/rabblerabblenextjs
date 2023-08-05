@@ -42,7 +42,7 @@ function FinalizeJoinLobby(props: { confirmedNft: EvmNft, lobbyId?: string }) {
     functionName: 'joinRaffle',
     args: [
       // props.lobbyId,
-      11,
+      10,
       props.confirmedNft.tokenId,
     ],
     value: 100000000000000000n,
@@ -238,10 +238,11 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                 <Image src="/images/gl-banan.gif" width={60} height={60} alt="Good Luck Banana"></Image>
               </div>
 
-              <button className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Join
+              {/* <button className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Join
                 Game</button>
               <button className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">Join
-                Game</button>
+                Game</button> */}
+              <FinalizeJoinLobby confirmedNft={confirmNft} lobbyId={params.id} />
             </div>
           </div>
         </div>
