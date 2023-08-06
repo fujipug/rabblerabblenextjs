@@ -44,40 +44,21 @@ export const verifyApproval = async (
   } catch (e) {
     console.log("approval error", e);
   }
+
+  return approved;
 };
 
-// Limit to latest 10 lobbies
-export const recentLobbies = () => {
+// get raffle count
+export const getRaffleCount = () => {
   const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
 
-  const test = readContract({
+  const count = readContract({
     address: address,
     abi: rabbleAbi,
     functionName: "raffleCounter",
   })
 
-  return test;
-
-  // .then((count) => {
-  //   console.log('count', count);
-  //   let counter = count as number;
-
-  //   for (let i = 0; i < 10 && counter > 0; i++) {
-  //     counter--; // Subtracting 1 from k in each iteration
-  //     readContract({
-  //       address: address,
-  //       abi: rabbleAbi,
-  //       functionName: "raffles",
-  //       args: [counter],
-  //     }).then((raffle) => {
-  //       lobbies.push(raffle);
-  //       console.log('raffle', raffle);
-  //     });
-  //     setRaffles(lobbies);
-  //   }
-
-  //   return raffles;
-  // });
+  return count;
 };
 
 

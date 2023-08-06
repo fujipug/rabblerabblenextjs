@@ -9,22 +9,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
-import { WagmiConfig, useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
-import { useRabbleContract, verifyApproval } from '../../utils/hooks.ts';
+import { getRaffleCount, useRabbleContract, verifyApproval } from '../../utils/hooks.ts';
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
+import { firebaseConfig } from '../../utils/firebase-config.ts';
 
 //Initialize firebase backend
-const firebaseConfig = {
-  apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
-  authDomain: "rabble-rabble.firebaseapp.com",
-  projectId: "rabble-rabble",
-  storageBucket: "rabble-rabble.appspot.com",
-  messagingSenderId: "835781447787",
-  appId: "1:835781447787:web:84e6b4123aa0b77b5f212e",
-  measurementId: "G-T8GBPL2SXJ"
-};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -43,42 +35,6 @@ function fireAction() {
   fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
   fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
   fireConfetti(0.1, { spread: 120, startVelocity: 45 });
-}
-
-function FinalizeLobby(props: { confirmedNft: EvmNft, paricipants?: number }) {
-  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  const rabbleContract = useRabbleContract();
-  const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: rabbleContract?.address,
-    abi: rabbleAbi,
-    functionName: 'createPublicRaffle',
-    args: [
-      props.confirmedNft.tokenAddress.lowercase,
-      props.paricipants,
-      props.confirmedNft.tokenId,
-      Math.floor(Number(Timestamp.fromDate(endDate))),
-    ],
-    value: 100000000000000000n,
-  })
-
-  const handleCreate = async () => {
-    if (props.confirmedNft) {
-      await verifyApproval(props.confirmedNft.tokenAddress);
-      write();
-
-      if (isSuccess) {
-        fireAction();
-      }
-    }
-  }
-
-  return (
-    <>
-      {/* <WagmiConfig config={wagmiConfig}> */}
-      <button className="button" onClick={() => handleCreate()}>Click me pls</button>
-      {/* </WagmiConfig> */}
-    </>
-  )
 }
 
 declare global {
@@ -101,9 +57,22 @@ export default function CreateLobby() {
   const [showQuokkas, setShowQuokkas] = useState(5);
   const [collectionList, setCollectionList] = useState([] as string[]);
   const [imutableNftList, setImutableNftList] = useState([] as EvmNft[]);
+  const rabbleContract = useRabbleContract();
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
+  let { data, isLoading, isSuccess, write } = useContractWrite({
+    address: rabbleContract?.address,
+    abi: rabbleAbi,
+    functionName: 'createPublicRaffle',
+    args: [
+      confirmNft.tokenAddress?.lowercase,
+      playerAmount,
+      confirmNft.tokenId,
+      24 // 24 hour time limit for now
+    ],
+    value: 100000000000000000n,
+  })
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
     setStep(2);
@@ -126,15 +95,32 @@ export default function CreateLobby() {
     setImutableNftList(response.result);
   }
 
+  // Finalize lobby and create the lobby in the blockchain
+  const handleFinalizeLobby = async () => {
+    if (confirmNft) {
+      await verifyApproval(confirmNft.tokenAddress).then(async (response) => {
+        console.log('verifyApproval', response);
+        if (response) {
+          await write();
+          await getRaffleCount().then(async (response) => {
+            await createFirebaseLobby(Number(response));
+          });
+        }
+      });
+    }
+  }
+
+  // Create lobby in firebase for record keeping
   const firebaseLobby = async (lobby: any) => {
     addDoc(collection(db, 'lobbies'), lobby).then((response) => {
       setStep(4);
       setShareUrl(`${window.location.href.split('/create')[0]}/lobby-details/${response.id}`);
+      fireAction();
     }).catch((error) => {
       console.error("Error adding document: ", error);
     });
   }
-  const createFirebaseLobby = async () => {
+  const createFirebaseLobby = async (raffleId: any) => {
     const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
     const lobby = {
       collection: confirmNft?.name,
@@ -147,11 +133,10 @@ export default function CreateLobby() {
       timeLimit: 24, // Update when time limits are added
       status: 'Active',
       totalPlayers: playerAmount,
+      raffleId: raffleId,
     }
 
-    // firebaseLobby(lobby).then((response) => {
-    //   fireAction();
-    // });
+    firebaseLobby(lobby);
   }
 
   // Get dropdown list of collections filter
@@ -368,7 +353,11 @@ export default function CreateLobby() {
                     <p>0.1 AVAX</p>
                   </div>
 
-                  <FinalizeLobby confirmedNft={confirmNft} paricipants={playerAmount} />
+                  <button onClick={() => handleFinalizeLobby()} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">
+                    {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}</button>
+                  <button onClick={() => handleFinalizeLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">
+                    {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
+                  </button>
                 </div >
               </div >
             </>

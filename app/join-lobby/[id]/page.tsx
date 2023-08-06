@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from "moralis";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
-import { Timestamp, collection, documentId, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { useAccount, useContractWrite } from "wagmi";
+import { arrayUnion, collection, doc, documentId, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import converter from 'number-to-words';
 import localFont from 'next/font/local'
@@ -13,6 +13,7 @@ import Image from "next/image";
 import Countdown from "../../../components/countdown";
 import { rabbleAbi } from '../../../utils/config.ts';
 import { useRabbleContract, verifyApproval } from '../../../utils/hooks.ts';
+import { firebaseConfig } from '../../../utils/firebase-config.ts';
 
 declare global {
   interface Window {
@@ -20,61 +21,8 @@ declare global {
   }
 }
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
-  authDomain: "rabble-rabble.firebaseapp.com",
-  projectId: "rabble-rabble",
-  storageBucket: "rabble-rabble.appspot.com",
-  messagingSenderId: "835781447787",
-  appId: "1:835781447787:web:84e6b4123aa0b77b5f212e",
-  measurementId: "G-T8GBPL2SXJ"
-};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-function FinalizeJoinLobby(props: { confirmedNft: EvmNft, lobbyId?: string }) {
-  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-  const { address, isConnected } = useAccount();
-  const rabbleContract = useRabbleContract();
-  const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: rabbleContract?.address,
-    abi: rabbleAbi,
-    functionName: 'joinRaffle',
-    args: [
-      // props.lobbyId,
-      10,
-      props.confirmedNft.tokenId,
-    ],
-    value: 100000000000000000n,
-  })
-
-  const handleCreate = async () => {
-    if (props.confirmedNft) {
-      await verifyApproval(props.confirmedNft.tokenAddress);
-      write();
-    }
-  }
-
-  return (
-    <>
-      <div>
-        <button onClick={() => handleCreate()}>Join Lobby</button>
-        {isLoading && <div>Check Wallet</div>}
-        {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-      </div>
-      {/* <button className="btn btn-accent drop-shadow-md mt-6" onClick={() => write?.()}>
-        {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Lobby'}
-      </button >
-      {
-        isSuccess && (
-          <div>
-            DONE
-          </div>
-        )
-      } */}
-    </>
-  )
-}
 
 export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const [step, setStep] = useState(1);
@@ -83,6 +31,17 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
   const { address, isConnected } = useAccount();
   const [lobbyDetails, setLobbyDetails] = useState() as any;
+  const rabbleContract = useRabbleContract();
+  let { data, isLoading, isSuccess, write } = useContractWrite({
+    address: rabbleContract?.address,
+    abi: rabbleAbi,
+    functionName: 'joinRaffle',
+    args: [
+      lobbyDetails?.raffleId,
+      confirmNft.tokenId,
+    ],
+    value: 100000000000000000n,
+  })
   const getNfts = async () => {
     const chain = EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
@@ -114,6 +73,24 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
         fetchData(nfts);
       });
   }, [address, isConnected]);
+
+  // Join player to Lobby
+  const handleFinalizeJoinLobby = async () => {
+    if (confirmNft) {
+      await verifyApproval(confirmNft.tokenAddress);
+      write();
+    }
+  }
+
+  // Update the firebase database with the new player
+  const updateFirebaseLobby = async () => {
+    const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
+
+    await updateDoc(lobbyRef, {
+      confirmedPlayers: lobbyDetails.confirmedPlayers + 1,
+      nfts: [...lobbyDetails.nfts, confirmNft.toJSON()]
+    });
+  }
 
   return (
     <>
@@ -238,11 +215,11 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                 <Image src="/images/gl-banan.gif" width={60} height={60} alt="Good Luck Banana"></Image>
               </div>
 
-              {/* <button className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Join
-                Game</button>
-              <button className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">Join
-                Game</button> */}
-              <FinalizeJoinLobby confirmedNft={confirmNft} lobbyId={params.id} />
+              <button onClick={() => handleFinalizeJoinLobby()} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">
+                {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Game'}</button>
+              <button onClick={() => handleFinalizeJoinLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">
+                {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Game'}
+              </button>
             </div>
           </div>
         </div>
