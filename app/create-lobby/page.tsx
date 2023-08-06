@@ -61,7 +61,6 @@ export default function CreateLobby() {
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
-  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
@@ -70,7 +69,7 @@ export default function CreateLobby() {
       confirmNft.tokenAddress?.lowercase,
       playerAmount,
       confirmNft.tokenId,
-      Math.floor(Number(Timestamp.fromDate(endDate)))
+      84600 // 24 hours
     ],
     value: 100000000000000000n,
   })
@@ -100,9 +99,8 @@ export default function CreateLobby() {
   const handleFinalizeLobby = async () => {
     if (confirmNft) {
       verifyApproval(confirmNft?.tokenAddress).then((response) => {
-        console.log('verifyApproval', response);
+        write();
         if (response) { // TODO: this eventually returns true so maybe move the write function
-          write();
           getRaffleCount().then(async (response) => {
             createFirebaseLobby(Number(response));
           });
