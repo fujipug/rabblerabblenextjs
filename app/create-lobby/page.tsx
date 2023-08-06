@@ -61,6 +61,7 @@ export default function CreateLobby() {
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
+  const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
@@ -69,7 +70,7 @@ export default function CreateLobby() {
       confirmNft.tokenAddress?.lowercase,
       playerAmount,
       confirmNft.tokenId,
-      86400 // 24 hour time limit for now
+      Math.floor(Number(Timestamp.fromDate(endDate)))
     ],
     value: 100000000000000000n,
   })
