@@ -1,852 +1,884 @@
 export const rabbleAddress = "0xc6c08823a324278c621c8D625d904700BFFE3d1b";
-export const rabbleTestAddress = "0x818570c9f1f4b7d90f986b86727b2f99d694bf5f";
+export const rabbleTestAddress = "0xE4850d1E5a65b46A25EfA5e8b8c8944A074D0ec5";
 export const fee = 0.1;
 export const rabbleAbi = [
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "_multisig",
-        type: "address"
+        "internalType": "address",
+        "name": "_multisig",
+        "type": "address"
       },
       {
-        internalType: "uint256",
-        name: "_fee",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "_maxTimeLimit",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "_maxTimeLimit",
+        "type": "uint256"
       },
       {
-        internalType: "address",
-        name: "_vrfCoordinator",
-        type: "address"
+        "internalType": "address",
+        "name": "_vrfCoordinator",
+        "type": "address"
       },
       {
-        internalType: "bytes32",
-        name: "_keyHash",
-        type: "bytes32"
+        "internalType": "bytes32",
+        "name": "_keyHash",
+        "type": "bytes32"
       },
       {
-        internalType: "uint64",
-        name: "_subscriptionId",
-        type: "uint64"
+        "internalType": "uint64",
+        "name": "_subscriptionId",
+        "type": "uint64"
       },
       {
-        internalType: "uint32",
-        name: "_callbackGasLimit",
-        type: "uint32"
+        "internalType": "uint32",
+        "name": "_callbackGasLimit",
+        "type": "uint32"
       }
     ],
-    stateMutability: "nonpayable",
-    type: "constructor"
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    inputs: [],
-    name: "AlreadyFinalized",
-    type: "error"
+    "inputs": [],
+    "name": "AlreadyFinalized",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "AlreadyInRaffle",
-    type: "error"
+    "inputs": [],
+    "name": "AlreadyInRaffle",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "EndingTimeReached",
-    type: "error"
+    "inputs": [],
+    "name": "EndingTimeReached",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "InvalidNumberOfParticipants",
-    type: "error"
+    "inputs": [],
+    "name": "InvalidNumberOfParticipants",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "InvalidTimelimit",
-    type: "error"
+    "inputs": [],
+    "name": "InvalidTimelimit",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "NotOwnerOf",
-    type: "error"
+    "inputs": [],
+    "name": "NotOwnerOf",
+    "type": "error"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "have",
-        type: "address"
+        "internalType": "address",
+        "name": "have",
+        "type": "address"
       },
       {
-        internalType: "address",
-        name: "want",
-        type: "address"
+        "internalType": "address",
+        "name": "want",
+        "type": "address"
       }
     ],
-    name: "OnlyCoordinatorCanFulfill",
-    type: "error"
+    "name": "OnlyCoordinatorCanFulfill",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "Paused",
-    type: "error"
+    "inputs": [],
+    "name": "Paused",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "RaffleFull",
-    type: "error"
+    "inputs": [],
+    "name": "RaffleFull",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "RaffleIsPublic",
-    type: "error"
+    "inputs": [],
+    "name": "RaffleIsPublic",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "RaffleNotActive",
-    type: "error"
+    "inputs": [],
+    "name": "RaffleNotActive",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "RequestNotFound",
-    type: "error"
+    "inputs": [],
+    "name": "RequestNotFound",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "UnableToCollect",
-    type: "error"
+    "inputs": [],
+    "name": "UnableToCollect",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "UnableToJoin",
-    type: "error"
+    "inputs": [],
+    "name": "UnableToJoin",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "UnableToRefund",
-    type: "error"
+    "inputs": [],
+    "name": "UnableToRefund",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "UnableToWhitelist",
-    type: "error"
+    "inputs": [],
+    "name": "UnableToWhitelist",
+    "type": "error"
   },
   {
-    inputs: [],
-    name: "WrongMessageValue",
-    type: "error"
+    "inputs": [],
+    "name": "WrongMessageValue",
+    "type": "error"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "address",
-        name: "previousOwner",
-        type: "address"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       },
       {
-        indexed: true,
-        internalType: "address",
-        name: "newOwner",
-        type: "address"
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "accounts",
+        "type": "address[]"
       }
     ],
-    name: "OwnershipTransferred",
-    type: "event"
+    "name": "AddedToWhitelist",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
       },
       {
-        indexed: true,
-        internalType: "address",
-        name: "creator",
-        type: "address"
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "collection",
-        type: "address"
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "timeLimit",
-        type: "uint256"
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "numberOfParticipants",
-        type: "uint256"
-      },
-      {
-        indexed: false,
-        internalType: "bool",
-        name: "isPublic",
-        type: "bool"
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    name: "RaffleCreated",
-    type: "event"
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       },
       {
-        indexed: true,
-        internalType: "address",
-        name: "participant",
-        type: "address"
+        "indexed": true,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
       },
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "address",
+        "name": "collection",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timeLimit",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "numberOfParticipants",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isPublic",
+        "type": "bool"
       }
     ],
-    name: "RaffleJoined",
-    type: "event"
+    "name": "RaffleCreated",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
-      }
-    ],
-    name: "RaffleRefunded",
-    type: "event"
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       },
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256"
-      }
-    ],
-    name: "RaffleRequest",
-    type: "event"
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "address",
+        "name": "participant",
+        "type": "address"
       },
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256"
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "winner",
-        type: "address"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
-    name: "RaffleResult",
-    type: "event"
+    "name": "RaffleJoined",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256"
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "randomWords",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       }
     ],
-    name: "RequestFulfilled",
-    type: "event"
+    "name": "RaffleRefunded",
+    "type": "event"
   },
   {
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       },
       {
-        internalType: "address[]",
-        name: "whitelist",
-        type: "address[]"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
       }
     ],
-    name: "addToWhitelist",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
+    "name": "RaffleRequest",
+    "type": "event"
   },
   {
-    inputs: [],
-    name: "addressZero",
-    outputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address"
-      }
-    ],
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [],
-    name: "callbackGasLimit",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "",
-        type: "uint32"
-      }
-    ],
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [],
-    name: "collectFee",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    inputs: [],
-    name: "collectableFees",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256"
-      }
-    ],
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract IERC721",
-        name: "collection",
-        type: "address"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "numberOfParticipants",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256"
-      },
-      {
-        internalType: "address[]",
-        name: "whitelist",
-        type: "address[]"
-      },
-      {
-        internalType: "uint256",
-        name: "timeLimit",
-        type: "uint256"
+        "indexed": false,
+        "internalType": "address",
+        "name": "winner",
+        "type": "address"
       }
     ],
-    name: "createPrivateRaffle",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function"
+    "name": "RaffleResult",
+    "type": "event"
   },
   {
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: "contract IERC721",
-        name: "collection",
-        type: "address"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "numberOfParticipants",
-        type: "uint256"
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256"
-      },
-      {
-        internalType: "uint256",
-        name: "timeLimit",
-        type: "uint256"
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "randomWords",
+        "type": "uint256"
       }
     ],
-    name: "createPublicRaffle",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function"
+    "name": "RequestFulfilled",
+    "type": "event"
   },
   {
-    inputs: [],
-    name: "fee",
-    outputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address[]",
+        "name": "whitelist",
+        "type": "address[]"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "name": "addToWhitelist",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "addressZero",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    name: "getRaffle",
-    outputs: [
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "callbackGasLimit",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "collectFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "collectableFees",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC721",
+        "name": "collection",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "numberOfParticipants",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address[]",
+        "name": "whitelist",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "timeLimit",
+        "type": "uint256"
+      }
+    ],
+    "name": "createPrivateRaffle",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC721",
+        "name": "collection",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "numberOfParticipants",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "timeLimit",
+        "type": "uint256"
+      }
+    ],
+    "name": "createPublicRaffle",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRaffle",
+    "outputs": [
       {
         "components": [
           {
-            internalType: "bool",
-            name: "isPublic",
-            type: "bool"
+            "internalType": "bool",
+            "name": "isPublic",
+            "type": "bool"
           },
           {
-            internalType: "contract IERC721",
-            name: "collection",
-            type: "address"
+            "internalType": "contract IERC721",
+            "name": "collection",
+            "type": "address"
           },
           {
-            internalType: "uint256",
-            name: "endingTime",
-            type: "uint256"
+            "internalType": "uint256",
+            "name": "endingTime",
+            "type": "uint256"
           },
           {
-            internalType: "uint256[]",
-            name: "tokenIds",
-            type: "uint256[]"
+            "internalType": "uint256[]",
+            "name": "tokenIds",
+            "type": "uint256[]"
           },
           {
-            internalType: "uint256",
-            name: "numberOfParticipants",
-            type: "uint256"
+            "internalType": "uint256",
+            "name": "numberOfParticipants",
+            "type": "uint256"
           },
           {
-            internalType: "address[]",
-            name: "participantsList",
-            type: "address[]"
+            "internalType": "address[]",
+            "name": "participantsList",
+            "type": "address[]"
           },
           {
-            internalType: "uint256",
-            name: "fees",
-            type: "uint256"
+            "internalType": "uint256",
+            "name": "fees",
+            "type": "uint256"
           },
           {
-            internalType: "address",
-            name: "winner",
-            type: "address"
+            "internalType": "address",
+            "name": "winner",
+            "type": "address"
           },
           {
-            internalType: "bool",
-            name: "requested",
-            type: "bool"
+            "internalType": "bool",
+            "name": "requested",
+            "type": "bool"
           }
         ],
-        internalType: "struct IRabbleRabble.Raffle",
-        name: "",
-        type: "tuple"
+        "internalType": "struct IRabbleRabble.Raffle",
+        "name": "",
+        "type": "tuple"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
-    name: "joinRaffle",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function"
+    "name": "joinRaffle",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "keyHash",
-    outputs: [
+    "inputs": [],
+    "name": "keyHash",
+    "outputs": [
       {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32"
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "maxTimeLimit",
-    outputs: [
+    "inputs": [],
+    "name": "maxTimeLimit",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "multisig",
-    outputs: [
+    "inputs": [],
+    "name": "multisig",
+    "outputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "numWords",
-    outputs: [
+    "inputs": [],
+    "name": "numWords",
+    "outputs": [
       {
-        internalType: "uint32",
-        name: "",
-        type: "uint32"
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       },
       {
-        internalType: "address",
-        name: "",
-        type: "address"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       },
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       },
       {
-        internalType: "bytes",
-        name: "",
-        type: "bytes"
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
       }
     ],
-    name: "onERC721Received",
-    outputs: [
+    "name": "onERC721Received",
+    "outputs": [
       {
-        internalType: "bytes4",
-        name: "",
-        type: "bytes4"
+        "internalType": "bytes4",
+        "name": "",
+        "type": "bytes4"
       }
     ],
-    stateMutability: "pure",
-    type: "function"
+    "stateMutability": "pure",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "owner",
-    outputs: [
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "paused",
-    outputs: [
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool"
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "raffleCounter",
-    outputs: [
+    "inputs": [],
+    "name": "raffleCounter",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       },
       {
-        internalType: "address",
-        name: "",
-        type: "address"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    name: "raffleIdToWhitelisted",
-    outputs: [
+    "name": "raffleIdToWhitelisted",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool"
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    name: "raffles",
-    outputs: [
+    "name": "raffles",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "isPublic",
-        type: "bool"
+        "internalType": "bool",
+        "name": "isPublic",
+        "type": "bool"
       },
       {
-        internalType: "contract IERC721",
-        name: "collection",
-        type: "address"
+        "internalType": "contract IERC721",
+        "name": "collection",
+        "type": "address"
       },
       {
-        internalType: "uint256",
-        name: "endingTime",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "endingTime",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "numberOfParticipants",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "numberOfParticipants",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "fees",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "fees",
+        "type": "uint256"
       },
       {
-        internalType: "address",
-        name: "winner",
-        type: "address"
+        "internalType": "address",
+        "name": "winner",
+        "type": "address"
       },
       {
-        internalType: "bool",
-        name: "requested",
-        type: "bool"
+        "internalType": "bool",
+        "name": "requested",
+        "type": "bool"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
       },
       {
-        internalType: "uint256[]",
-        name: "randomWords",
-        type: "uint256[]"
+        "internalType": "uint256[]",
+        "name": "randomWords",
+        "type": "uint256[]"
       }
     ],
-    name: "rawFulfillRandomWords",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
+    "name": "rawFulfillRandomWords",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    inputs: [],
-    name: "requestConfirmations",
-    outputs: [
+    "inputs": [
       {
-        internalType: "uint16",
-        name: "",
-        type: "uint16"
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "name": "refundRaffle",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "requestConfirmations",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256"
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
       }
     ],
-    name: "requests",
-    outputs: [
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "raffleId",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "requests",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "raffleId",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "randomWord",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "randomWord",
+        "type": "uint256"
       },
       {
-        internalType: "bool",
-        name: "fulfilled",
-        type: "bool"
+        "internalType": "bool",
+        "name": "fulfilled",
+        "type": "bool"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "_maxTimeLimit",
-        type: "uint256"
+        "internalType": "uint256",
+        "name": "_maxTimeLimit",
+        "type": "uint256"
       }
     ],
-    name: "setMaxTimeLimit",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
+    "name": "setMaxTimeLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "subscriptionId",
-    outputs: [
+    "inputs": [],
+    "name": "subscriptionId",
+    "outputs": [
       {
-        internalType: "uint64",
-        name: "",
-        type: "uint64"
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "togglePause",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
+    "inputs": [],
+    "name": "togglePause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "newOwner",
-        type: "address"
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "vrfCoordinator",
-    outputs: [
+    "inputs": [],
+    "name": "vrfCoordinator",
+    "outputs": [
       {
-        internalType: "contract VRFCoordinatorV2Interface",
-        name: "",
-        type: "address"
+        "internalType": "contract VRFCoordinatorV2Interface",
+        "name": "",
+        "type": "address"
       }
     ],
-    stateMutability: "view",
-    type: "function"
+    "stateMutability": "view",
+    "type": "function"
   }
 ];
 export const nftAbi = [

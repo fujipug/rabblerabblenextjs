@@ -85,10 +85,11 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   // Update the firebase database with the new player
   const updateFirebaseLobby = async () => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
+    const joinedNfts = lobbyDetails.nfts.join(confirmNft.toJSON());
 
     await updateDoc(lobbyRef, {
       confirmedPlayers: lobbyDetails.confirmedPlayers + 1,
-      nfts: [...lobbyDetails.nfts, confirmNft.toJSON()]
+      nfts: joinedNfts
     });
   }
 
