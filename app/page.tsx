@@ -7,7 +7,6 @@ import { DocumentData, collection, getDocs, getFirestore, limit, orderBy, query 
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
-import { recentLobbies } from "../utils/hooks";
 import { readContract } from "@wagmi/core";
 import { rabbleAbi, rabbleTestAddress } from "../utils/config";
 
