@@ -97,17 +97,17 @@ export default function CreateLobby() {
 
   // Finalize lobby and create the lobby in the blockchain
   const handleFinalizeLobby = async () => {
-    // if (confirmNft) {
-    //   verifyApproval(confirmNft.tokenAddress).then((response) => {
-    //     console.log('verifyApproval', response);
-    //     if (response) { // TODO: this eventually returns true so maybe move the write function
-    //       write();
-    //       getRaffleCount().then(async (response) => {
-    //         createFirebaseLobby(Number(response));
-    //       });
-    //     }
-    //   });
-    // }
+    if (confirmNft) {
+      verifyApproval(confirmNft?.tokenAddress).then((response) => {
+        console.log('verifyApproval', response);
+        if (response) { // TODO: this eventually returns true so maybe move the write function
+          write();
+          getRaffleCount().then(async (response) => {
+            createFirebaseLobby(Number(response));
+          });
+        }
+      });
+    }
   }
 
   // Create lobby in firebase for record keeping
