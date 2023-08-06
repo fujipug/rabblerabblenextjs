@@ -9,17 +9,17 @@ import {
   readContract
 } from "@wagmi/core";
 
-const { chain, chains } = getNetwork();
+const { chain } = getNetwork();
 const account = getAccount();
 
 export const verifyApproval = async (
   collection: EvmAddress,
 ) => {
+
   const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
   const walletClient = await getWalletClient({
     chainId: chain?.id,
   });
-
   const collectionContract = getContract({
     address: collection.checksum as any,
     abi: nftAbi,
