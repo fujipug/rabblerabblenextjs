@@ -58,7 +58,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
       const querySnapshot = await getDocs(q);
       for (const doc of querySnapshot.docs) {
-        const filtered = results.filter((nft: any) => nft.name == doc.data().collection);
+        const filtered = results.filter((nft: any) => nft?.name == doc.data().collection);
         console.log(doc.data());
         setNfts(filtered);
         setLobbyDetails(doc.data());
@@ -131,7 +131,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                               <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
                             </div>
                             <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <p className="text-white text-lg font-bold truncate px-2">{nft.name}</p>
+                              <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
                             </div>
                           </div>
                           :
@@ -143,7 +143,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                               <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
                             </div>
                             <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <p className="text-white text-lg font-bold truncate px-2">{nft.name}</p>
+                              <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
                             </div>
                           </div>
                         }
