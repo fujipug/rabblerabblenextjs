@@ -98,12 +98,12 @@ export default function CreateLobby() {
   // Finalize lobby and create the lobby in the blockchain
   const handleFinalizeLobby = async () => {
     if (confirmNft) {
-      await verifyApproval(confirmNft.tokenAddress).then(async (response) => {
+      verifyApproval(confirmNft.tokenAddress).then((response) => {
         console.log('verifyApproval', response);
-        if (response) {
-          await write();
-          await getRaffleCount().then(async (response) => {
-            await createFirebaseLobby(Number(response));
+        if (response) { // TODO: this eventually returns true so maybe move the write function
+          write();
+          getRaffleCount().then(async (response) => {
+            createFirebaseLobby(Number(response));
           });
         }
       });

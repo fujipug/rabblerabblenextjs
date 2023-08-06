@@ -77,8 +77,12 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   // Join player to Lobby
   const handleFinalizeJoinLobby = async () => {
     if (confirmNft) {
-      await verifyApproval(confirmNft.tokenAddress);
-      write();
+      verifyApproval(confirmNft.tokenAddress).then((approved) => {
+        if (approved) {
+          write();
+          updateFirebaseLobby();
+        }
+      });
     }
   }
 
