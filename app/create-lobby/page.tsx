@@ -143,8 +143,8 @@ export default function CreateLobby() {
   useEffect(() => {
     const uniqueArray: any[] = [];
     imutableNftList.map((item: any) => {
-      if (!uniqueArray.includes(item.name)) {
-        uniqueArray.push(item.name);
+      if (!uniqueArray.includes(item?.name)) {
+        uniqueArray.push(item?.name);
       }
       setCollectionList(uniqueArray);
     });
@@ -154,7 +154,7 @@ export default function CreateLobby() {
   function filterCollection(collection: string) {
     const resetNftList = imutableNftList;
     if (collection !== 'all') {
-      const filtered = resetNftList.filter((nft: any) => nft.name === collection);
+      const filtered = resetNftList.filter((nft: any) => nft?.name === collection);
       setNfts(filtered);
     } else {
       setNfts(resetNftList);
@@ -265,7 +265,7 @@ export default function CreateLobby() {
                               <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
                             </div>
                             <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <p className="text-white text-lg font-bold truncate px-2">{nft.name}</p>
+                              <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
                             </div>
                           </div>
                           :
@@ -277,7 +277,7 @@ export default function CreateLobby() {
                               <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
                             </div>
                             <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <p className="text-white text-lg font-bold truncate px-2">{nft.name}</p>
+                              <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
                             </div>
                           </div>
                         }

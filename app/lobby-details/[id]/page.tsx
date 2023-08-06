@@ -6,17 +6,9 @@ import converter from 'number-to-words';
 import localFont from 'next/font/local'
 import Countdown from "../../../components/countdown";
 import Link from "next/link";
+import { firebaseConfig } from "../../../utils/firebase-config";
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
-  authDomain: "rabble-rabble.firebaseapp.com",
-  projectId: "rabble-rabble",
-  storageBucket: "rabble-rabble.appspot.com",
-  messagingSenderId: "835781447787",
-  appId: "1:835781447787:web:84e6b4123aa0b77b5f212e",
-  measurementId: "G-T8GBPL2SXJ"
-};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
