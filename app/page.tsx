@@ -55,24 +55,24 @@ export default function Home() {
   };
   useEffect(() => {
     fetchData();
-    fetchDataFromContract();
+    // fetchDataFromContract();
   }, []);
 
-  const [raffleCounter, setRaffleCounter] = useState(0);
-  const fetchDataFromContract = async () => {
-    try {
-      // Call the readContract function to get data from the smart contract
-      const contractDataResponse = await readContract({
-        address: rabbleTestAddress,
-        abi: rabbleAbi,
-        functionName: "raffleCounter",
-      });
-      setRaffleCounter(contractDataResponse as any);
-      console.log('Raffle Counter:', contractDataResponse);
-    } catch (error) {
-      console.error('Error fetching data from contract:', error);
-    }
-  };
+  // const [raffleCounter, setRaffleCounter] = useState(0);
+  // const fetchDataFromContract = async () => {
+  //   try {
+  //     // Call the readContract function to get data from the smart contract
+  //     const contractDataResponse = await readContract({
+  //       address: rabbleTestAddress,
+  //       abi: rabbleAbi,
+  //       functionName: "raffleCounter",
+  //     });
+  //     setRaffleCounter(contractDataResponse as any);
+  //     console.log('Raffle Counter:', contractDataResponse);
+  //   } catch (error) {
+  //     console.error('Error fetching data from contract:', error);
+  //   }
+  // };
 
   return (
     <>
