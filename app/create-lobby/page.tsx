@@ -69,7 +69,7 @@ export default function CreateLobby() {
       confirmNft.tokenAddress?.lowercase,
       playerAmount,
       confirmNft.tokenId,
-      24 // 24 hour time limit for now
+      86400 // 24 hour time limit for now
     ],
     value: 100000000000000000n,
   })
