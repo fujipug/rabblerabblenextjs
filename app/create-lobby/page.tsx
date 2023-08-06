@@ -96,18 +96,18 @@ export default function CreateLobby() {
   }
 
   // Finalize lobby and create the lobby in the blockchain
-  const handleFinalizeLobby = async () => {
-    if (confirmNft) {
-      // verifyApproval(confirmNft?.tokenAddress).then((response) => {
-      //   write();
-      //   if (response) { // TODO: this eventually returns true so maybe move the write function
-      //     getRaffleCount().then(async (response) => {
-      //       createFirebaseLobby(Number(response));
-      //     });
-      //   }
-      // });
-    }
-  }
+  // const handleFinalizeLobby = async () => {
+  //   if (confirmNft) {
+  //     verifyApproval(confirmNft?.tokenAddress).then((response) => {
+  //       write();
+  //       if (response) { // TODO: this eventually returns true so maybe move the write function
+  //         getRaffleCount().then(async (response) => {
+  //           createFirebaseLobby(Number(response));
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
   // Create lobby in firebase for record keeping
   const firebaseLobby = async (lobby: any) => {
@@ -352,8 +352,8 @@ export default function CreateLobby() {
                       <h2 className="font-semibold">Lobby Fee</h2>
                       <p>0.1 AVAX</p>
                     </div>
-
-                    {/* <button onClick={() => handleFinalizeLobby()} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">
+                    {/* 
+                    <button onClick={() => handleFinalizeLobby()} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">
                       {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}</button>
                     <button onClick={() => handleFinalizeLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">
                       {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
