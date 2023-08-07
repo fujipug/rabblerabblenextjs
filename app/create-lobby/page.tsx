@@ -54,11 +54,13 @@ export default function CreateLobby() {
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
   const [shareUrl, setShareUrl] = useState('');
   const { address, isConnected } = useAccount();
-  const [showClipboardToast, setShowClipboardToast] = useState(false);
+  const [showClipboardAlert, setShowClipboardAlert] = useState(false);
   const { SVG } = useQRCode();
   const [showQuokkas, setShowQuokkas] = useState(5);
   const [collectionList, setCollectionList] = useState([] as string[]);
   const [imutableNftList, setImutableNftList] = useState([] as EvmNft[]);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const rabbleContract = useRabbleContract();
   const fee = useFee();
   const { chain } = getNetwork();
@@ -78,9 +80,17 @@ export default function CreateLobby() {
     value: fee,
     onSuccess: () => {
       getRaffleCount().then(async (response) => {
-        createFirebaseLobby(Number(response));
+        createFirebaseLobby(Number(response) + 1);
       });
-    }
+    },
+    onError(error) {
+      const errorMessage = `Error: ${error.message.split(':')[1].split('()')[0].trim().replace(/([a-z])([A-Z])/g, '$1 $2')}`;
+      setErrorMessage(errorMessage);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, 3000);
+    },
   })
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
@@ -167,15 +177,27 @@ export default function CreateLobby() {
 
   // Save share link to clipboard
   const clipboardlink = () => {
-    setShowClipboardToast(true);
+    setShowClipboardAlert(true);
     navigator.clipboard.writeText(shareUrl);
     setTimeout(() => {
-      setShowClipboardToast(false);
+      setShowClipboardAlert(false);
     }, 3000);
   }
 
   return (
     <>
+      {showErrorAlert &&
+        <div className="alert alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>{errorMessage}</span>
+        </div>
+      }
+      {showClipboardAlert &&
+        <div className="alert alert-success fixed">
+          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>Link copied to clipboard!</span>
+        </div>
+      }
       <WagmiConfig config={wagmiConfig}>
         <div className="flex justify-center">
           <ul className="steps">
@@ -408,14 +430,6 @@ export default function CreateLobby() {
 
               </div >
             </div >
-
-            {showClipboardToast &&
-              <div className="toast toast-center">
-                <div className="alert alert-success">
-                  <span>Link copied to clipboard</span>
-                </div>
-              </div >
-            }
           </div >
         }
 

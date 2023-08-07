@@ -30,7 +30,6 @@ export const verifyApproval = async (
     account.address,
     address,
   ]);
-  console.log("is approved", approved);
   try {
     if (!approved) {
       // @ts-ignore

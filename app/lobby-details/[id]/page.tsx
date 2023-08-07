@@ -98,7 +98,7 @@ function LobbyNftInfo(props: any) {
               minute: '2-digit',
               hour12: true,
             })}`}</p>
-          {/* <p className="leading-8"><span className="font-semibold">Lobby: </span>{lobbyDetails?.data.isPrivate ? 'Private' : 'Public'}</p> */}
+          <p className="leading-8"><span className="font-semibold">Lobby: </span>{lobbyDetails?.data.isPrivate ? 'Private' : 'Public'}</p>
         </div>
         <div className="sm:hidden flex flex-col w-full">
           <div className="divider"></div>
