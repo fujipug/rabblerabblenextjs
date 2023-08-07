@@ -4,13 +4,17 @@ import Link from "next/link";
 import ThemeToggle from "./theme-toggle";
 import { useEffect, useState } from "react";
 import AVVY from '@avvy/client';
-import { useAccount } from "wagmi";
+import { useAccount, useEnsName } from "wagmi";
 import { providers } from 'ethers'
 
 export default function Navbar() {
   const provider = new providers.JsonRpcProvider('https://api.avax.network/ext/bc/C/rpc')
   const { address } = useAccount();
   const [avvyName, setAvvy] = useState('');
+  // const { data: ensName } = useEnsName({
+  //   address: address,
+  //   chainId: 1
+  // })
 
   const fetchAvvy = async () => {
     const avvy = new AVVY(provider, {});
@@ -19,7 +23,6 @@ export default function Navbar() {
     let name;
     try {
       name = await hash.lookup();
-      console.log('name', name);
       setAvvy(name?.name);
     } catch (e) {
       console.log(e);
@@ -112,7 +115,9 @@ export default function Navbar() {
                       </button>
 
                       <button onClick={openAccountModal} type="button">
-                        {avvyName}
+                        {avvyName ? avvyName
+                          //  : ensName ? ensName
+                          : account.displayName}
                         {account.displayBalance
                           ? ` (${account.displayBalance})`
                           : ''}
