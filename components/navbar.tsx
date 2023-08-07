@@ -70,15 +70,15 @@ export default function Navbar() {
                 {(() => {
                   if (!connected) {
                     return (
-                      <button onClick={openConnectModal} type="button">
-                        Connect
+                      <button className="btn btn-outline btn-secondary" onClick={openConnectModal} type="button">
+                        Connect Wallet
                       </button>
                     );
                   }
 
                   if (chain.unsupported) {
                     return (
-                      <button onClick={openChainModal} type="button">
+                      <button className="btn btn-outline btn-secondary" onClick={openChainModal} type="button">
                         Wrong network
                       </button>
                     );
@@ -87,8 +87,9 @@ export default function Navbar() {
                   return (
                     <div style={{ display: 'flex', gap: 12 }}>
                       <button
+                        className="hidden sm:flex sm:items-center"
                         onClick={openChainModal}
-                        style={{ display: 'flex', alignItems: 'center' }}
+                        // style={{ display: 'flex', alignItems: 'center' }}
                         type="button"
                       >
                         {chain.hasIcon && (
@@ -114,7 +115,7 @@ export default function Navbar() {
                         {chain.name}
                       </button>
 
-                      <button onClick={openAccountModal} type="button">
+                      <button className="btn btn-outline btn-secondary" onClick={openAccountModal} type="button">
                         {avvyName ? avvyName
                           //  : ensName ? ensName
                           : account.displayName}
