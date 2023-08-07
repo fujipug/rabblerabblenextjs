@@ -4,6 +4,7 @@ import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from "moralis";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useContractWrite } from "wagmi";
+import { getNetwork } from "@wagmi/core";
 import { collection, doc, documentId, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import converter from 'number-to-words';
@@ -12,8 +13,9 @@ const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 import Image from "next/image";
 import Countdown from "../../../components/countdown";
 import { rabbleAbi } from '../../../utils/config.ts';
-import { useRabbleContract, verifyApproval } from '../../../utils/hooks.ts';
+import { useRabbleContract, verifyApproval, useFee } from '../../../utils/hooks.ts';
 import { firebaseConfig } from '../../../utils/firebase-config.ts';
+import { formatUnits } from 'viem';
 
 declare global {
   interface Window {
@@ -32,6 +34,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const { address, isConnected } = useAccount();
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const rabbleContract = useRabbleContract();
+  const fee = useFee();
+  const { chain } = getNetwork();
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
@@ -206,7 +210,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
 
               <div className="mb-4">
                 <h2 className="font-semibold">Lobby Fee</h2>
-                <p>0.1 AVAX</p>
+                <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
               </div>
 
               <div className="flex flex-col w-full border-opacity-50">
