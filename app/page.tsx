@@ -7,8 +7,7 @@ import { DocumentData, collection, getDocs, getFirestore, limit, orderBy, query 
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
-import { readContract } from "@wagmi/core";
-import { rabbleAbi, rabbleTestAddress } from "../utils/config";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -40,6 +39,7 @@ function fireAction() {
 
 export default function Home() {
   const [lobbies, setLobbies] = useState([]) as any;
+
   const fetchData = async () => {
     try {
       const q = query(collection(db, 'lobbies'), orderBy('createdAt', 'desc'), limit(10));
@@ -53,6 +53,7 @@ export default function Home() {
       console.error('Error fetching data:', error);
     }
   };
+
   useEffect(() => {
     fetchData();
     // fetchDataFromContract();

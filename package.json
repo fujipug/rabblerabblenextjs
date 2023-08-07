@@ -12,6 +12,7 @@
     "firebase:emulators:start": "firebase emulators:start"
   },
   "dependencies": {
+    "@avvy/client": "^4.2.6",
     "@heroicons/react": "^2.0.18",
     "@rainbow-me/rainbowkit": "^1.0.7",
     "encoding": "^0.1.13",
