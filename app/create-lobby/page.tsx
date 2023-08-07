@@ -82,7 +82,7 @@ export default function CreateLobby() {
       getRaffleCount().then(async (response) => {
         createFirebaseLobby(Number(response));
       });
-    }
+    },
   })
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
