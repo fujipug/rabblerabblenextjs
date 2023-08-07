@@ -14,7 +14,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
-import { getRaffleCount, useRabbleContract, verifyApproval, useFee, useNetworkToken } from '../../utils/hooks.ts';
+import { getRaffleCount, useRabbleContract, verifyApproval, useFee } from '../../utils/hooks.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
 
