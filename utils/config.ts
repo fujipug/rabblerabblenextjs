@@ -1,143 +1,142 @@
 export const rabbleAddress = "0xc6c08823a324278c621c8D625d904700BFFE3d1b";
 export const rabbleTestAddress = "0x46916d0453c7e835c164dcefdc6e88a646b745d7";
-export const fee = 0.000001;
 export const rabbleAbi = [
   {
     inputs: [
       {
         internalType: "address",
         name: "_multisig",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "uint256",
         name: "_fee",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256",
         name: "_maxTimeLimit",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "address",
         name: "_vrfCoordinator",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "bytes32",
         name: "_keyHash",
-        type: "bytes32"
+        type: "bytes32",
       },
       {
         internalType: "uint64",
         name: "_subscriptionId",
-        type: "uint64"
+        type: "uint64",
       },
       {
         internalType: "uint32",
         name: "_callbackGasLimit",
-        type: "uint32"
-      }
+        type: "uint32",
+      },
     ],
     stateMutability: "nonpayable",
-    type: "constructor"
+    type: "constructor",
   },
   {
     inputs: [],
     name: "AlreadyFinalized",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "AlreadyInRaffle",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "EndingTimeReached",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "InvalidNumberOfParticipants",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "InvalidTimelimit",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "NotOwnerOf",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "have",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "address",
         name: "want",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     name: "OnlyCoordinatorCanFulfill",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "Paused",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "RaffleFull",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "RaffleIsPublic",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "RaffleNotActive",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "RequestNotFound",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "UnableToCollect",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "UnableToJoin",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "UnableToRefund",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "UnableToWhitelist",
-    type: "error"
+    type: "error",
   },
   {
     inputs: [],
     name: "WrongMessageValue",
-    type: "error"
+    type: "error",
   },
   {
     anonymous: false,
@@ -146,17 +145,17 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         indexed: false,
         internalType: "address[]",
         name: "accounts",
-        type: "address[]"
-      }
+        type: "address[]",
+      },
     ],
     name: "AddedToWhitelist",
-    type: "event"
+    type: "event",
   },
   {
     anonymous: false,
@@ -165,17 +164,17 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "address",
         name: "previousOwner",
-        type: "address"
+        type: "address",
       },
       {
         indexed: true,
         internalType: "address",
         name: "newOwner",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     name: "OwnershipTransferred",
-    type: "event"
+    type: "event",
   },
   {
     anonymous: false,
@@ -184,41 +183,41 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         indexed: true,
         internalType: "address",
         name: "creator",
-        type: "address"
+        type: "address",
       },
       {
         indexed: true,
         internalType: "address",
         name: "collection",
-        type: "address"
+        type: "address",
       },
       {
         indexed: false,
         internalType: "uint256",
         name: "timeLimit",
-        type: "uint256"
+        type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
         name: "numberOfParticipants",
-        type: "uint256"
+        type: "uint256",
       },
       {
         indexed: false,
         internalType: "bool",
         name: "isPublic",
-        type: "bool"
-      }
+        type: "bool",
+      },
     ],
     name: "RaffleCreated",
-    type: "event"
+    type: "event",
   },
   {
     anonymous: false,
@@ -227,23 +226,23 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         indexed: true,
         internalType: "address",
         name: "participant",
-        type: "address"
+        type: "address",
       },
       {
         indexed: true,
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "RaffleJoined",
-    type: "event"
+    type: "event",
   },
   {
     anonymous: false,
@@ -252,11 +251,11 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "RaffleRefunded",
-    type: "event"
+    type: "event",
   },
   {
     anonymous: false,
@@ -265,17 +264,17 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         indexed: true,
         internalType: "uint256",
         name: "requestId",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "RaffleRequest",
-    type: "event"
+    type: "event",
   },
   {
     anonymous: false,
@@ -284,17 +283,17 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         indexed: false,
         internalType: "address",
         name: "winner",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     name: "RaffleResult",
-    type: "event"
+    type: "event",
   },
   {
     anonymous: false,
@@ -303,35 +302,35 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "uint256",
         name: "requestId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         indexed: true,
         internalType: "uint256",
         name: "randomWords",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "RequestFulfilled",
-    type: "event"
+    type: "event",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "address[]",
         name: "whitelist",
-        type: "address[]"
-      }
+        type: "address[]",
+      },
     ],
     name: "addToWhitelist",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -340,11 +339,11 @@ export const rabbleAbi = [
       {
         internalType: "address",
         name: "",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -353,18 +352,18 @@ export const rabbleAbi = [
       {
         internalType: "uint32",
         name: "",
-        type: "uint32"
-      }
+        type: "uint32",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
     name: "collectFee",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -373,72 +372,72 @@ export const rabbleAbi = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "contract IERC721",
         name: "collection",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "uint256",
         name: "numberOfParticipants",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "address[]",
         name: "whitelist",
-        type: "address[]"
+        type: "address[]",
       },
       {
         internalType: "uint256",
         name: "timeLimit",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "createPrivateRaffle",
     outputs: [],
     stateMutability: "payable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "contract IERC721",
         name: "collection",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "uint256",
         name: "numberOfParticipants",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256",
         name: "timeLimit",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "createPublicRaffle",
     outputs: [],
     stateMutability: "payable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -447,19 +446,19 @@ export const rabbleAbi = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "getRaffle",
     outputs: [
@@ -468,74 +467,74 @@ export const rabbleAbi = [
           {
             internalType: "bool",
             name: "isPublic",
-            type: "bool"
+            type: "bool",
           },
           {
             internalType: "contract IERC721",
             name: "collection",
-            type: "address"
+            type: "address",
           },
           {
             internalType: "uint256",
             name: "endingTime",
-            type: "uint256"
+            type: "uint256",
           },
           {
             internalType: "uint256[]",
             name: "tokenIds",
-            type: "uint256[]"
+            type: "uint256[]",
           },
           {
             internalType: "uint256",
             name: "numberOfParticipants",
-            type: "uint256"
+            type: "uint256",
           },
           {
             internalType: "address[]",
             name: "participantsList",
-            type: "address[]"
+            type: "address[]",
           },
           {
             internalType: "uint256",
             name: "fees",
-            type: "uint256"
+            type: "uint256",
           },
           {
             internalType: "address",
             name: "winner",
-            type: "address"
+            type: "address",
           },
           {
             internalType: "bool",
             name: "requested",
-            type: "bool"
-          }
+            type: "bool",
+          },
         ],
         internalType: "struct IRabbleRabble.Raffle",
         name: "",
-        type: "tuple"
-      }
+        type: "tuple",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "joinRaffle",
     outputs: [],
     stateMutability: "payable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -544,11 +543,11 @@ export const rabbleAbi = [
       {
         internalType: "bytes32",
         name: "",
-        type: "bytes32"
-      }
+        type: "bytes32",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -557,11 +556,11 @@ export const rabbleAbi = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -570,11 +569,11 @@ export const rabbleAbi = [
       {
         internalType: "address",
         name: "",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -583,45 +582,45 @@ export const rabbleAbi = [
       {
         internalType: "uint32",
         name: "",
-        type: "uint32"
-      }
+        type: "uint32",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "address",
         name: "",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "uint256",
         name: "",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "bytes",
         name: "",
-        type: "bytes"
-      }
+        type: "bytes",
+      },
     ],
     name: "onERC721Received",
     outputs: [
       {
         internalType: "bytes4",
         name: "",
-        type: "bytes4"
-      }
+        type: "bytes4",
+      },
     ],
     stateMutability: "pure",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -630,11 +629,11 @@ export const rabbleAbi = [
       {
         internalType: "address",
         name: "",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -643,11 +642,11 @@ export const rabbleAbi = [
       {
         internalType: "bool",
         name: "",
-        type: "bool"
-      }
+        type: "bool",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -656,122 +655,122 @@ export const rabbleAbi = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "address",
         name: "",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     name: "raffleIdToWhitelisted",
     outputs: [
       {
         internalType: "bool",
         name: "",
-        type: "bool"
-      }
+        type: "bool",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "raffles",
     outputs: [
       {
         internalType: "bool",
         name: "isPublic",
-        type: "bool"
+        type: "bool",
       },
       {
         internalType: "contract IERC721",
         name: "collection",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "uint256",
         name: "endingTime",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256",
         name: "numberOfParticipants",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256",
         name: "fees",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "address",
         name: "winner",
-        type: "address"
+        type: "address",
       },
       {
         internalType: "bool",
         name: "requested",
-        type: "bool"
-      }
+        type: "bool",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "requestId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256[]",
         name: "randomWords",
-        type: "uint256[]"
-      }
+        type: "uint256[]",
+      },
     ],
     name: "rawFulfillRandomWords",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "refundRaffle",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -780,66 +779,66 @@ export const rabbleAbi = [
       {
         internalType: "uint16",
         name: "",
-        type: "uint16"
-      }
+        type: "uint16",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "requests",
     outputs: [
       {
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "uint256",
         name: "randomWord",
-        type: "uint256"
+        type: "uint256",
       },
       {
         internalType: "bool",
         name: "fulfilled",
-        type: "bool"
-      }
+        type: "bool",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "_fee",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "setFee",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "_maxTimeLimit",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "setMaxTimeLimit",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -848,31 +847,31 @@ export const rabbleAbi = [
       {
         internalType: "uint64",
         name: "",
-        type: "uint64"
-      }
+        type: "uint64",
+      },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
     name: "togglePause",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "newOwner",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     inputs: [],
@@ -881,12 +880,12 @@ export const rabbleAbi = [
       {
         internalType: "contract VRFCoordinatorV2Interface",
         name: "",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     stateMutability: "view",
-    type: "function"
-  }
+    type: "function",
+  },
 ];
 export const nftAbi = [
   {

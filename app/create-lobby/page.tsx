@@ -1,5 +1,6 @@
 'use client'
 import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
+import { getNetwork } from "@wagmi/core";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
@@ -13,8 +14,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
-import { getRaffleCount, useRabbleContract, verifyApproval } from '../../utils/hooks.ts';
+import { getRaffleCount, useRabbleContract, verifyApproval, useFee, useNetworkToken } from '../../utils/hooks.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
+import { formatUnits } from 'viem';
 
 //Initialize firebase backend
 const app = initializeApp(firebaseConfig);
@@ -58,6 +60,10 @@ export default function CreateLobby() {
   const [collectionList, setCollectionList] = useState([] as string[]);
   const [imutableNftList, setImutableNftList] = useState([] as EvmNft[]);
   const rabbleContract = useRabbleContract();
+  const fee = useFee();
+  const { chain } = getNetwork();
+
+
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
@@ -71,7 +77,7 @@ export default function CreateLobby() {
       confirmNft.tokenId,
       84600 // 24 hours
     ],
-    value: 100000000000000000n,
+    value: fee,
     onSuccess: () => {
       getRaffleCount().then(async (response) => {
         createFirebaseLobby(Number(response));
@@ -350,7 +356,7 @@ export default function CreateLobby() {
 
                     <div className="mb-4">
                       <h2 className="font-semibold">Lobby Fee</h2>
-                      <p>0.1 AVAX</p>
+                      <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
                     </div>
 
                     <button onClick={() => handleFinalizeLobby()} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">
