@@ -44,8 +44,6 @@ export const verifyApproval = async (
   } catch (e) {
     console.log("approval error", e);
   }
-
-  return approved;
 };
 
 // get raffle count

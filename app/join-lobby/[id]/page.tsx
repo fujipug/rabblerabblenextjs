@@ -37,10 +37,13 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     abi: rabbleAbi,
     functionName: 'joinRaffle',
     args: [
-      lobbyDetails?.raffleId,
+      lobbyDetails?.data.raffleId,
       confirmNft.tokenId,
     ],
     value: 100000000000000000n,
+    onSuccess: () => {
+      updateFirebaseLobby();
+    }
   })
   const getNfts = async () => {
     const chain = EvmChain.MUMBAI;
@@ -61,7 +64,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
         const filtered = results.filter((nft: any) => nft?.name == doc.data().collection);
         console.log(doc.data());
         setNfts(filtered);
-        setLobbyDetails(doc.data());
+        setLobbyDetails({ id: doc.id, data: doc.data() });
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -76,12 +79,10 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
 
   // Join player to Lobby
   const handleFinalizeJoinLobby = async () => {
+    console.log(confirmNft.tokenAddress);
     if (confirmNft) {
-      verifyApproval(confirmNft.tokenAddress).then((approved) => {
-        // if (approved) {
+      verifyApproval(confirmNft?.tokenAddress).then((approved) => {
         write();
-        updateFirebaseLobby();
-        // }
       });
     }
   }
@@ -89,10 +90,11 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   // Update the firebase database with the new player
   const updateFirebaseLobby = async () => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
-    const joinedNfts = lobbyDetails.nfts.join(confirmNft.toJSON());
+    const joinedNfts = [...lobbyDetails.data.nfts, confirmNft.toJSON()];
+    console.log(joinedNfts);
 
     await updateDoc(lobbyRef, {
-      confirmedPlayers: lobbyDetails.confirmedPlayers + 1,
+      confirmedPlayers: lobbyDetails.data.confirmedPlayers + 1,
       nfts: joinedNfts
     });
   }
@@ -112,7 +114,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                     {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
                     </svg> */}
-                    <span className="font-bold">Collection:</span> {lobbyDetails?.collection}
+                    <span className="font-bold">Collection:</span> {lobbyDetails?.data.collection}
                   </label>
                 </div>
               </div>
@@ -184,12 +186,12 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
             <div className="col-span-1 relative mt-4 sm:mt-0">
               <div className="mb-4">
                 <h2 className="font-semibold">Time Remaining</h2>
-                <Countdown endTime={lobbyDetails?.endDate} size={'medium'} />
+                <Countdown endTime={lobbyDetails?.data.endDate} size={'medium'} />
               </div>
 
               <div className="mb-4">
                 <h2 className="font-semibold">EVM Chain</h2>
-                <p>{lobbyDetails.evmChain} </p>
+                <p>{lobbyDetails.data.evmChain} </p>
               </div>
 
               <div className="mb-4">
@@ -200,7 +202,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                     </svg>
                   </div>
                 </h2>
-                <p>{lobbyDetails.collection}</p>
+                <p>{lobbyDetails.data.collection}</p>
               </div>
 
               <div className="mb-4">
@@ -215,7 +217,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
               <div className="mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center">
                 <div className="mr-4">
                   <h2 className="font-semibold text-3xl"><span className={myFont.className}>Good Luck</span></h2>
-                  <p className="text-xl"><span className={myFont.className}>Player {converter.toWords(lobbyDetails?.confirmedPlayers + 1)}</span></p>
+                  <p className="text-xl"><span className={myFont.className}>Player {converter.toWords(lobbyDetails?.data.confirmedPlayers + 1)}</span></p>
                 </div>
                 <Image src="/images/gl-banan.gif" width={60} height={60} alt="Good Luck Banana"></Image>
               </div>

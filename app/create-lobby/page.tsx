@@ -72,6 +72,11 @@ export default function CreateLobby() {
       84600 // 24 hours
     ],
     value: 100000000000000000n,
+    onSuccess: () => {
+      getRaffleCount().then(async (response) => {
+        createFirebaseLobby(Number(response));
+      });
+    }
   })
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
@@ -98,13 +103,8 @@ export default function CreateLobby() {
   // Finalize lobby and create the lobby in the blockchain
   const handleFinalizeLobby = async () => {
     if (confirmNft) {
-      verifyApproval(confirmNft?.tokenAddress).then((response) => {
+      verifyApproval(confirmNft?.tokenAddress).then(() => {
         write();
-        if (response) { // TODO: this eventually returns true so maybe move the write function
-          getRaffleCount().then(async (response) => {
-            createFirebaseLobby(Number(response));
-          });
-        }
       });
     }
   }
