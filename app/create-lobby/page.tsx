@@ -109,9 +109,10 @@ export default function CreateLobby() {
   // Finalize lobby and create the lobby in the blockchain
   const handleFinalizeLobby = async () => {
     if (confirmNft) {
-      verifyApproval(confirmNft?.tokenAddress).then(() => {
-        write();
-      });
+      verifyApproval(confirmNft?.tokenAddress, write)
+      // .then(() => {
+      //   write();
+      // });
     }
   }
 

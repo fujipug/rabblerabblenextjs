@@ -8,12 +8,14 @@ import {
   getWalletClient,
   readContract,
 } from "@wagmi/core";
+import { write } from "fs";
 
 const { chain } = getNetwork();
 const account = getAccount();
 
 export const verifyApproval = async (
   collection: EvmAddress,
+  write: () => void,
 ) => {
   const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
   const walletClient = await getWalletClient({
@@ -28,17 +30,26 @@ export const verifyApproval = async (
     account.address,
     address,
   ]);
-
+  console.log("is approved", approved);
   try {
-    if (approved) {
+    if (!approved) {
       // @ts-ignore
       const tx = await collectionContract.write.setApprovalForAll([
         address,
         true,
       ]);
 
-      console.log(tx);
-      return await tx.wait();
+      const unwatch = collectionContract.watchEvent.ApprovalForAll(
+        { from: account.address },
+        {
+          onLogs() {
+            write();
+            unwatch();
+          },
+        },
+      );
+    } else {
+      write();
     }
   } catch (e) {
     console.log("approval error", e);
