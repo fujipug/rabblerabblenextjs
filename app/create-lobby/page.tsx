@@ -137,7 +137,6 @@ export default function CreateLobby() {
       status: 'Active',
       totalPlayers: playerAmount,
       raffleId: raffleId,
-      lobbyType: 'Public',
     }
 
     firebaseLobby(lobby);
