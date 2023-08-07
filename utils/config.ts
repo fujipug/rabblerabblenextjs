@@ -1,6 +1,6 @@
 export const rabbleAddress = "0xc6c08823a324278c621c8D625d904700BFFE3d1b";
-export const rabbleTestAddress = "0xE4850d1E5a65b46A25EfA5e8b8c8944A074D0ec5";
-export const fee = 0.1;
+export const rabbleTestAddress = "0x46916d0453c7e835c164dcefdc6e88a646b745d7";
+export const fee = 0.000001;
 export const rabbleAbi = [
   {
     inputs: [
@@ -284,12 +284,6 @@ export const rabbleAbi = [
         indexed: true,
         internalType: "uint256",
         name: "raffleId",
-        type: "uint256"
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "requestId",
         type: "uint256"
       },
       {
@@ -819,6 +813,19 @@ export const rabbleAbi = [
       }
     ],
     stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_fee",
+        type: "uint256"
+      }
+    ],
+    name: "setFee",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function"
   },
   {

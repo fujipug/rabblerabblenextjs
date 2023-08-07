@@ -4,7 +4,7 @@ import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from "moralis";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useContractWrite } from "wagmi";
-import { arrayUnion, collection, doc, documentId, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { collection, doc, documentId, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import converter from 'number-to-words';
 import localFont from 'next/font/local'
@@ -79,9 +79,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
 
   // Join player to Lobby
   const handleFinalizeJoinLobby = async () => {
-    console.log(confirmNft.tokenAddress);
     if (confirmNft) {
-      verifyApproval(confirmNft?.tokenAddress).then((approved) => {
+      verifyApproval(confirmNft?.tokenAddress).then(() => {
         write();
       });
     }
