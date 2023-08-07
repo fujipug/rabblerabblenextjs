@@ -114,55 +114,57 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="overflow-x-auto mt-4">
-        <h1 className="font-semibold text-2xl ml-3 my-2">Recent Lobbiess</h1>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Lobby</th>
-              <th>Collection</th>
-              <th>Status</th>
-              <th>Time Remaining</th>
-              <th>Winner</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lobbies.map((lobby: DocumentData, index: number) => (
-              <tr key={index}>
-                <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{lobby.id}</Link></th>
-                <td>{lobby.data.collection}</td>
-                <td>
+      {lobbies.length > 0 &&
+        <div className="overflow-x-auto mt-4">
+          <h1 className="font-semibold text-2xl ml-3 my-2">Recent Lobbiess</h1>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Lobby</th>
+                <th>Collection</th>
+                <th>Status</th>
+                <th>Time Remaining</th>
+                <th>Winner</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lobbies.map((lobby: DocumentData, index: number) => (
+                <tr key={index}>
+                  <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{lobby.id}</Link></th>
+                  <td>{lobby.data.collection}</td>
+                  <td>
+                    {lobby.data.status === 'Expired' &&
+                      <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/10">
+                        {lobby.data.status}
+                      </span>
+                    }
+                    {lobby.data.status === 'Active' &&
+                      <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-600/10">
+                        {lobby.data.status}
+                      </span>
+                    }
+                    {lobby.data.status === 'Completed' &&
+                      <span className="inline-flex items-center rounded-full bg-lime-50 px-2 py-1 text-xs font-medium text-lime-700 ring-1 ring-inset ring-lime-600/10">
+                        {lobby.data.status}
+                      </span>
+                    }
+                  </td>
+                  <td><Countdown endTime={lobby.data.endDate} size={'small'} /></td>
                   {lobby.data.status === 'Expired' &&
-                    <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/10">
-                      {lobby.data.status}
-                    </span>
+                    <td>N/A</td>
                   }
                   {lobby.data.status === 'Active' &&
-                    <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-600/10">
-                      {lobby.data.status}
-                    </span>
+                    <td>TBA</td>
                   }
-                  {lobby.data.status === 'Completed' &&
-                    <span className="inline-flex items-center rounded-full bg-lime-50 px-2 py-1 text-xs font-medium text-lime-700 ring-1 ring-inset ring-lime-600/10">
-                      {lobby.data.status}
-                    </span>
+                  {lobby.data.status === 'Completed' && lobby.data.winner &&
+                    <td>{lobby.data.winner}</td>
                   }
-                </td>
-                <td><Countdown endTime={lobby.data.endDate} size={'small'} /></td>
-                {lobby.data.status === 'Expired' &&
-                  <td>N/A</td>
-                }
-                {lobby.data.status === 'Active' &&
-                  <td>TBA</td>
-                }
-                {lobby.data.status === 'Completed' && lobby.data.winner &&
-                  <td>{lobby.data.winner}</td>
-                }
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      }
     </>
   )
 }

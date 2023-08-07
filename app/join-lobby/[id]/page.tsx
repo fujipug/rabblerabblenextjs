@@ -49,6 +49,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     value: fee,
     onSuccess: () => {
       updateFirebaseLobby();
+      location.href = `/lobby-details/${params.id}`;
     },
     onError(error) {
       const errorMessage = `Error: ${error.message.split(':')[1].split('()')[0].trim().replace(/([a-z])([A-Z])/g, '$1 $2')}`;
@@ -187,65 +188,74 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
 
       {(step == 2) &&
         <div className="mt-12">
-          <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
-            <div className="col-span-1 flex justify-center">
-              <div className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img
-                  src={confirmNft?.media?.mediaCollection?.high?.url ? confirmNft?.media?.mediaCollection?.high?.url : confirmNft?.media?.originalMediaUrl}
-                  alt="NFT Image" /></figure>
-                <div className="card-body">
-                  <h2 className="card-title">{confirmNft?.name} #{confirmNft?.tokenId}</h2>
-                  <p><span className="font-semibold">Symbol: </span> {confirmNft?.symbol}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-span-1 relative mt-4 sm:mt-0">
-              <div className="mb-4">
-                <h2 className="font-semibold">Time Remaining</h2>
-                <Countdown endTime={lobbyDetails?.data.endDate} size={'medium'} />
-              </div>
-
-              <div className="mb-4">
-                <h2 className="font-semibold">EVM Chain</h2>
-                <p>{lobbyDetails.data.evmChain} </p>
-              </div>
-
-              <div className="mb-4">
-                <h2 className="font-semibold">Raffle Collection
-                  <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                    </svg>
+          {address && isConnected ?
+            <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
+              <div className="col-span-1 flex justify-center">
+                <div className="card card-compact w-96 bg-base-200 shadow-xl">
+                  <figure><img
+                    src={confirmNft?.media?.mediaCollection?.high?.url ? confirmNft?.media?.mediaCollection?.high?.url : confirmNft?.media?.originalMediaUrl}
+                    alt="NFT Image" /></figure>
+                  <div className="card-body">
+                    <h2 className="card-title">{confirmNft?.name} #{confirmNft?.tokenId}</h2>
+                    <p><span className="font-semibold">Symbol: </span> {confirmNft?.symbol}</p>
                   </div>
-                </h2>
-                <p>{lobbyDetails.data.collection}</p>
-              </div>
-
-              <div className="mb-4">
-                <h2 className="font-semibold">Lobby Fee</h2>
-                <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
-              </div>
-
-              <div className="flex flex-col w-full border-opacity-50">
-                <div className="divider"></div>
-              </div>
-
-              <div className="mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center">
-                <div className="mr-4">
-                  <h2 className="font-semibold text-3xl"><span className={myFont.className}>Good Luck</span></h2>
-                  <p className="text-xl"><span className={myFont.className}>Player {converter.toWords(lobbyDetails?.data.confirmedPlayers + 1)}</span></p>
                 </div>
-                <Image src="/images/gl-banan.gif" width={60} height={60} alt="Good Luck Banana"></Image>
               </div>
 
-              <button onClick={() => handleFinalizeJoinLobby()} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">
-                {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Game'}</button>
-              <button onClick={() => handleFinalizeJoinLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">
-                {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Game'}
-              </button>
+              <div className="col-span-1 relative mt-4 sm:mt-0">
+                <div className="mb-4">
+                  <h2 className="font-semibold">Time Remaining</h2>
+                  <Countdown endTime={lobbyDetails?.data.endDate} size={'medium'} />
+                </div>
+
+                <div className="mb-4">
+                  <h2 className="font-semibold">EVM Chain</h2>
+                  <p>{lobbyDetails.data.evmChain} </p>
+                </div>
+
+                <div className="mb-4">
+                  <h2 className="font-semibold">Raffle Collection
+                    <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                      </svg>
+                    </div>
+                  </h2>
+                  <p>{lobbyDetails.data.collection}</p>
+                </div>
+
+                <div className="mb-4">
+                  <h2 className="font-semibold">Lobby Fee</h2>
+                  <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
+                </div>
+
+                <div className="flex flex-col w-full border-opacity-50">
+                  <div className="divider"></div>
+                </div>
+
+                <div className="mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center">
+                  <div className="mr-4">
+                    <h2 className="font-semibold text-3xl"><span className={myFont.className}>Good Luck</span></h2>
+                    <p className="text-xl"><span className={myFont.className}>Player {converter.toWords(lobbyDetails?.data.confirmedPlayers + 1)}</span></p>
+                  </div>
+                  <Image src="/images/gl-banan.gif" width={60} height={60} alt="Good Luck Banana"></Image>
+                </div>
+
+                <button onClick={() => handleFinalizeJoinLobby()} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">
+                  {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Game'}</button>
+                <button onClick={() => handleFinalizeJoinLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">
+                  {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Game'}
+                </button>
+              </div>
             </div>
-          </div>
+            :
+            <>
+              <h1 className="font-semibold text-2xl mb-4 text-center">Sign into your NFT wallet</h1>
+              <div className="w-full flex justify-center">
+                <ConnectButton />
+              </div>
+            </>
+          }
         </div>
       }
 

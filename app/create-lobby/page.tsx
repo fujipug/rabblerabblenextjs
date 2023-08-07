@@ -333,7 +333,7 @@ export default function CreateLobby() {
               <>
                 <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
                   <div className="col-span-1 flex justify-center">
-                    <div className="card card-compact w-96 bg-base-100 shadow-xl">
+                    <div className="card card-compact w-96 bg-base-200 shadow-xl">
                       <figure><img src={selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl} alt="NFT Image" /></figure>
                       <div className="card-body">
                         <h2 className="card-title">{selectedNft?.name} #{selectedNft?.tokenId}</h2>
