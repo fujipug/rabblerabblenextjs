@@ -6,7 +6,7 @@ import {
   getContract,
   getNetwork,
   getWalletClient,
-  readContract
+  readContract,
 } from "@wagmi/core";
 
 const { chain } = getNetwork();
@@ -15,7 +15,6 @@ const account = getAccount();
 export const verifyApproval = async (
   collection: EvmAddress,
 ) => {
-
   const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
   const walletClient = await getWalletClient({
     chainId: chain?.id,
@@ -54,11 +53,10 @@ export const getRaffleCount = () => {
     address: address,
     abi: rabbleAbi,
     functionName: "raffleCounter",
-  })
+  });
 
   return count;
 };
-
 
 export const useRabbleContract = () => {
   const [contract, setContract] = useState<any | null>(null);
@@ -74,4 +72,18 @@ export const useRabbleContract = () => {
   }, []);
 
   return contract;
+};
+
+export const useFee = () => {
+  const [fee, setFee] = useState<bigint>(0n);
+  let fees = new Map<number, bigint>([
+    [80001, 1000000000000n], // mumbai
+    [43114, 1000000000000000000n], // avalanche
+  ]);
+
+  useEffect(() => {
+    setFee(fees.get(chain?.id || 0) || 0n);
+  }, [chain?.id]);
+
+  return fee;
 };
