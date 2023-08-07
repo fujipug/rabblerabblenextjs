@@ -44,7 +44,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       lobbyDetails?.data.raffleId,
       confirmNft.tokenId,
     ],
-    value: 100000000000000000n,
+    value: fee,
     onSuccess: () => {
       updateFirebaseLobby();
     }
