@@ -68,7 +68,7 @@ export default function CreateLobby() {
     args: [
       confirmNft.tokenAddress?.lowercase,
       playerAmount,
-      confirmNft?.tokenId,
+      confirmNft.tokenId,
       84600 // 24 hours
     ],
     value: 100000000000000000n,
