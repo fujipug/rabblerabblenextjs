@@ -1,7 +1,7 @@
 'use client'
 import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
-import { getNetwork } from "@wagmi/core";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
+import { getNetwork } from '@wagmi/core'
 import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
@@ -62,8 +62,6 @@ export default function CreateLobby() {
   const rabbleContract = useRabbleContract();
   const fee = useFee();
   const { chain } = getNetwork();
-
-
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
@@ -82,7 +80,7 @@ export default function CreateLobby() {
       getRaffleCount().then(async (response) => {
         createFirebaseLobby(Number(response));
       });
-    },
+    }
   })
   const processStep2 = async (amount: number) => {
     setPlayerAmount(amount);
@@ -132,13 +130,14 @@ export default function CreateLobby() {
       createdAt: Timestamp.now(),
       confirmedPlayers: 1,
       endDate: Timestamp.fromDate(endDate),
-      evmChain: 'Mumbai',
+      evmChain: chain?.name,
       isPrivate: false,
       nfts: [confirmNft.toJSON()],
       timeLimit: 24, // Update when time limits are added
       status: 'Active',
       totalPlayers: playerAmount,
       raffleId: raffleId,
+      lobbyType: 'Public',
     }
 
     firebaseLobby(lobby);
@@ -324,7 +323,7 @@ export default function CreateLobby() {
                   <div className="col-span-1 relative mt-4">
                     <div className="mb-4">
                       <h2 className="font-semibold">EVM Chain</h2>
-                      <p>Mumbai</p>
+                      <p>{chain?.name}</p>
                     </div>
 
                     <div className="mb-4">
