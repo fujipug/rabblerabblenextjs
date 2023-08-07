@@ -1,5 +1,5 @@
 export const rabbleAddress = "0xc6c08823a324278c621c8D625d904700BFFE3d1b";
-export const rabbleTestAddress = "0x46916d0453c7e835c164dcefdc6e88a646b745d7";
+export const rabbleTestAddress = "0x46916D0453c7e835c164dcefdc6e88a646b745d7";
 export const rabbleAbi = [
   {
     inputs: [

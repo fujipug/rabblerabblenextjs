@@ -2,6 +2,8 @@
 import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { getNetwork } from '@wagmi/core'
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { getRaffleCount, useRabbleContract, verifyApproval, useFee } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
@@ -10,11 +12,9 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import Link from "next/link";
 import Image from "next/image";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import confetti from "canvas-confetti";
 import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
-import { getRaffleCount, useRabbleContract, verifyApproval, useFee } from '../../utils/hooks.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
 
