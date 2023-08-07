@@ -255,7 +255,6 @@ export default function CreateLobby() {
               <>
                 <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
                 <span className="hidden sm:block">{address}</span>
-                {/* <span className="block sm:hidden">{address | pipe}</span> */}
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
                     <label tabIndex={0} className="btn m-1">
@@ -279,39 +278,43 @@ export default function CreateLobby() {
                   </button>
                 </div>
                 <div className="flex justify-center bg-base-200 rounded-lg p-5 mt-2 drop-shadow-md">
-                  <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
-                    {nfts.map((nft: any, index: any) => (
-                      <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
-                        <div>
-                          {nft.media?.mimetype === 'video/mp4' ?
-                            <div className="relative group">
-                              <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
-                                <source src={nft.media?.media_collection?.medium.url} type="video/mp4" />
-                              </video>
-                              <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                  {nfts.length == 0 ?
+                    <div className="flex justify-center items-center">No NFTs available</div>
+                    :
+                    <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
+                      {nfts.map((nft: any, index: any) => (
+                        <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
+                          <div>
+                            {nft.media?.mimetype === 'video/mp4' ?
+                              <div className="relative group">
+                                <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
+                                  <source src={nft.media?.media_collection?.medium.url} type="video/mp4" />
+                                </video>
+                                <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                                </div>
+                                <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                                </div>
                               </div>
-                              <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                              :
+                              <div className="relative group">
+                                <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
+                                  src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
+                                  alt="NFT image unreachable" width={150} height={150} />
+                                <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                                </div>
+                                <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                                </div>
                               </div>
-                            </div>
-                            :
-                            <div className="relative group">
-                              <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
-                                src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
-                                alt="NFT image unreachable" width={150} height={150} />
-                              <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
-                              </div>
-                              <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
-                              </div>
-                            </div>
-                          }
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                            }
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  }
                 </div>
                 <div className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</div>
               </>
