@@ -8,8 +8,6 @@ import {
   getWalletClient,
   readContract,
 } from "@wagmi/core";
-import { write } from "fs";
-import { id } from "ethers/lib/utils";
 
 const { chain } = getNetwork();
 const account = getAccount();
