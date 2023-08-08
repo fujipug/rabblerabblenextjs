@@ -22,7 +22,7 @@ export default function Navbar() {
     const hash = await avvy.reverse(AVVY.RECORDS.EVM, address)
     let name;
     try {
-      name = await hash.lookup();
+      name = await hash?.lookup();
       setAvvy(name?.name);
     } catch (e) {
       console.log(e);
@@ -87,9 +87,8 @@ export default function Navbar() {
                   return (
                     <div style={{ display: 'flex', gap: 12 }}>
                       <button
-                        className="hidden sm:flex sm:items-center"
+                        className="hidden sm:flex sm:items-center text-gray-100"
                         onClick={openChainModal}
-                        // style={{ display: 'flex', alignItems: 'center' }}
                         type="button"
                       >
                         {chain.hasIcon && (

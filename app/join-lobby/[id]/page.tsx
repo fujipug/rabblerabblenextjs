@@ -16,8 +16,8 @@ import { rabbleAbi } from '../../../utils/config.ts';
 import { useRabbleContract, verifyApproval, useFee } from '../../../utils/hooks.ts';
 import { firebaseConfig } from '../../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
-import { get } from "http";
 import React from "react";
+import confetti from "canvas-confetti";
 
 declare global {
   interface Window {
@@ -41,6 +41,23 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const fee = useFee();
   const { chain } = getNetwork();
 
+  // Confetti helper animation
+  const fireConfetti = (particleRatio: number, opts: any) => {
+    const defaults = {
+      origin: { y: 0.7 }
+    };
+    confetti(Object.assign({}, defaults, opts, {
+      particleCount: Math.floor(200 * particleRatio)
+    }));
+  };
+  function fireAction() {
+    fireConfetti(0.25, { spread: 26, startVelocity: 55 });
+    fireConfetti(0.2, { spread: 60 });
+    fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+    fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+    fireConfetti(0.1, { spread: 120, startVelocity: 45 });
+  }
+
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
@@ -51,8 +68,12 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     ],
     value: fee,
     onSuccess: () => {
-      updateFirebaseLobby();
-      location.href = `/lobby-details/${params.id}`;
+      updateFirebaseLobby().then(() => {
+        fireAction();
+        setTimeout(() => {
+          location.href = `/lobby-details/${params.id}`;
+        }, 2000);
+      });
     },
     onError(error) {
       const errorMessage = `Error: ${error.message.split(':')[1].split('()')[0].trim().replace(/([a-z])([A-Z])/g, '$1 $2')}`;
