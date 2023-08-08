@@ -2,7 +2,6 @@
 import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { getNetwork } from '@wagmi/core'
-import { watchAccount } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { getRaffleCount, useRabbleContract, verifyApproval, useFee, truncateAddress } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
@@ -54,7 +53,7 @@ export default function CreateLobby() {
   const [selectedNft, setSelectedNft] = useState({} as EvmNft);
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
   const [shareUrl, setShareUrl] = useState('');
-  let { address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
 
   const [showClipboardAlert, setShowClipboardAlert] = useState(false);
   const { SVG } = useQRCode();
@@ -69,14 +68,6 @@ export default function CreateLobby() {
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
-
-  // let address: string = '';
-  // let isConnected: boolean = false;
-  watchAccount((account) => {
-    address = account.address;
-    isConnected = account.isConnected;
-  });
-
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
@@ -109,7 +100,6 @@ export default function CreateLobby() {
 
   // Get Nfts by calling the Moralis API
   useEffect(() => {
-    console.log('address', address);
     if (address && isConnected)
       getNfts();
   }, [address, isConnected]);

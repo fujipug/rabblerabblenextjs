@@ -1,6 +1,5 @@
 'use client'
 import { useAccount, useContractWrite } from "wagmi";
-import { watchAccount } from '@wagmi/core'
 import { getNetwork } from "@wagmi/core";
 import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
@@ -34,15 +33,13 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const [nfts, setNfts] = useState([] as EvmNft[]);
   const [selectedNft, setSelectedNft] = useState({} as EvmNft);
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
-  let { address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const rabbleContract = useRabbleContract();
   const fee = useFee();
   const { chain } = getNetwork();
-
-  watchAccount((account) => address = account.address);
 
   // Confetti helper animation
   const fireConfetti = (particleRatio: number, opts: any) => {

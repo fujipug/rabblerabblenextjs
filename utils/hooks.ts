@@ -1,3 +1,4 @@
+import { watchAccount } from '@wagmi/core'
 import { useEffect, useState } from "react";
 import { nftAbi, rabbleAbi, rabbleAddress, rabbleTestAddress } from "./config";
 import { EvmAddress } from "@moralisweb3/common-evm-utils";
@@ -10,7 +11,8 @@ import {
 } from "@wagmi/core";
 
 const { chain } = getNetwork();
-const account = getAccount();
+let account = getAccount();
+watchAccount((watchedAccount) => account = watchedAccount);
 
 export const verifyApproval = async (
   collection: EvmAddress,
