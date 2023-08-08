@@ -14,9 +14,11 @@ export const verifyApproval = async (
   collection: EvmAddress,
   write: () => void,
 ) => {
-  const address = getNetwork().chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const network = getNetwork();
+  const account = getAccount();
+  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
   const walletClient = await getWalletClient({
-    chainId: getNetwork().chain?.id,
+    chainId: network.chain?.id,
   });
   const collectionContract = getContract({
     address: collection.checksum as any,
@@ -24,7 +26,7 @@ export const verifyApproval = async (
     walletClient: walletClient as any,
   });
   const approved = await collectionContract.read.isApprovedForAll([
-    getAccount()?.address,
+    account.address,
     address,
   ]);
   try {
@@ -36,7 +38,7 @@ export const verifyApproval = async (
       ]);
 
       const unwatch = collectionContract.watchEvent.ApprovalForAll(
-        { from: getAccount()?.address },
+        { from: getAccount().address },
         {
           onLogs() {
             write();
@@ -57,7 +59,8 @@ export const verifyApproval = async (
 
 // get raffle count
 export const getRaffleCount = () => {
-  const address = getNetwork().chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const network = getNetwork();
+  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
 
   const count = readContract({
     address: address,
@@ -69,7 +72,8 @@ export const getRaffleCount = () => {
 };
 
 export const getRaffleById = (id: number) => {
-  const address = getNetwork().chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const network = getNetwork();
+  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
   const raffle = readContract({
     address: address,
     abi: rabbleAbi,
@@ -82,32 +86,36 @@ export const getRaffleById = (id: number) => {
 
 export const useRabbleContract = () => {
   const [contract, setContract] = useState<any | null>(null);
-  watchNetwork((network) => {
+  const network = getNetwork();
+  const account = getAccount();
+
+  // watchNetwork((network) => {
+  //   const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  //   const contract = getContract({
+  //     address: address,
+  //     abi: rabbleAbi,
+  //     walletClient: getWalletClient({
+  //       chainId: network.chain?.id
+  //     }),
+  //   });
+  //   setContract(contract);
+  // });
+
+  useEffect(() => {
     const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
     const contract = getContract({
       address: address,
       abi: rabbleAbi,
-      walletClient: getWalletClient({
-        chainId: getNetwork().chain?.id
-      }),
+      walletClient: getWalletClient(),
     });
     setContract(contract);
-  });
-
-  // useEffect(() => {
-  //   const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
-  //   const contract = getContract({
-  //     address: address,
-  //     abi: rabbleAbi,
-  //     walletClient: getWalletClient(),
-  //   });
-  //   setContract(contract);
-  // }, [chain, account]);
+  }, [network.chain?.id]);
 
   return contract;
 };
 
 export const useFee = () => {
+  const network = getNetwork();
   const [fee, setFee] = useState<bigint>(0n);
   let fees = new Map<number, bigint>([
     [80001, 1000000000000n], // mumbai
@@ -115,8 +123,8 @@ export const useFee = () => {
   ]);
 
   useEffect(() => {
-    setFee(fees.get(getNetwork().chain?.id || 0) || 0n);
-  }, [getNetwork().chain?.id]);
+    setFee(fees.get(network.chain?.id || 0) || 0n);
+  }, [network.chain?.id]);
 
   return fee;
 };
