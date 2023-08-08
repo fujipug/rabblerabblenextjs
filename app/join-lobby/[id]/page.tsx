@@ -33,13 +33,17 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const [nfts, setNfts] = useState([] as EvmNft[]);
   const [selectedNft, setSelectedNft] = useState({} as EvmNft);
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
-  const { address, isConnected } = useAccount();
+  let { address, isConnected } = useAccount();
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const rabbleContract = useRabbleContract();
   const fee = useFee();
   const { chain } = getNetwork();
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
+    address = useAccount().address;
+  }, [address]);
 
   // Confetti helper animation
   const fireConfetti = (particleRatio: number, opts: any) => {

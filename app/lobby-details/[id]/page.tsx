@@ -88,11 +88,11 @@ function LobbyNftInfo(props: any) {
               {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
                 <div key={index}>
                   {(winner.toLowerCase() != nft.ownerOf.toLowerCase()) &&
-                    <div className="avatar">
-                      <div className="w-12">
-                        <img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" />
-                      </div>
+                    // <div className="avatar">
+                    <div className="w-16 mr-6">
+                      <img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
                     </div>
+                    // </div>
                   }
                 </div>
               ))}
@@ -174,7 +174,6 @@ function LobbyNftInfo(props: any) {
                 <tr>
                   <th></th>
                   <th></th>
-                  <th>Win Ratio</th>
                 </tr>
               </thead>
               <tbody>
@@ -189,7 +188,6 @@ function LobbyNftInfo(props: any) {
                           <span>{truncateAddress(nft.ownerOf)}</span>
                         }
                       </td>
-                      <td>50%</td>
                     </tr>
                   ))}
                 </>

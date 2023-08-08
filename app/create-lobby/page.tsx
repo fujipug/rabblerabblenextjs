@@ -4,7 +4,7 @@ import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { getNetwork } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { getRaffleCount, useRabbleContract, verifyApproval, useFee, truncateAddress } from '../../utils/hooks.ts';
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
 import { Timestamp, addDoc, collection } from "firebase/firestore";
@@ -53,7 +53,7 @@ export default function CreateLobby() {
   const [selectedNft, setSelectedNft] = useState({} as EvmNft);
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
   const [shareUrl, setShareUrl] = useState('');
-  const { address, isConnected } = useAccount();
+  let { address, isConnected } = useAccount();
   const [showClipboardAlert, setShowClipboardAlert] = useState(false);
   const { SVG } = useQRCode();
   const [showQuokkas, setShowQuokkas] = useState(5);
@@ -67,6 +67,12 @@ export default function CreateLobby() {
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
+    address = useAccount().address;
+  }, [address]);
+
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
