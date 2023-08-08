@@ -55,6 +55,7 @@ export default function CreateLobby() {
   const [confirmNft, setConfirmNft] = useState({} as EvmNft);
   const [shareUrl, setShareUrl] = useState('');
   let { address, isConnected } = useAccount();
+
   const [showClipboardAlert, setShowClipboardAlert] = useState(false);
   const { SVG } = useQRCode();
   const [showQuokkas, setShowQuokkas] = useState(5);
@@ -69,7 +70,12 @@ export default function CreateLobby() {
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
 
-  watchAccount((account) => address = account.address);
+  // let address: string = '';
+  // let isConnected: boolean = false;
+  watchAccount((account) => {
+    address = account.address;
+    isConnected = account.isConnected;
+  });
 
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
@@ -103,6 +109,7 @@ export default function CreateLobby() {
 
   // Get Nfts by calling the Moralis API
   useEffect(() => {
+    console.log('address', address);
     if (address && isConnected)
       getNfts();
   }, [address, isConnected]);
