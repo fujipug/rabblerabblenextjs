@@ -1,7 +1,7 @@
 'use client'
 import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
-import { getNetwork } from '@wagmi/core'
+import { getNetwork, getAccount } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { getRaffleCount, useRabbleContract, verifyApproval, useFee, truncateAddress } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
+
 
 //Initialize firebase backend
 const app = initializeApp(firebaseConfig);

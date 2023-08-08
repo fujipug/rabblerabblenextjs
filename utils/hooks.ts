@@ -1,4 +1,4 @@
-import { watchAccount } from '@wagmi/core'
+import { watchAccount, watchNetwork } from '@wagmi/core'
 import { useEffect, useState } from "react";
 import { nftAbi, rabbleAbi, rabbleAddress, rabbleTestAddress } from "./config";
 import { EvmAddress } from "@moralisweb3/common-evm-utils";
@@ -10,17 +10,13 @@ import {
   readContract,
 } from "@wagmi/core";
 
-const { chain } = getNetwork();
-let account = getAccount();
-watchAccount((watchedAccount) => account = watchedAccount);
-
 export const verifyApproval = async (
   collection: EvmAddress,
   write: () => void,
 ) => {
-  const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = getNetwork().chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
   const walletClient = await getWalletClient({
-    chainId: chain?.id,
+    chainId: getNetwork().chain?.id,
   });
   const collectionContract = getContract({
     address: collection.checksum as any,
@@ -28,7 +24,7 @@ export const verifyApproval = async (
     walletClient: walletClient as any,
   });
   const approved = await collectionContract.read.isApprovedForAll([
-    account.address,
+    getAccount().address,
     address,
   ]);
   try {
@@ -40,7 +36,7 @@ export const verifyApproval = async (
       ]);
 
       const unwatch = collectionContract.watchEvent.ApprovalForAll(
-        { from: account.address },
+        { from: getAccount().address },
         {
           onLogs() {
             write();
@@ -48,17 +44,20 @@ export const verifyApproval = async (
           },
         },
       );
+      console.log("a", unwatch);
+
     } else {
       write();
     }
-  } catch (e) {
+  }
+  catch (e) {
     console.log("approval error", e);
   }
 };
 
 // get raffle count
 export const getRaffleCount = () => {
-  const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = getNetwork().chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
 
   const count = readContract({
     address: address,
@@ -70,7 +69,7 @@ export const getRaffleCount = () => {
 };
 
 export const getRaffleById = (id: number) => {
-  const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = getNetwork().chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
   const raffle = readContract({
     address: address,
     abi: rabbleAbi,
@@ -83,16 +82,25 @@ export const getRaffleById = (id: number) => {
 
 export const useRabbleContract = () => {
   const [contract, setContract] = useState<any | null>(null);
-
-  useEffect(() => {
-    const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  watchNetwork((network) => {
+    const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
     const contract = getContract({
       address: address,
       abi: rabbleAbi,
       walletClient: getWalletClient(),
     });
     setContract(contract);
-  }, [chain, account]);
+  });
+
+  // useEffect(() => {
+  //   const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  //   const contract = getContract({
+  //     address: address,
+  //     abi: rabbleAbi,
+  //     walletClient: getWalletClient(),
+  //   });
+  //   setContract(contract);
+  // }, [chain, account]);
 
   return contract;
 };
@@ -105,8 +113,8 @@ export const useFee = () => {
   ]);
 
   useEffect(() => {
-    setFee(fees.get(chain?.id || 0) || 0n);
-  }, [chain?.id]);
+    setFee(fees.get(getNetwork().chain?.id || 0) || 0n);
+  }, [getNetwork().chain?.id]);
 
   return fee;
 };
