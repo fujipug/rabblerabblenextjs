@@ -1,6 +1,10 @@
 'use client'
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import { initializeApp } from "firebase/app";
+import { collection, documentId, getDocs, getFirestore, where, query } from "firebase/firestore";
+import { firebaseConfig } from "../../../utils/firebase-config";
+import { EvmNft } from "@moralisweb3/common-evm-utils";
 
 const RotatingGIF = () => {
   const [currentGifIndex, setCurrentGifIndex] = useState(0);
@@ -25,14 +29,54 @@ const RotatingGIF = () => {
   return <Image src={currentGIF} className="w-full h-screen" width={100} height={100} alt="Rotating GIF" />;
 };
 
-export default function RafflePage() {
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export default function RafflePage({ params }: { params: { id: string } }) {
+  const [counter, setCounter] = useState(5);
+  const [lobbyDetails, setLobbyDetails] = useState() as any;
+
+  const fetchFirebaseData = async () => {
+    try {
+      const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
+      const querySnapshot = await getDocs(q);
+      for (const doc of querySnapshot.docs) {
+        console.log(doc.data().nfts);
+        setLobbyDetails(doc.data());
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFirebaseData();
+  }, [params.id]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCounter(counter - 1);
+    }, 1300);
+    if (counter === 0) {
+      () => clearInterval(interval);
+      location.href = `/lobby-details/${params.id}`;
+    }
+  }), [counter];
 
   return (
     <div className="w-full relative">
       <RotatingGIF />
       <div className="absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Ready Players!</span>
-        <p>Test</p>
+        <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Raffle Commencing!</div>
+        {lobbyDetails && lobbyDetails.nfts.map((nft: any, index: number) => {
+          return (
+            <p key={index}><span className="font-semibold">Player {index + 1}: </span>{nft.ownerOf}</p>
+          )
+        })}
+      </div>
+
+      <div className="absolute top-20 left-20 rounded p-4 drop-shadow-md">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-9xl mb-4">{counter}</span>
       </div>
     </div >
   )

@@ -68,6 +68,18 @@ export const getRaffleCount = () => {
   return count;
 };
 
+export const getRaffleById = (id: number) => {
+  const address = chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const raffle = readContract({
+    address: address,
+    abi: rabbleAbi,
+    functionName: 'raffles',
+    args: [BigInt(id)]
+  });
+
+  return raffle;
+};
+
 export const useRabbleContract = () => {
   const [contract, setContract] = useState<any | null>(null);
 
@@ -96,4 +108,11 @@ export const useFee = () => {
   }, [chain?.id]);
 
   return fee;
+};
+
+export const truncateAddress = (address: string) => {
+  const firstPart = address.slice(0, 5);
+  const lastPart = address.slice(-4);
+
+  return `${firstPart}...${lastPart}`;
 };
