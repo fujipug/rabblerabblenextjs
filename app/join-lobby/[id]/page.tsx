@@ -70,14 +70,13 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     onSuccess: () => {
       updateFirebaseLobby().then((response: any) => {
         fireAction();
-        setTimeout(() => {
-          if (response?.totalPlayers === response?.confirmedPlayers) {
-            location.href = `/raffle/${params.id}`;
-          } else {
-            location.href = `/lobby-details/${params.id}`;
-            updateFirebaseLobby(true);
-          }
-        }, 2000);
+        console.log(response);
+        if (response?.totalPlayers === response?.confirmedPlayers) {
+          location.href = `/raffle/${params.id}`;
+        } else {
+          location.href = `/lobby-details/${params.id}`;
+          updateFirebaseLobby(true);
+        }
       });
     },
     onError(error) {
