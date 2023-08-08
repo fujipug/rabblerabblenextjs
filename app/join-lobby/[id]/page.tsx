@@ -68,14 +68,14 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     ],
     value: fee,
     onSuccess: () => {
-      updateFirebaseLobby().then((response: any) => {
+      const completedLobby = ((lobbyDetails?.data.confirmedPlayers + 1) === lobbyDetails?.data.totalPlayers) ? true : false;
+      updateFirebaseLobby(completedLobby).then((response: any) => {
         fireAction();
         console.log(response);
         if (response?.totalPlayers === response?.confirmedPlayers) {
           location.href = `/raffle/${params.id}`;
         } else {
           location.href = `/lobby-details/${params.id}`;
-          updateFirebaseLobby(true);
         }
       });
     },
@@ -128,17 +128,14 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   }
 
   // Update the firebase database with the new player
-  const updateFirebaseLobby = async (isComplete?: boolean) => {
+  const updateFirebaseLobby = async (isCompleteLobby: boolean) => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
     const joinedNfts = [...lobbyDetails.data.nfts, confirmNft.toJSON()];
-
-    console.log(joinedNfts);
-    console.log(lobbyDetails?.data.confirmedPlayers + 1);
 
     return await updateDoc(lobbyRef, {
       confirmedPlayers: lobbyDetails?.data.confirmedPlayers + 1 && lobbyDetails?.data.confirmedPlayers + 1,
       nfts: joinedNfts && joinedNfts,
-      status: isComplete ? 'Completed' : 'Active'
+      status: isCompleteLobby ? 'Completed' : 'Active'
     });
   }
 

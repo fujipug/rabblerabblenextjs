@@ -24,7 +24,7 @@ export const verifyApproval = async (
     walletClient: walletClient as any,
   });
   const approved = await collectionContract.read.isApprovedForAll([
-    getAccount().address,
+    getAccount()?.address,
     address,
   ]);
   try {
@@ -36,7 +36,7 @@ export const verifyApproval = async (
       ]);
 
       const unwatch = collectionContract.watchEvent.ApprovalForAll(
-        { from: getAccount().address },
+        { from: getAccount()?.address },
         {
           onLogs() {
             write();
@@ -87,7 +87,9 @@ export const useRabbleContract = () => {
     const contract = getContract({
       address: address,
       abi: rabbleAbi,
-      walletClient: getWalletClient(),
+      walletClient: getWalletClient({
+        chainId: getNetwork().chain?.id
+      }),
     });
     setContract(contract);
   });
