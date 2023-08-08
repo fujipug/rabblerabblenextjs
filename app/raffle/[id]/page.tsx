@@ -35,7 +35,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export default function RafflePage({ params }: { params: { id: string } }) {
-  const [counter, setCounter] = useState(5);
   const [lobbyDetails, setLobbyDetails] = useState() as any;
 
   const fetchFirebaseData = async () => {
@@ -60,22 +59,26 @@ export default function RafflePage({ params }: { params: { id: string } }) {
     });
   }
 
-  useEffect(() => {
-    fetchFirebaseData();
-  }, [params.id]);
+  const [countdown, setCountdown] = useState(10); // Initial countdown time in seconds
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCounter(counter - 1);
+      if (countdown > 0) {
+        setCountdown(countdown - 1);
+      }
     }, 1300);
-    if (counter === 0) {
-      () => clearInterval(interval);
+    if (countdown === 0) {
       location.href = `/lobby-details/${params.id}`;
       getRaffleById(lobbyDetails.raffleId).then((res: any) => {
         updateFirebaseLobby(res[5]);
       });
     }
-  }), [counter];
+    return () => clearInterval(interval);
+  }, [countdown]);
+
+  useEffect(() => {
+    fetchFirebaseData();
+  }, [params.id]);
 
   return (
     <WagmiConfig config={wagmiConfig}>
@@ -91,7 +94,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
         </div>
 
         <div className="absolute top-20 left-20 rounded p-4 drop-shadow-md">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-9xl mb-4">{counter}</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-9xl mb-4">{countdown}</span>
         </div>
       </div >
     </WagmiConfig>
