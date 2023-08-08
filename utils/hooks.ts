@@ -9,6 +9,7 @@ import {
   readContract,
 } from "@wagmi/core";
 import { write } from "fs";
+import { id } from "ethers/lib/utils";
 
 const { chain } = getNetwork();
 const account = getAccount();
@@ -79,7 +80,7 @@ export const useRabbleContract = () => {
       walletClient: getWalletClient(),
     });
     setContract(contract);
-  }, []);
+  }, [chain, account]);
 
   return contract;
 };
