@@ -51,12 +51,16 @@ function LobbyNftInfo(props: any) {
     <>
       <div className="flex justify-between items-center mb-4">
         {winner && <Confetti width={window.outerWidth} />}
-        {winner ?
+        {winner &&
           <div><span className='font-semibold text-3xl'>Winner: </span><span className='text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'>{truncateAddress(winner)}</span></div>
-          :
+        }
+        {(!winner && lobbyDetails?.data.status == 'Active') &&
           <Countdown endTime={lobbyDetails?.data.endDate} size={'large'} />
         }
-        {!winner &&
+        {(!winner && lobbyDetails?.data.status == 'Expired') &&
+          <span className='text-3xl'>Expired</span>
+        }
+        {(!winner && (lobbyDetails?.data.status !== 'Expired')) &&
           <Link href={`/join-lobby/${lobbyDetails?.id}`} className="btn btn-secondary drop-shadow-md">Join Lobby</Link>
         }
       </div>

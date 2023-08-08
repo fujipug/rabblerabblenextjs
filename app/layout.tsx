@@ -56,10 +56,9 @@ export default function RootLayout(
               <Link href="https://mumbai.polygonscan.com/address/0x46916d0453c7e835c164dcefdc6e88a646b745d7#code" className="link link-hover">Contract</Link>
               <Link href="/learn-more" className="link link-hover">Learn More</Link>
             </div>
-            <div>
-              <span className="footer-title">Company</span>
-              <a className="link link-hover">Terms of use</a>
-              <a className="link link-hover">Privacy Policy</a>
+            <div className="w-52">
+              {/* <span className="footer-title">Stipulations</span> */}
+              <p className="text-xs">* Please research if rabblerabble.xyz is legal to use in your jurisdiction prior to use. rabblerabble.xyz assumes no responsibility for your use of the platform. </p>
             </div>
           </footer>
         </main>

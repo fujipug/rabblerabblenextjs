@@ -3,7 +3,7 @@ import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { getNetwork } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { getRaffleCount, useRabbleContract, verifyApproval, useFee } from '../../utils/hooks.ts';
+import { getRaffleCount, useRabbleContract, verifyApproval, useFee, truncateAddress } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
@@ -255,6 +255,7 @@ export default function CreateLobby() {
               <>
                 <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
                 <span className="hidden sm:block">{address}</span>
+                <span className="block sm:hidden">{truncateAddress(address)}</span>
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
                     <label tabIndex={0} className="btn m-1">

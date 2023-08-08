@@ -2,9 +2,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { initializeApp } from "firebase/app";
-import { collection, documentId, getDocs, getFirestore, where, query } from "firebase/firestore";
+import { collection, documentId, getDocs, getFirestore, where, query, updateDoc, doc } from "firebase/firestore";
 import { firebaseConfig } from "../../../utils/firebase-config";
 import { EvmNft } from "@moralisweb3/common-evm-utils";
+import { getRaffleById } from "../../../utils/hooks";
 
 const RotatingGIF = () => {
   const [currentGifIndex, setCurrentGifIndex] = useState(0);
@@ -49,6 +50,15 @@ export default function RafflePage({ params }: { params: { id: string } }) {
     }
   };
 
+  // Update the firebase database with the new player
+  const updateFirebaseLobby = async (winner: string) => {
+    const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
+
+    return await updateDoc(lobbyRef, {
+      winner: winner,
+    });
+  }
+
   useEffect(() => {
     fetchFirebaseData();
   }, [params.id]);
@@ -60,6 +70,9 @@ export default function RafflePage({ params }: { params: { id: string } }) {
     if (counter === 0) {
       () => clearInterval(interval);
       location.href = `/lobby-details/${params.id}`;
+      getRaffleById(lobbyDetails.raffleId).then((res: any) => {
+        updateFirebaseLobby(res[5]);
+      });
     }
   }), [counter];
 

@@ -13,7 +13,7 @@ const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 import Image from "next/image";
 import Countdown from "../../../components/countdown";
 import { rabbleAbi } from '../../../utils/config.ts';
-import { useRabbleContract, verifyApproval, useFee } from '../../../utils/hooks.ts';
+import { useRabbleContract, verifyApproval, useFee, truncateAddress } from '../../../utils/hooks.ts';
 import { firebaseConfig } from '../../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
 import React from "react";
@@ -73,6 +73,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
         setTimeout(() => {
           if (response?.totalPlayers !== response?.confirmedPlayers) {
             location.href = `/lobby-details/${params.id}`;
+            updateFirebaseLobby(true);
           } else {
             location.href = `/raffle/${params.id}`;
           }
@@ -128,13 +129,14 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   }
 
   // Update the firebase database with the new player
-  const updateFirebaseLobby = async () => {
+  const updateFirebaseLobby = async (isComplete?: boolean) => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
     const joinedNfts = [...lobbyDetails.data.nfts, confirmNft.toJSON()];
 
     return await updateDoc(lobbyRef, {
       confirmedPlayers: lobbyDetails.data.confirmedPlayers + 1,
-      nfts: joinedNfts
+      nfts: joinedNfts,
+      status: isComplete && 'Completed'
     });
   }
 
@@ -152,6 +154,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
             <>
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
               <span className="hidden sm:block">{address}</span>
+              <span className="block sm:hidden">{truncateAddress(address)}</span>
               <div className="flex justify-start items-center mt-6">
                 <div className="dropdown">
                   <label tabIndex={0} className="btn m-1 cursor-default">
