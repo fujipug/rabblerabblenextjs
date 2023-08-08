@@ -1,5 +1,6 @@
 'use client'
 import { useAccount, useContractWrite } from "wagmi";
+import { watchAccount } from '@wagmi/core'
 import { getNetwork } from "@wagmi/core";
 import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
@@ -40,10 +41,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const rabbleContract = useRabbleContract();
   const fee = useFee();
   const { chain } = getNetwork();
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
-    address = useAccount().address;
-  }, [address]);
+
+  watchAccount((account) => address = account.address);
 
   // Confetti helper animation
   const fireConfetti = (particleRatio: number, opts: any) => {

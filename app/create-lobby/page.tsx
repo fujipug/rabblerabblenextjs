@@ -2,9 +2,10 @@
 import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { getNetwork } from '@wagmi/core'
+import { watchAccount } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { getRaffleCount, useRabbleContract, verifyApproval, useFee, truncateAddress } from '../../utils/hooks.ts';
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
 import { Timestamp, addDoc, collection } from "firebase/firestore";
@@ -68,10 +69,7 @@ export default function CreateLobby() {
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
-    address = useAccount().address;
-  }, [address]);
+  watchAccount((account) => address = account.address);
 
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
