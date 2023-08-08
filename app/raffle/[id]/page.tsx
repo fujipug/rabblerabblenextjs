@@ -1,10 +1,11 @@
 'use client'
+import { WagmiConfig } from "wagmi";
+import { wagmiConfig } from "../../../utils/wagmi-config.ts";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { initializeApp } from "firebase/app";
 import { collection, documentId, getDocs, getFirestore, where, query, updateDoc, doc } from "firebase/firestore";
 import { firebaseConfig } from "../../../utils/firebase-config";
-import { EvmNft } from "@moralisweb3/common-evm-utils";
 import { getRaffleById } from "../../../utils/hooks";
 
 const RotatingGIF = () => {
@@ -77,20 +78,22 @@ export default function RafflePage({ params }: { params: { id: string } }) {
   }), [counter];
 
   return (
-    <div className="w-full relative">
-      <RotatingGIF />
-      <div className="absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
-        <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Raffle Commencing!</div>
-        {lobbyDetails && lobbyDetails.nfts.map((nft: any, index: number) => {
-          return (
-            <p key={index}><span className="font-semibold">Player {index + 1}: </span>{nft.ownerOf}</p>
-          )
-        })}
-      </div>
+    <WagmiConfig config={wagmiConfig}>
+      <div className="w-full relative">
+        <RotatingGIF />
+        <div className="absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
+          <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Raffle Commencing!</div>
+          {lobbyDetails && lobbyDetails.nfts.map((nft: any, index: number) => {
+            return (
+              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{nft.ownerOf}</p>
+            )
+          })}
+        </div>
 
-      <div className="absolute top-20 left-20 rounded p-4 drop-shadow-md">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-9xl mb-4">{counter}</span>
-      </div>
-    </div >
+        <div className="absolute top-20 left-20 rounded p-4 drop-shadow-md">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-9xl mb-4">{counter}</span>
+        </div>
+      </div >
+    </WagmiConfig>
   )
 }
