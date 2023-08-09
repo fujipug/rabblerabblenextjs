@@ -1,7 +1,7 @@
 'use client'
 import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
-import { getNetwork, getAccount } from '@wagmi/core'
+import { getNetwork, watchNetwork } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { getRaffleCount, useRabbleContract, verifyApproval, useFee, truncateAddress } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
@@ -64,7 +64,7 @@ export default function CreateLobby() {
   const [errorMessage, setErrorMessage] = useState('');
   const rabbleContract = useRabbleContract();
   const fee = useFee();
-  const { chain } = getNetwork();
+  const [chain, setChain] = useState(getNetwork().chain);
   const quokkas = [
     'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
     'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
@@ -99,21 +99,29 @@ export default function CreateLobby() {
   }
 
   // Get Nfts by calling the Moralis API
-  useEffect(() => {
-    if (address && isConnected)
-      getNfts();
-  }, [address, isConnected]);
+  const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
   const getNfts = async () => {
-    const chain = EvmChain.MUMBAI;
+    const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
-      chain,
+      chain: networkChain,
       mediaItems: true,
       normalizeMetadata: true,
     });
     setNfts(response.result);
     setImutableNftList(response.result);
   }
+
+  useEffect(() => {
+    if (address && isConnected)
+      getNfts();
+    console.log(nfts);
+    console.log(chain?.id);
+  }, [address, isConnected, chain?.id]);
+
+  useEffect(() => {
+    console.log('testserokp');
+  }, [chain?.id]);
 
   // Finalize lobby and create the lobby in the blockchain
   const handleFinalizeLobby = async () => {

@@ -1,6 +1,6 @@
 'use client'
 import { useAccount, useContractWrite } from "wagmi";
-import { getNetwork } from "@wagmi/core";
+import { getNetwork, watchNetwork } from "@wagmi/core";
 import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from "moralis";
@@ -39,7 +39,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const [errorMessage, setErrorMessage] = useState('');
   const rabbleContract = useRabbleContract();
   const fee = useFee();
-  const { chain } = getNetwork();
+  const [chain, setChain] = useState(getNetwork().chain);
 
   // Confetti helper animation
   const fireConfetti = (particleRatio: number, opts: any) => {
@@ -89,11 +89,13 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       }, 3000);
     },
   })
+
+  const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
   const getNfts = async () => {
-    const chain = EvmChain.MUMBAI;
+    const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
-      chain,
+      chain: networkChain,
       mediaItems: true,
       normalizeMetadata: true,
     });
@@ -117,7 +119,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       getNfts().then((nfts) => {
         fetchData(nfts);
       });
-  }, [address, isConnected]);
+  }, [address, isConnected, chain?.id]);
 
   // Join player to Lobby
   const handleFinalizeJoinLobby = async () => {
