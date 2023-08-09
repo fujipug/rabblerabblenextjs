@@ -137,7 +137,8 @@ export default function CreateLobby() {
       mediaItems: true,
       normalizeMetadata: true,
     }).then((response) => {
-      console.log('response', response)
+      // console.log('response', response)
+      // console.log('response.result', response.result)
       // includeNextNPages(response, 4)
       setNfts(response.result);
       setImutableNftList(response.result);
@@ -158,9 +159,6 @@ export default function CreateLobby() {
   const handleFinalizeLobby = async () => {
     if (confirmNft) {
       verifyApproval(confirmNft?.tokenAddress, write)
-      // .then(() => {
-      //   write();
-      // });
     }
   }
 
