@@ -87,7 +87,7 @@ export default function Navbar() {
                   return (
                     <div style={{ display: 'flex', gap: 12 }}>
                       <button
-                        className="hidden sm:flex sm:items-center text-gray-100"
+                        className="flex items-center text-gray-100"
                         onClick={openChainModal}
                         type="button"
                       >
@@ -95,23 +95,22 @@ export default function Navbar() {
                           <div
                             style={{
                               background: chain.iconBackground,
-                              width: 12,
-                              height: 12,
                               borderRadius: 999,
                               overflow: 'hidden',
                               marginRight: 4,
                             }}
+                            className="w-5 h-5"
                           >
                             {chain.iconUrl && (
                               <img
                                 alt={chain.name ?? 'Chain icon'}
                                 src={chain.iconUrl}
-                                style={{ width: 12, height: 12 }}
+                                className="w-5 h-5"
                               />
                             )}
                           </div>
                         )}
-                        {chain.name}
+                        <span className="hidden sm:flex">{chain.name}</span>
                       </button>
 
                       <button className="btn btn-outline btn-secondary" onClick={openAccountModal} type="button">
