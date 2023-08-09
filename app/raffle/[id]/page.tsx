@@ -50,10 +50,10 @@ export default function RafflePage({ params }: { params: { id: string } }) {
     }
   };
 
-  // Update the firebase database with the new player
+  // Update the firebase database with the winner
   const updateFirebaseLobby = async (winner: string) => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
-
+    console.log(winner);
     return await updateDoc(lobbyRef, {
       winner: winner,
     });

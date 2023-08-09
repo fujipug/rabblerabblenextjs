@@ -11,7 +11,14 @@ import Link from "next/link";
 import { firebaseConfig } from "../../../utils/firebase-config";
 import { getRaffleById, truncateAddress } from '../../../utils/hooks';
 import Confetti from 'react-confetti'
+import Image from 'next/image'
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
+
+declare global {
+  interface Window {
+    showRespects: any;
+  }
+}
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -20,6 +27,16 @@ function LobbyNftInfo(props: any) {
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const [placeholders, setPlaceholders] = useState([]) as any;
   const [winner, setWinner] = useState(null) as any;
+
+  document.addEventListener('keydown', function (event) {
+    console.log(winner);
+    if (event.key === 'f' && winner !== null) {
+      window.showRespects.showModal()
+      setTimeout(() => {
+        window.showRespects.close()
+      }, 5000);
+    }
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -63,76 +80,81 @@ function LobbyNftInfo(props: any) {
         {(!winner && (lobbyDetails?.data.status !== 'Expired')) &&
           <Link href={`/join-lobby/${lobbyDetails?.id}`} className="btn btn-secondary drop-shadow-md">Join Lobby</Link>
         }
-      </div>
+        {winner &&
+          <span className='hidden sm:flex'>Press &nbsp;<kbd className="kbd kbd-sm">F</kbd>&nbsp; to pay respects.</span>
+        }
+      </div >
 
-      {winner ?
-        <>
-          <div className="p-6 bg-neutral rounded-box w-full flex justify-center">
-            {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
-              <div key={index}>
-                {(winner.toLowerCase() == nft.ownerOf.toLowerCase()) &&
-                  <div className="card card-compact bg-base-100 shadow-xl">
-                    <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
-                    <div className="card-body">
-                      <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
-                      <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
-                    </div>
+      {
+        winner ?
+          <>
+            < div className="p-6 bg-neutral rounded-box w-full flex justify-center" >
+              {
+                lobbyDetails?.data.nfts.map((nft: any, index: number) => (
+                  <div key={index}>
+                    {(winner.toLowerCase() == nft.ownerOf.toLowerCase()) &&
+                      <div className="card card-compact bg-base-100 shadow-xl">
+                        <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                        <div className="card-body">
+                          <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
+                          <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
+                        </div>
+                      </div>
+                    }
+
                   </div>
-                }
+                ))
+              }
+            </div >
+            <div className='flex justify-between my-4'>
+              <div className="avatar-group -space-x-2">
+                {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
+                  <div key={index}>
+                    {(winner.toLowerCase() != nft.ownerOf.toLowerCase()) &&
+                      <div className="w-16 mr-6">
+                        <img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
+                      </div>
+                    }
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-end mt-2">
+                <div className="badge badge-outline">{lobbyDetails?.data.confirmedPlayers}/{lobbyDetails?.data.totalPlayers}</div>
+              </div>
+            </div>
+          </>
 
+          :
+          <div className="snap-x flex p-6 space-x-4 bg-neutral rounded-box w-full overflow-x-scroll">
+            {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
+              <div key={index} className="snap-center">
+                <div className="card card-compact w-96 bg-base-100 shadow-xl">
+                  <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                  <div className="card-body">
+                    <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
+                    <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {placeholders.map((placeholder: any, index: number) => (
+              <div key={index} className="snap-center">
+                <div className="card card-compact w-96 bg-base-100 shadow-xl">
+                  <figure><div className="bg-gray-200 flex justify-center items-center w-[384px] h-[384px]">
+                    <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500"><span className={myFont.className}>Player {converter.toWords(index + 2)}</span></span>
+                  </div></figure>
+                  <div className="card-body">
+                    <h2 className="card-title">Waiting for player to join<span className="loading loading-dots loading-xs -mb-3"></span></h2>
+                    <p><span className="font-semibold">Collection: </span> {placeholder.collection}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-          <div className='flex justify-between my-4'>
-            <div className="avatar-group -space-x-2">
-              {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
-                <div key={index}>
-                  {(winner.toLowerCase() != nft.ownerOf.toLowerCase()) &&
-                    // <div className="avatar">
-                    <div className="w-16 mr-6">
-                      <img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
-                    </div>
-                    // </div>
-                  }
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-end mt-2">
-              <div className="badge badge-outline">{lobbyDetails?.data.confirmedPlayers}/{lobbyDetails?.data.totalPlayers}</div>
-            </div>
-          </div>
-        </>
-
-        :
-        <div className="snap-x flex p-6 space-x-4 bg-neutral rounded-box w-full overflow-x-scroll">
-          {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
-            <div key={index} className="snap-center">
-              <div className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
-                <div className="card-body">
-                  <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
-                  <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {placeholders.map((placeholder: any, index: number) => (
-            <div key={index} className="snap-center">
-              <div className="card card-compact w-96 bg-base-100 shadow-xl">
-                <figure><div className="bg-gray-200 flex justify-center items-center w-[384px] h-[384px]">
-                  <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500"><span className={myFont.className}>Player {converter.toWords(index + 2)}</span></span>
-                </div></figure>
-                <div className="card-body">
-                  <h2 className="card-title">Waiting for player to join<span className="loading loading-dots loading-xs -mb-3"></span></h2>
-                  <p><span className="font-semibold">Collection: </span> {placeholder.collection}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       }
-      {!winner &&
+      {
+        !winner &&
         <div className="flex justify-end mt-2">
           <div className="badge badge-outline">{lobbyDetails?.data.confirmedPlayers}/{lobbyDetails?.data.totalPlayers}</div>
         </div>
@@ -196,6 +218,9 @@ function LobbyNftInfo(props: any) {
           </div>
         </div>
       </div>
+      <dialog id="showRespects" className="modal">
+        <Image src={'/images/respects.gif'} className="max-w-full max-h-full" fill alt="Pay Respects" />
+      </dialog>
     </>
   )
 };

@@ -56,24 +56,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchData();
-    // fetchDataFromContract();
   }, []);
-
-  // const [raffleCounter, setRaffleCounter] = useState(0);
-  // const fetchDataFromContract = async () => {
-  //   try {
-  //     // Call the readContract function to get data from the smart contract
-  //     const contractDataResponse = await readContract({
-  //       address: rabbleTestAddress,
-  //       abi: rabbleAbi,
-  //       functionName: "raffleCounter",
-  //     });
-  //     setRaffleCounter(contractDataResponse as any);
-  //     console.log('Raffle Counter:', contractDataResponse);
-  //   } catch (error) {
-  //     console.error('Error fetching data from contract:', error);
-  //   }
-  // };
 
   return (
     <>
@@ -150,7 +133,13 @@ export default function Home() {
                       </span>
                     }
                   </td>
-                  <td><Countdown endTime={lobby.data.endDate} size={'small'} /></td>
+                  <td>
+                    {(lobby.data.status === 'Expired' || lobby.data.status === 'Completed') ?
+                      <span>0h0m</span>
+                      :
+                      <Countdown endTime={lobby.data.endDate} size={'small'} />
+                    }
+                  </td>
                   {lobby.data.status === 'Expired' &&
                     <td>N/A</td>
                   }
