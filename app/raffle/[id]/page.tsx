@@ -4,7 +4,7 @@ import { wagmiConfig } from "../../../utils/wagmi-config.ts";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { initializeApp } from "firebase/app";
-import { collection, documentId, getDocs, getFirestore, where, query, updateDoc, doc } from "firebase/firestore";
+import { collection, documentId, getDocs, getFirestore, where, query, updateDoc, doc, Timestamp } from "firebase/firestore";
 import { firebaseConfig } from "../../../utils/firebase-config";
 import { getRaffleById, truncateAddress } from "../../../utils/hooks";
 
@@ -54,6 +54,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
     return await updateDoc(lobbyRef, {
       winner: winner,
+      completedDate: Timestamp.now()
     });
   }
 

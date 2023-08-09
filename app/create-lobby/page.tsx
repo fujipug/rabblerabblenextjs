@@ -101,6 +101,33 @@ export default function CreateLobby() {
 
   // Get Nfts by calling the Moralis API
   const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
+  async function includeNextNPages(previous: any, numPages: number) {
+
+    // Define results for the remaining pages 
+    const result = previous.result || [];
+
+    // Always keep the latest response around
+    let response = previous;
+
+    // Loop through the remaining pages
+    for (let i = 0; i < numPages; i++) {
+
+      // Get the next page
+      response = await response.next(); //Best Practice: Always use next() to get the next page
+
+      // Exit if we are on the last page already
+      if (response.result.length == 0) break
+
+      // Add the results to the previous results
+      result.push(...response.result);
+    }
+
+    // Apply the results to the last page
+    response.result = result
+
+    // Return the response
+    return response
+  }
   const getNfts = async () => {
     const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
@@ -109,9 +136,14 @@ export default function CreateLobby() {
       limit: 100,
       mediaItems: true,
       normalizeMetadata: true,
+    }).then((response) => {
+      console.log('response', response)
+      // includeNextNPages(response, 4)
+      setNfts(response.result);
+      setImutableNftList(response.result);
     });
-    setNfts(response.result);
-    setImutableNftList(response.result);
+    // setNfts(response.result);
+    // setImutableNftList(response.result);
   }
 
   useEffect(() => {

@@ -200,16 +200,29 @@ function LobbyNftInfo(props: any) {
               minute: '2-digit',
               hour12: true,
             })}`}</p>
-          <p className="leading-8"><span className="font-semibold">Ends: </span>
-            {`${(lobbyDetails?.data.endDate)?.toDate().toLocaleDateString(undefined, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}`} at {`${(lobbyDetails?.data.endDate)?.toDate().toLocaleTimeString(undefined, {
-              hour: 'numeric',
-              minute: '2-digit',
-              hour12: true,
-            })}`}</p>
+          {lobbyDetails?.data.completedDate ?
+            <p className="leading-8"><span className="font-semibold">Ended: </span>
+              {`${(lobbyDetails?.data.completedDate)?.toDate().toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}`} at {`${(lobbyDetails?.data.completedDate)?.toDate().toLocaleTimeString(undefined, {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+              })}`}</p>
+            :
+            <p className="leading-8"><span className="font-semibold">Ends: </span>
+              {`${(lobbyDetails?.data.endDate)?.toDate().toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}`} at {`${(lobbyDetails?.data.endDate)?.toDate().toLocaleTimeString(undefined, {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+              })}`}</p>
+          }
           <p className="leading-8"><span className="font-semibold">Lobby: </span>{lobbyDetails?.data.isPrivate ? 'Private' : 'Public'}</p>
         </div>
         <div className="sm:hidden flex flex-col w-full">
