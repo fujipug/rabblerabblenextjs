@@ -99,61 +99,65 @@ export default function Home() {
       </div>
 
       {lobbies.length > 0 &&
-        <div className="overflow-x-auto mt-4">
-          <h1 className="font-semibold text-2xl ml-3 my-2">Recent Lobbies</h1>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Lobby</th>
-                <th>Collection</th>
-                <th>Status</th>
-                <th>Time Remaining</th>
-                <th>Winner</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lobbies.map((lobby: DocumentData, index: number) => (
-                <tr key={index}>
-                  <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{lobby.id}</Link></th>
-                  <td>{lobby.data.collection}</td>
-                  <td>
+        <>
+          <div className="overflow-x-auto mt-4">
+            <h1 className="font-semibold text-2xl ml-3 my-2">Recent Lobbies</h1>
+            <div className="block sm:hidden transform animate-moveUpDown z-0 right-0 -mt-4 absolute"><Image src="/images/Face_2.png" alt="Quokka Face" width={200} height={200}></Image></div>
+            <div className="block sm:hidden z-30 -mt-7 absolute right-0"><Image src="/images/Hands_2.png" alt="Quokka Hands" width={200} height={200}></Image></div>
+            <table className="table bg-base-100">
+              <thead>
+                <tr>
+                  <th>Lobby</th>
+                  <th>Collection</th>
+                  <th>Status</th>
+                  <th>Time Remaining</th>
+                  <th>Winner</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lobbies.map((lobby: DocumentData, index: number) => (
+                  <tr key={index}>
+                    <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{lobby.id}</Link></th>
+                    <td>{lobby.data.collection}</td>
+                    <td>
+                      {lobby.data.status === 'Expired' &&
+                        <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/10">
+                          {lobby.data.status}
+                        </span>
+                      }
+                      {lobby.data.status === 'Active' &&
+                        <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-600/10">
+                          {lobby.data.status}
+                        </span>
+                      }
+                      {lobby.data.status === 'Completed' &&
+                        <span className="inline-flex items-center rounded-full bg-lime-50 px-2 py-1 text-xs font-medium text-lime-700 ring-1 ring-inset ring-lime-600/10">
+                          {lobby.data.status}
+                        </span>
+                      }
+                    </td>
+                    <td>
+                      {(lobby.data.status === 'Expired' || lobby.data.status === 'Completed') ?
+                        <span>0h0m</span>
+                        :
+                        <Countdown endTime={lobby.data.endDate} size={'small'} />
+                      }
+                    </td>
                     {lobby.data.status === 'Expired' &&
-                      <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/10">
-                        {lobby.data.status}
-                      </span>
+                      <td>N/A</td>
                     }
                     {lobby.data.status === 'Active' &&
-                      <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-600/10">
-                        {lobby.data.status}
-                      </span>
+                      <td>TBA</td>
                     }
-                    {lobby.data.status === 'Completed' &&
-                      <span className="inline-flex items-center rounded-full bg-lime-50 px-2 py-1 text-xs font-medium text-lime-700 ring-1 ring-inset ring-lime-600/10">
-                        {lobby.data.status}
-                      </span>
+                    {lobby.data.status === 'Completed' && lobby.data.winner &&
+                      <td><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{truncateAddress(lobby.data.winner)}</span></td>
                     }
-                  </td>
-                  <td>
-                    {(lobby.data.status === 'Expired' || lobby.data.status === 'Completed') ?
-                      <span>0h0m</span>
-                      :
-                      <Countdown endTime={lobby.data.endDate} size={'small'} />
-                    }
-                  </td>
-                  {lobby.data.status === 'Expired' &&
-                    <td>N/A</td>
-                  }
-                  {lobby.data.status === 'Active' &&
-                    <td>TBA</td>
-                  }
-                  {lobby.data.status === 'Completed' && lobby.data.winner &&
-                    <td><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{truncateAddress(lobby.data.winner)}</span></td>
-                  }
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       }
     </>
   )
