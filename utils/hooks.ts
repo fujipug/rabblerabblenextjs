@@ -1,4 +1,3 @@
-import { watchAccount, watchNetwork } from '@wagmi/core'
 import { useEffect, useState } from "react";
 import { nftAbi, rabbleAbi, rabbleAddress, rabbleTestAddress } from "./config";
 import { EvmAddress } from "@moralisweb3/common-evm-utils";
@@ -87,19 +86,6 @@ export const getRaffleById = (id: number) => {
 export const useRabbleContract = () => {
   const [contract, setContract] = useState<any | null>(null);
   const network = getNetwork();
-  const account = getAccount();
-
-  // watchNetwork((network) => {
-  //   const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
-  //   const contract = getContract({
-  //     address: address,
-  //     abi: rabbleAbi,
-  //     walletClient: getWalletClient({
-  //       chainId: network.chain?.id
-  //     }),
-  //   });
-  //   setContract(contract);
-  // });
 
   useEffect(() => {
     const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
@@ -119,7 +105,7 @@ export const useFee = () => {
   const [fee, setFee] = useState<bigint>(0n);
   let fees = new Map<number, bigint>([
     [80001, 1000000000000n], // mumbai
-    [43114, 1000000000000000000n], // avalanche
+    [43114, 100000000000000000n], // avalanche
   ]);
 
   useEffect(() => {
