@@ -22,6 +22,7 @@ import confetti from "canvas-confetti";
 declare global {
   interface Window {
     selectNftModal: any;
+    rulesModal: any;
   }
 }
 
@@ -96,6 +97,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
       chain: networkChain,
+      limit: 100,
       mediaItems: true,
       normalizeMetadata: true,
     });
@@ -155,12 +157,18 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
               <span className="hidden sm:block">{address}</span>
               <span className="block sm:hidden">{truncateAddress(address)}</span>
-              <div className="flex justify-start items-center mt-6">
+              <div className="flex justify-between items-center mt-6">
                 <div className="dropdown">
                   <label tabIndex={0} className="btn m-1 cursor-default">
                     <span className="font-bold">Collection:</span> {lobbyDetails?.data.collection}
                   </label>
                 </div>
+                <button className="btn btn-secondary drop-shadow-md" onClick={() => window.rulesModal.showModal()}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                  </svg>
+                  <span className="hidden sm:flex">Raffle Rules</span>
+                </button>
               </div>
 
               <div className="flex justify-center bg-base-200 rounded-lg p-5 mt-2 drop-shadow-md">
@@ -172,26 +180,30 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                       <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
                         {nft.media?.mimetype === 'video/mp4' ?
                           <div className="relative group">
-                            <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
+                            <video className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
                               <source src={nft.media?.media_collection?.medium.url} type="video/mp4" />
                             </video>
-                            <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
-                            </div>
-                            <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                            <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
+                              <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                              </div>
+                              <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                              </div>
                             </div>
                           </div>
                           :
                           <div className="relative group">
-                            <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
+                            <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
                               src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
                               alt="NFT image unreachable" width={150} height={150} />
-                            <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
-                            </div>
-                            <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                            <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
+                              <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                              </div>
+                              <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                              </div>
                             </div>
                           </div>
                         }
@@ -322,6 +334,31 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
           </div >
         </form >
       </dialog >
+
+      <dialog id="rulesModal" className="modal">
+        <form method="dialog" className="modal-box">
+          <h3 className="font-bold text-lg">Raffle Rules</h3>
+          <div className="mockup-browser border bg-base-300 mt-6">
+            <div className="mockup-browser-toolbar">
+              <div className="input">https://rabblerabble.xyx</div>
+            </div>
+            <div className="px-4 py-16 bg-base-200">
+              <p className="mb-4">Players must have the same NFT collection</p>
+              <p className="mb-4">The lobby will be accesible to anyone with the &apos;Share Link&apos;
+                <span className="text-gray-50"> (Only share with people you want to play with)</span>
+              </p>
+              <p className="mb-4">The lobby will be open for 24 hours from the time it is created</p>
+              <p className="mb-4">A winner will be chosen when all players have joined the lobby</p>
+              <p className="mb-4">If all players have not joined the lobby by 24 hours, NFTs will be returned to their original owners</p>
+              <p className="mb-4 flex items-end">GLHF &nbsp;<span className="loading loading-dots loading-xs"></span></p>
+            </div>
+          </div>
+          <div className="modal-action">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn">Close</button>
+          </div>
+        </form>
+      </dialog>
     </>
   )
 }

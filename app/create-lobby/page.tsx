@@ -81,6 +81,7 @@ export default function CreateLobby() {
     value: fee,
     onSuccess: () => {
       getRaffleCount().then(async (response) => {
+        console.log(response)
         createFirebaseLobby(Number(response) + 1);
       });
     },
@@ -105,6 +106,7 @@ export default function CreateLobby() {
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
       chain: networkChain,
+      limit: 100,
       mediaItems: true,
       normalizeMetadata: true,
     });
@@ -115,12 +117,9 @@ export default function CreateLobby() {
   useEffect(() => {
     if (address && isConnected)
       getNfts();
-    console.log(nfts);
-    console.log(chain?.id);
   }, [address, isConnected, chain?.id]);
 
   useEffect(() => {
-    console.log('testserokp');
   }, [chain?.id]);
 
   // Finalize lobby and create the lobby in the blockchain
@@ -297,26 +296,30 @@ export default function CreateLobby() {
                           <div>
                             {nft.media?.mimetype === 'video/mp4' ?
                               <div className="relative group">
-                                <video className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
+                                <video className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
                                   <source src={nft.media?.media_collection?.medium.url} type="video/mp4" />
                                 </video>
-                                <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
-                                </div>
-                                <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                                <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
+                                  <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                                  </div>
+                                  <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                                  </div>
                                 </div>
                               </div>
                               :
                               <div className="relative group">
-                                <img className="rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
+                                <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
                                   src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
                                   alt="NFT image unreachable" width={150} height={150} />
-                                <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
-                                </div>
-                                <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                                <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
+                                  <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
+                                  </div>
+                                  <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                                  </div>
                                 </div>
                               </div>
                             }
@@ -482,28 +485,21 @@ export default function CreateLobby() {
         <dialog id="rulesModal" className="modal">
           <form method="dialog" className="modal-box">
             <h3 className="font-bold text-lg">Raffle Rules</h3>
-            <ol className="py-4">
-              <div className="chat chat-start mb-2">
-                <div className="chat-bubble chat-bubble-primary">Players must have the same NFT collection</div>
+            <div className="mockup-browser border bg-base-300 mt-6">
+              <div className="mockup-browser-toolbar">
+                <div className="input">https://rabblerabble.xyx</div>
               </div>
-              <div className="chat chat-end mb-2">
-                <div className="chat-bubble chat-bubble-secondary">The lobby will be accesible to anyone with the &apos;Share Link&apos;
+              <div className="px-4 py-16 bg-base-200">
+                <p className="mb-4">Players must have the same NFT collection</p>
+                <p className="mb-4">The lobby will be accesible to anyone with the &apos;Share Link&apos;
                   <span className="text-gray-50"> (Only share with people you want to play with)</span>
-                </div>
+                </p>
+                <p className="mb-4">The lobby will be open for 24 hours from the time it is created</p>
+                <p className="mb-4">A winner will be chosen when all players have joined the lobby</p>
+                <p className="mb-4">If all players have not joined the lobby by 24 hours, NFTs will be returned to their original owners</p>
+                <p className="mb-4 flex items-end">GLHF &nbsp;<span className="loading loading-dots loading-xs"></span></p>
               </div>
-              <div className="chat chat-start mb-2">
-                <div className="chat-bubble chat-bubble-primary">The lobby will be open for 24 hours from the time it is created</div>
-              </div>
-              <div className="chat chat-end mb-2">
-                <div className="chat-bubble chat-bubble-secondary">A winner will be chosen when all players have joined the lobby</div>
-              </div>
-              <div className="chat chat-start mb-2">
-                <div className="chat-bubble chat-bubble-primary">If all players have not joined the lobby by 24 hours, NFTs will be returned to their original owners</div>
-              </div>
-              <div className="chat chat-end">
-                <div className="chat-bubble chat-bubble-secondary">GLHF!</div>
-              </div>
-            </ol>
+            </div>
             <div className="modal-action">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn">Close</button>
