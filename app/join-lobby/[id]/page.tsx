@@ -97,7 +97,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       mediaItems: true,
       normalizeMetadata: true,
     });
-    console.log('tst');
     return response.result;
   }
   const fetchData = async (results: any) => {
@@ -106,7 +105,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       const querySnapshot = await getDocs(q);
       for (const doc of querySnapshot.docs) {
         const filtered = results.filter((nft: any) => nft?.name == doc.data().collection);
-        console.log(doc.data());
         setNfts(filtered);
         setLobbyDetails({ id: doc.id, data: doc.data() });
       }

@@ -42,7 +42,6 @@ export default function RafflePage({ params }: { params: { id: string } }) {
       const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
       const querySnapshot = await getDocs(q);
       for (const doc of querySnapshot.docs) {
-        console.log(doc.data().nfts);
         setLobbyDetails({ id: doc.id, data: doc.data() });
       }
     } catch (error) {

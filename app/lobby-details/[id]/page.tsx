@@ -32,7 +32,6 @@ function LobbyNftInfo(props: any) {
   const account = useAccount();
 
   useEffect(() => {
-    console.log(account);
     const accountAddress = account.address?.toLocaleLowerCase() ? account.address?.toLocaleLowerCase() : '';
     document.addEventListener('keydown', function (event) {
       if (event.key === 'f' && winner.toLowerCase() !== accountAddress.toLocaleLowerCase()) {
@@ -57,7 +56,6 @@ function LobbyNftInfo(props: any) {
         const q = query(collection(db, 'lobbies'), where(documentId(), '==', props.lobbyId));
         const querySnapshot = await getDocs(q);
         for (const doc of querySnapshot.docs) {
-          console.log('fetch');
           setLobbyDetails({ id: doc.id, data: doc.data() })
           getRaffleById(doc.data().raffleId).then((res: any) => {
             if (res[5] && res[5] !== '0x0000000000000000000000000000000000000000') {
