@@ -1,23 +1,15 @@
 'use client'
 import Link from "next/link";
 import Image from "next/image";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import confetti from 'canvas-confetti';
 import { DocumentData, collection, getDocs, getFirestore, limit, orderBy, query } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
-import { getRaffleById, getRaffleCount, truncateAddress } from "../utils/hooks";
+import { truncateAddress } from "../utils/hooks";
+import { firebaseConfig } from "../utils/firebase-config";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
-  authDomain: "rabble-rabble.firebaseapp.com",
-  projectId: "rabble-rabble",
-  storageBucket: "rabble-rabble.appspot.com",
-  messagingSenderId: "835781447787",
-  appId: "1:835781447787:web:84e6b4123aa0b77b5f212e",
-  measurementId: "G-T8GBPL2SXJ"
-};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 

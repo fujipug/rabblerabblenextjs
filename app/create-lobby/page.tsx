@@ -18,7 +18,6 @@ import { rabbleAbi } from '../../utils/config.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
 
-
 //Initialize firebase backend
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
