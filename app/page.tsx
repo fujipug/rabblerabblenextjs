@@ -7,7 +7,7 @@ import { DocumentData, collection, getDocs, getFirestore, limit, orderBy, query 
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
-import { getRaffleById, getRaffleCount } from "../utils/hooks";
+import { getRaffleById, getRaffleCount, truncateAddress } from "../utils/hooks";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -147,7 +147,7 @@ export default function Home() {
                     <td>TBA</td>
                   }
                   {lobby.data.status === 'Completed' && lobby.data.winner &&
-                    <td>{lobby.data.winner}</td>
+                    <td><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{truncateAddress(lobby.data.winner)}</span></td>
                   }
                 </tr>
               ))}

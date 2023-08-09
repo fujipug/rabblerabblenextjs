@@ -43,7 +43,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
       const querySnapshot = await getDocs(q);
       for (const doc of querySnapshot.docs) {
         console.log(doc.data().nfts);
-        setLobbyDetails(doc.data());
+        setLobbyDetails({ id: doc.id, data: doc.data() });
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -53,7 +53,6 @@ export default function RafflePage({ params }: { params: { id: string } }) {
   // Update the firebase database with the winner
   const updateFirebaseLobby = async (winner: string) => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
-    console.log(winner);
     return await updateDoc(lobbyRef, {
       winner: winner,
     });
@@ -62,14 +61,12 @@ export default function RafflePage({ params }: { params: { id: string } }) {
   const [count, setCount] = useState(0); // Initial Count time in seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      getRaffleById(lobbyDetails?.raffleId).then((res: any) => {
-        console.log(res[5]);
-        console.log(res[5] as string);
-        if (res[5] !== '0x0000000000000000000000000000000000000000') {
-          // updateFirebaseLobby(res[5] as string).then(() => {
-          location.href = `/lobby-details/${params.id}`;
-          clearInterval(interval);
-          // });
+      getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
+        if (res[5].toString() !== '0x0000000000000000000000000000000000000000') {
+          updateFirebaseLobby(res[5].toString()).then(() => {
+            location.href = `/lobby-details/${params.id}`;
+            clearInterval(interval);
+          });
         } else {
           setCount(prevCounter => prevCounter + 1);
         }
@@ -79,7 +76,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
     return () => {
       clearInterval(interval); // Clean up the interval on component unmount
     };
-  }, [count, lobbyDetails?.raffleId, params.id]);
+  }, [count, lobbyDetails?.data.raffleId, params.id]);
 
 
   useEffect(() => {
@@ -92,7 +89,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
         <RotatingGIF />
         <div className="hidden sm:block absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
           <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Lobby Participants</div>
-          {lobbyDetails && lobbyDetails.nfts.map((nft: any, index: number) => {
+          {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
               <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf)}</p>
             )
@@ -122,7 +119,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
       <div className="block sm:hidden bg-white rounded p-4 drop-shadow-md">
         <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-2xl mb-4 text-center">Lobby Participants</div>
         <div className="text-center">
-          {lobbyDetails && lobbyDetails.nfts.map((nft: any, index: number) => {
+          {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
               <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf)}</p>
             )
