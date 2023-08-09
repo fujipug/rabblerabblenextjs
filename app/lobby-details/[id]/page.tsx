@@ -1,7 +1,8 @@
 'use client'
 import { WagmiConfig } from 'wagmi'
 import { wagmiConfig } from '../../../utils/wagmi-config';
-import { collection, documentId, query, where, getFirestore, getDocs, Timestamp } from "firebase/firestore";
+import { useAccount } from "wagmi";
+import { collection, documentId, query, where, getFirestore, getDocs } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { useEffect, useState } from "react";
 import converter from 'number-to-words';
@@ -17,6 +18,7 @@ const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 declare global {
   interface Window {
     showRespects: any;
+    showCelebrate: any;
   }
 }
 
@@ -27,16 +29,27 @@ function LobbyNftInfo(props: any) {
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const [placeholders, setPlaceholders] = useState([]) as any;
   const [winner, setWinner] = useState(null) as any;
+  const account = useAccount();
 
-  document.addEventListener('keydown', function (event) {
-    console.log(winner);
-    if (event.key === 'f' && winner !== null) {
-      window.showRespects.showModal()
-      setTimeout(() => {
-        window.showRespects.close()
-      }, 5000);
-    }
-  });
+  useEffect(() => {
+    console.log(account);
+    const accountAddress = account.address?.toLocaleLowerCase() ? account.address?.toLocaleLowerCase() : '';
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'f' && winner.toLowerCase() !== accountAddress.toLocaleLowerCase()) {
+        window.showRespects.showModal()
+        setTimeout(() => {
+          window.showRespects.close()
+        }, 5000);
+      }
+
+      if (event.key === 'g' && winner.toLowerCase() === accountAddress.toLocaleLowerCase()) {
+        window.showCelebrate.showModal()
+        setTimeout(() => {
+          window.showCelebrate.close()
+        }, 5000);
+      }
+    });
+  }, [account, winner]);
 
   useEffect(() => {
     async function fetchData() {
@@ -71,17 +84,20 @@ function LobbyNftInfo(props: any) {
         {winner &&
           <div><span className='font-semibold text-3xl'>Winner: </span><span className='text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'>{truncateAddress(winner)}</span></div>
         }
-        {(!winner && lobbyDetails?.data.status == 'Active') &&
+        {(!winner && lobbyDetails?.data.status === 'Active') &&
           <Countdown endTime={lobbyDetails?.data.endDate} size={'large'} />
         }
-        {(!winner && lobbyDetails?.data.status == 'Expired') &&
+        {(!winner && lobbyDetails?.data.status === 'Expired') &&
           <span className='text-3xl'>Expired</span>
         }
-        {(!winner && (lobbyDetails?.data.status !== 'Expired')) &&
+        {(!winner && (lobbyDetails?.data.status !== 'Expired') && (lobbyDetails?.data.confirmedPlayers !== lobbyDetails?.data.totalPlayers)) &&
           <Link href={`/join-lobby/${lobbyDetails?.id}`} className="btn btn-secondary drop-shadow-md">Join Lobby</Link>
         }
-        {winner &&
+        {winner && winner.toLowerCase() !== account.address?.toLocaleLowerCase() &&
           <span className='hidden sm:flex'>Press &nbsp;<kbd className="kbd kbd-sm">F</kbd>&nbsp; to pay respects.</span>
+        }
+        {winner && winner.toLowerCase() === account.address?.toLocaleLowerCase() &&
+          <span className='hidden sm:flex'>Press &nbsp;<kbd className="kbd kbd-sm">G</kbd>&nbsp; to celebrate.</span>
         }
       </div >
 
@@ -93,7 +109,7 @@ function LobbyNftInfo(props: any) {
                 lobbyDetails?.data.nfts.map((nft: any, index: number) => (
                   <div key={index}>
                     {(winner.toLowerCase() == nft.ownerOf.toLowerCase()) &&
-                      <div className="card card-compact bg-base-100 shadow-xl">
+                      <div className="card card-compact w-80 bg-base-100 shadow-xl">
                         <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
                         <div className="card-body">
                           <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
@@ -106,29 +122,42 @@ function LobbyNftInfo(props: any) {
                 ))
               }
             </div >
-            <div className='flex justify-between my-4'>
-              <div className="avatar-group -space-x-2">
+            <div className='flex justify-between my-4 items-start'>
+              <div className="hidden sm:flex avatar-group -space-x-2">
                 {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
                   <div key={index}>
                     {(winner.toLowerCase() != nft.ownerOf.toLowerCase()) &&
-                      <div className="w-16 mr-6">
+                      <div className="w-16 ml-2.5 mr-2.5">
                         <img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
                       </div>
                     }
                   </div>
                 ))}
               </div>
-              <div className="flex justify-end mt-2">
+              <div className="flex sm:hidden avatar-group -space-x-4">
+                {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
+                  <div key={index}>
+                    {(winner.toLowerCase() != nft.ownerOf.toLowerCase()) &&
+                      <div className="avatar">
+                        <div className="w-12">
+                          <img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
+                        </div>
+                      </div>
+                    }
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-end -mt-1.5">
                 <div className="badge badge-outline">{lobbyDetails?.data.confirmedPlayers}/{lobbyDetails?.data.totalPlayers}</div>
               </div>
             </div>
           </>
 
           :
-          <div className="snap-x flex p-6 space-x-4 bg-neutral rounded-box w-full overflow-x-scroll">
+          <div className="snap-mandatory snap-x flex p-6 space-x-4 bg-neutral rounded-box w-full overflow-x-scroll">
             {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
               <div key={index} className="snap-center">
-                <div className="card card-compact w-96 bg-base-100 shadow-xl">
+                <div className="card card-compact w-80 bg-base-100 shadow-xl">
                   <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
                   <div className="card-body">
                     <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
@@ -140,8 +169,8 @@ function LobbyNftInfo(props: any) {
 
             {placeholders.map((placeholder: any, index: number) => (
               <div key={index} className="snap-center">
-                <div className="card card-compact w-96 bg-base-100 shadow-xl">
-                  <figure><div className="bg-gray-200 flex justify-center items-center w-[384px] h-[384px]">
+                <div className="card card-compact w-80 bg-base-100 shadow-xl">
+                  <figure><div className="bg-gray-200 flex justify-center items-center w-[320px] h-[320px]">
                     <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500"><span className={myFont.className}>Player {converter.toWords(index + 2)}</span></span>
                   </div></figure>
                   <div className="card-body">
@@ -220,6 +249,9 @@ function LobbyNftInfo(props: any) {
       </div>
       <dialog id="showRespects" className="modal">
         <Image src={'/images/respects.gif'} className="max-w-full max-h-full" fill alt="Pay Respects" />
+      </dialog>
+      <dialog id="showCelebrate" className="modal">
+        <Image src={'/images/winner.gif'} className="max-w-full max-h-full" fill alt="Celebrate" />
       </dialog>
     </>
   )

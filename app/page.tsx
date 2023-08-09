@@ -1,13 +1,13 @@
 'use client'
 import Link from "next/link";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import confetti from 'canvas-confetti';
 import { DocumentData, collection, getDocs, getFirestore, limit, orderBy, query } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
-
+import { getRaffleById, getRaffleCount } from "../utils/hooks";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOZ5vqd-ZHoK-UX6bNxrZm0V4FoU9KU6k",
@@ -100,7 +100,7 @@ export default function Home() {
 
       {lobbies.length > 0 &&
         <div className="overflow-x-auto mt-4">
-          <h1 className="font-semibold text-2xl ml-3 my-2">Recent Lobbiess</h1>
+          <h1 className="font-semibold text-2xl ml-3 my-2">Recent Lobbies</h1>
           <table className="table">
             <thead>
               <tr>

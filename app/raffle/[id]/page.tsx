@@ -6,7 +6,7 @@ import Image from "next/image";
 import { initializeApp } from "firebase/app";
 import { collection, documentId, getDocs, getFirestore, where, query, updateDoc, doc } from "firebase/firestore";
 import { firebaseConfig } from "../../../utils/firebase-config";
-import { getRaffleById } from "../../../utils/hooks";
+import { getRaffleById, truncateAddress } from "../../../utils/hooks";
 
 const RotatingGIF = () => {
   const [currentGifIndex, setCurrentGifIndex] = useState(0);
@@ -28,7 +28,7 @@ const RotatingGIF = () => {
 
   const currentGIF = gifList[currentGifIndex];
 
-  return <Image src={currentGIF} className="w-full h-screen" width={100} height={100} alt="Rotating GIF" />;
+  return <Image src={currentGIF} className="w-full h-96 sm:h-screen" width={100} height={100} alt="Rotating GIF" />;
 };
 
 const app = initializeApp(firebaseConfig);
@@ -59,22 +59,28 @@ export default function RafflePage({ params }: { params: { id: string } }) {
     });
   }
 
-  const [countdown, setCountdown] = useState(10); // Initial countdown time in seconds
-
+  const [count, setCount] = useState(0); // Initial Count time in seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      if (countdown > 0) {
-        setCountdown(countdown - 1);
-      }
-    }, 1300);
-    if (countdown === 0) {
-      location.href = `/lobby-details/${params.id}`;
-      getRaffleById(lobbyDetails.raffleId).then((res: any) => {
-        updateFirebaseLobby(res[5]);
-      });
-    }
-    return () => clearInterval(interval);
-  }, [countdown]);
+      getRaffleById(lobbyDetails?.raffleId).then((res: any) => {
+        console.log(res[5]);
+        console.log(res[5] as string);
+        if (res[5] !== '0x0000000000000000000000000000000000000000') {
+          // updateFirebaseLobby(res[5] as string).then(() => {
+          location.href = `/lobby-details/${params.id}`;
+          clearInterval(interval);
+          // });
+        } else {
+          setCount(prevCounter => prevCounter + 1);
+        }
+      })
+    }, 1000); // Execute every second (1000 milliseconds)
+
+    return () => {
+      clearInterval(interval); // Clean up the interval on component unmount
+    };
+  }, [count, lobbyDetails?.raffleId, params.id]);
+
 
   useEffect(() => {
     fetchFirebaseData();
@@ -84,19 +90,45 @@ export default function RafflePage({ params }: { params: { id: string } }) {
     <WagmiConfig config={wagmiConfig}>
       <div className="w-full relative">
         <RotatingGIF />
-        <div className="absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
-          <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Raffle Commencing!</div>
+        <div className="hidden sm:block absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
+          <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Lobby Participants</div>
           {lobbyDetails && lobbyDetails.nfts.map((nft: any, index: number) => {
             return (
-              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{nft.ownerOf}</p>
+              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf)}</p>
             )
           })}
         </div>
 
-        <div className="absolute top-20 left-20 rounded p-4 drop-shadow-md">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-9xl mb-4">{countdown}</span>
+        <div className="hidden sm:block absolute top-20 left-20 bg-white bg-opacity-50 rounded p-4 drop-shadow-md">
+          <div className="flex items-center">
+            <span className="loading loading-ring loading-lg"></span>
+            <span className="text-5xl mb-4 h-full mt-2">
+              &nbsp;Choosing Winner&nbsp;
+            </span>
+            <span className="loading loading-ring loading-lg"></span>
+          </div>
         </div>
       </div >
-    </WagmiConfig>
+
+      <div className="block sm:hidden bg-white bg-opacity-50 rounded p-4 drop-shadow-md -mt-24">
+        <div className="flex items-center justify-center">
+          <span className="loading loading-ring loading-lg"></span>
+          <span className="text-2xl mb-4 h-full mt-2">
+            &nbsp;Choosing Winner&nbsp;
+          </span>
+          <span className="loading loading-ring loading-lg"></span>
+        </div>
+      </div>
+      <div className="block sm:hidden bg-white rounded p-4 drop-shadow-md">
+        <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-2xl mb-4 text-center">Lobby Participants</div>
+        <div className="text-center">
+          {lobbyDetails && lobbyDetails.nfts.map((nft: any, index: number) => {
+            return (
+              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf)}</p>
+            )
+          })}
+        </div>
+      </div>
+    </WagmiConfig >
   )
 }
