@@ -123,3 +123,10 @@ export const useFee = () => {
 
   return fee;
 };
+
+export const truncateAddress = (address: string) => {
+  const firstPart = address.slice(0, 5);
+  const lastPart = address.slice(-4);
+
+  return `${firstPart}...${lastPart}`;
+};
