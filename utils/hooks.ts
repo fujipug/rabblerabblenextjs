@@ -16,7 +16,9 @@ export const verifyApproval = async (
 ) => {
   const network = getNetwork();
   const account = getAccount();
-  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = network.chain?.id === 43114
+    ? rabbleAddress
+    : rabbleTestAddress;
   const walletClient = await getWalletClient({
     chainId: network.chain?.id,
   });
@@ -49,12 +51,10 @@ export const verifyApproval = async (
         },
       );
       console.log("a", unwatch);
-
     } else {
       write();
     }
-  }
-  catch (e) {
+  } catch (e) {
     console.log("approval error", e);
   }
 };
@@ -62,7 +62,9 @@ export const verifyApproval = async (
 // get raffle count
 export const getRaffleCount = () => {
   const network = getNetwork();
-  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = network.chain?.id === 43114
+    ? rabbleAddress
+    : rabbleTestAddress;
 
   const count = readContract({
     address: address,
@@ -75,12 +77,14 @@ export const getRaffleCount = () => {
 
 export const getRaffleById = (id: number) => {
   const network = getNetwork();
-  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = network.chain?.id === 43114
+    ? rabbleAddress
+    : rabbleTestAddress;
   const raffle = readContract({
     address: address,
     abi: rabbleAbi,
-    functionName: 'raffles',
-    args: [BigInt(id)]
+    functionName: "raffles",
+    args: [BigInt(id)],
   });
 
   return raffle;
@@ -91,7 +95,9 @@ export const useRabbleContract = () => {
   const network = getNetwork();
 
   useEffect(() => {
-    const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+    const address = network.chain?.id === 43114
+      ? rabbleAddress
+      : rabbleTestAddress;
     const contract = getContract({
       address: address,
       abi: rabbleAbi,
@@ -116,11 +122,4 @@ export const useFee = () => {
   }, [network.chain?.id]);
 
   return fee;
-};
-
-export const truncateAddress = (address: string) => {
-  const firstPart = address.slice(0, 5);
-  const lastPart = address.slice(-4);
-
-  return `${firstPart}...${lastPart}`;
 };

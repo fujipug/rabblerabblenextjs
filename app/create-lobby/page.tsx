@@ -3,7 +3,7 @@ import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { getNetwork, watchNetwork } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { getRaffleCount, useRabbleContract, verifyApproval, useFee, truncateAddress } from '../../utils/hooks.ts';
+import { getRaffleCount, useRabbleContract, verifyApproval, useFee } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
 import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
@@ -17,6 +17,7 @@ import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
+import { generateToken, truncateAddress } from '../../utils/functions.ts';
 
 //Initialize firebase backend
 const app = initializeApp(firebaseConfig);
@@ -147,11 +148,11 @@ export default function CreateLobby() {
   }
 
   useEffect(() => {
-    getMoralisNfts();
-    // if (address && isConnected && chain?.id === 80001)
-    //   getMoralisNfts();
-    // if (address && isConnected && chain?.id === 43114)
-    //   getPicassoNfts();
+    // getMoralisNfts();
+    if (address && isConnected && chain?.id === 80001)
+      getMoralisNfts();
+    if (address && isConnected && chain?.id === 43114)
+      getPicassoNfts();
   }, [address, isConnected, chain?.id]);
 
   useEffect(() => {
@@ -235,13 +236,12 @@ export default function CreateLobby() {
   }
 
   const getPicassoNfts = async () => {
-    // if (chain.id === 43114) {
     fetch(
-      `https://api.pickasso.net/v1/wallet/${address}/tokens&verified=false`,
+      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=100&sortBy=updatedBlock&sortOrder=desc&verified=false`,
       {
-        //   headers: {
-        //     'x-api-token': generateToken(),
-        //   },
+        headers: {
+          'x-api-token': await generateToken(),
+        }
       },
     )
       .then((response) => {
@@ -253,26 +253,12 @@ export default function CreateLobby() {
       })
       .then((data) => {
         setNfts(data.docs);
+        console.log(data.docs);
       })
       .catch((e) => {
         console.log('fetch inventory error', e);
       });
-    // } else {
-    //   let nfts = [];
-    //   const supply = await contract.balanceOf(address);
-    //   for (let i = 0; i < supply; i++) {
-    //     let owner = await contract.ownerOf(i);
-
-    //     if (owner.toLowerCase() === address.toLowerCase()) {
-    //       nfts.push({ tokenId: i, collectionAddress: blacklisted });
-    //     }
-    //   }
-    // setNfts(nfts);
   }
-
-  // useEffect(() => {
-  //   getNFTs();
-  // }, [address]);
 
   return (
     <>
@@ -343,8 +329,6 @@ export default function CreateLobby() {
           <div className="mt-12 text-center">
             {address && isConnected ?
               <>
-                <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-                <span className="hidden sm:block">{address}</span>
                 <span className="block sm:hidden">{truncateAddress(address)}</span>
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
@@ -393,7 +377,7 @@ export default function CreateLobby() {
                               :
                               <div className="relative group">
                                 <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
-                                  src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
+                                  src={nft.metadata?.pImage ? nft.metadata.pImage : nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
                                   alt="NFT image unreachable" width={150} height={150} />
                                 <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
                                   <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
