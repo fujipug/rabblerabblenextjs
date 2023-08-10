@@ -14,6 +14,7 @@ import { getRaffleById, truncateAddress } from '../../../utils/hooks';
 import Confetti from 'react-confetti'
 import Image from 'next/image'
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
+import Tilt from 'react-parallax-tilt';
 
 declare global {
   interface Window {
@@ -107,15 +108,16 @@ function LobbyNftInfo(props: any) {
                 lobbyDetails?.data.nfts.map((nft: any, index: number) => (
                   <div key={index}>
                     {(winner.toLowerCase() == nft.ownerOf.toLowerCase()) &&
-                      <div className="card card-compact w-80 bg-base-100 shadow-xl">
-                        <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
-                        <div className="card-body">
-                          <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
-                          <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
+                      <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="bottom" glareBorderRadius="20px">
+                        <div className="card card-compact w-80 bg-base-100 shadow-xl">
+                          <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                          <div className="card-body">
+                            <h2 className="card-title inner-element">{nft?.name} #{nft.tokenId}</h2>
+                            <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
+                          </div>
                         </div>
-                      </div>
+                      </Tilt>
                     }
-
                   </div>
                 ))
               }
@@ -190,7 +192,7 @@ function LobbyNftInfo(props: any) {
         <div className="col-span-1">
           <h2 className="font-bold text-lg mb-2">Raffle Details</h2>
           <p className="leading-8"><span className="font-semibold">Lobby: </span>
-            <span className='text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'>{lobbyDetails?.data.lobbyName ? lobbyDetails?.data.lobbyName : lobbyDetails?.id}</span>
+            <span className='text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 truncate'>{lobbyDetails?.data.lobbyName ? lobbyDetails?.data.lobbyName : lobbyDetails?.id}</span>
           </p>
           <p className="leading-8"><span className="font-semibold">EVM Chain: </span>{lobbyDetails?.data.evmChain}</p>
           <p className="leading-8"><span className="font-semibold">Started: </span>

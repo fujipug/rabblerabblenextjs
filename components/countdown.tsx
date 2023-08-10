@@ -90,7 +90,7 @@ export default function Countdown(props: { endTime: Timestamp, size: string }) {
         <span className="countdown">
           <span style={customHours}></span> h
           <span style={customMinutes}></span> m
-          {/* <span style={customSeconds}></span>s */}
+          {/* <span id="seconds" style={customSeconds}></span>s */}
         </span>
       }
     </>

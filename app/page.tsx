@@ -133,7 +133,7 @@ export default function Home() {
                     </td>
                     <td>
                       {(lobby.data.status === 'Expired' || lobby.data.status === 'Completed') ?
-                        <span>0h0m</span>
+                        <span>-</span>
                         :
                         <Countdown endTime={lobby.data.endDate} size={'small'} />
                       }
