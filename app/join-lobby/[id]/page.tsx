@@ -19,6 +19,7 @@ import { formatUnits } from 'viem';
 import React from "react";
 import confetti from "canvas-confetti";
 import { generateToken } from "../../../utils/functions.ts";
+import SoundBoard from "../../../components/soundboard.tsx";
 
 declare global {
   interface Window {
@@ -139,7 +140,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   // Update the firebase database with the new player
   const updateFirebaseLobby = async (isCompleteLobby: boolean) => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
-    const joinedNfts = [...lobbyDetails.data.nfts, confirmNft.toJSON()];
+    const playerNft = { ...confirmNft, battleCry: battleCry };
+    const joinedNfts = [...lobbyDetails.data.nfts, playerNft];
 
     return await updateDoc(lobbyRef, {
       confirmedPlayers: lobbyDetails?.data.confirmedPlayers + 1 && lobbyDetails?.data.confirmedPlayers + 1,
@@ -147,6 +149,12 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       status: isCompleteLobby ? 'Completed' : 'Active'
     });
   }
+
+  // Handle battle cry
+  const [battleCry, setBattleCry] = useState(null);
+  const handleValueChange = (newValue: any) => {
+    setBattleCry(newValue);
+  };
 
   const getPicassoNfts = async () => {
     fetch(
@@ -267,6 +275,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                   <div className="card-body">
                     <h2 className="card-title">{confirmNft?.name} #{confirmNft?.tokenId}</h2>
                     <p><span className="font-semibold">Symbol: </span> {confirmNft?.symbol}</p>
+                    <SoundBoard onValueChange={handleValueChange} />
                   </div>
                 </div>
               </div>
@@ -335,6 +344,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           <div className="grid grid-cols-1 mt-4 sm:grid-cols-2 sm:space-x-6">
             <div className="col-span-1">
+              {/* TODO: Maybe remove this */}
               {selectedNft?.media?.mimetype === 'video/mp4' ?
                 <figure>
                   <video className="rounded-lg drop-shadow-md" width="500" height="500" autoPlay muted loop>
