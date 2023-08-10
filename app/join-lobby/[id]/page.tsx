@@ -344,7 +344,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                 :
                 <figure>
                   <img className="rounded-lg drop-shadow-md"
-                    src={selectedNft?.metadata.pImage ? selectedNft?.metadata.pImage : selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl}
+                    src={selectedNft?.metadata?.pImage ? selectedNft?.metadata?.pImage : selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl}
                     alt="NFT image unreachable" />
                 </figure>
               }
