@@ -5,7 +5,7 @@ import { getNetwork, watchNetwork } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { getRaffleCount, useRabbleContract, verifyApproval, useFee } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
-import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
@@ -50,9 +50,9 @@ declare global {
 export default function CreateLobby() {
   const [playerAmount, setPlayerAmount] = useState(0);
   const [step, setStep] = useState(1);
-  const [nfts, setNfts] = useState([] as EvmNft[]);
-  const [selectedNft, setSelectedNft] = useState({} as EvmNft);
-  const [confirmNft, setConfirmNft] = useState({} as EvmNft);
+  const [nfts, setNfts] = useState([] as any[]);
+  const [selectedNft, setSelectedNft] = useState({} as any);
+  const [confirmNft, setConfirmNft] = useState({} as any);
   const [shareUrl, setShareUrl] = useState('');
   const { address, isConnected } = useAccount();
 
@@ -60,7 +60,7 @@ export default function CreateLobby() {
   const { SVG } = useQRCode();
   const [showQuokkas, setShowQuokkas] = useState(5);
   const [collectionList, setCollectionList] = useState([] as string[]);
-  const [imutableNftList, setImutableNftList] = useState([] as EvmNft[]);
+  const [imutableNftList, setImutableNftList] = useState([] as any[]);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const rabbleContract = useRabbleContract();
@@ -74,7 +74,7 @@ export default function CreateLobby() {
     abi: rabbleAbi,
     functionName: 'createPublicRaffle',
     args: [
-      confirmNft.tokenAddress?.lowercase,
+      confirmNft.collectionAddress,
       playerAmount,
       confirmNft.tokenId,
       84600 // 24 hours
@@ -162,7 +162,7 @@ export default function CreateLobby() {
   const [isApprovalLoading, setIsApprovalLoading] = useState(false);
   const handleFinalizeLobby = async () => {
     if (confirmNft) {
-      verifyApproval(confirmNft?.tokenAddress, write, (isApprovalStatusLoading: boolean) => {
+      verifyApproval(confirmNft?.collectionAddress, write, (isApprovalStatusLoading: boolean) => {
         setIsApprovalLoading(isApprovalStatusLoading);
       });
     }
@@ -187,13 +187,13 @@ export default function CreateLobby() {
   const createFirebaseLobby = async (raffleId: any) => {
     const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
     const lobby = {
-      collection: confirmNft?.name,
+      collection: confirmNft?.collectionName,
       createdAt: Timestamp.now(),
       confirmedPlayers: 1,
       endDate: Timestamp.fromDate(endDate),
       evmChain: chain?.name,
       isPrivate: false,
-      nfts: [confirmNft.toJSON()],
+      nfts: [confirmNft],
       timeLimit: 24, // Update when time limits are added
       status: 'Active',
       totalPlayers: playerAmount,
@@ -208,8 +208,8 @@ export default function CreateLobby() {
   useEffect(() => {
     const uniqueArray: any[] = [];
     imutableNftList.map((item: any) => {
-      if (!uniqueArray.includes(item?.name)) {
-        uniqueArray.push(item?.name);
+      if (!uniqueArray.includes(item?.collectionName)) {
+        uniqueArray.push(item?.collectionName);
       }
       setCollectionList(uniqueArray);
     });
@@ -219,7 +219,7 @@ export default function CreateLobby() {
   function filterCollection(collection: string) {
     const resetNftList = imutableNftList;
     if (collection !== 'all') {
-      const filtered = resetNftList.filter((nft: any) => nft?.name === collection);
+      const filtered = resetNftList.filter((nft: any) => nft?.collectionName == collection);
       setNfts(filtered);
     } else {
       setNfts(resetNftList);
@@ -237,7 +237,7 @@ export default function CreateLobby() {
 
   const getPicassoNfts = async () => {
     fetch(
-      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=100&sortBy=updatedBlock&sortOrder=desc&verified=false`,
+      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=500&sortBy=updatedBlock&sortOrder=desc&verified=false`,
       {
         headers: {
           'x-api-token': generateToken(),
@@ -252,8 +252,9 @@ export default function CreateLobby() {
         return response.json();
       })
       .then((data) => {
+        console.log('fetch inventory success', data.docs);
         setNfts(data.docs);
-        console.log(data.docs);
+        setImutableNftList(data.docs);
       })
       .catch((e) => {
         console.log('fetch inventory error', e);
@@ -339,8 +340,8 @@ export default function CreateLobby() {
                       Filter<span className="hidden sm:flex">by collection</span>
                     </label>
                     <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 bg-base-100 rounded-box w-52 mt-2">
-                      {collectionList.map((collection: string, index: any) => (
-                        <li key={index}><a onClick={() => filterCollection(collection)}>{collection}</a></li>
+                      {collectionList.map((collectionName: string, index: any) => (
+                        <li key={index}><a onClick={() => filterCollection(collectionName)}>{collectionName}</a></li>
                       ))}
                       <li><a onClick={() => filterCollection('all')}>Show All</a></li>
                     </ul>
@@ -360,6 +361,7 @@ export default function CreateLobby() {
                       {nfts.map((nft: any, index: any) => (
                         <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
                           <div>
+                            {/* TODO: Remove if there is no video data returned from Pickasso */}
                             {nft.media?.mimetype === 'video/mp4' ?
                               <div className="relative group">
                                 <video className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
@@ -370,21 +372,21 @@ export default function CreateLobby() {
                                     <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
                                   </div>
                                   <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.collectionName}</p>
                                   </div>
                                 </div>
                               </div>
                               :
                               <div className="relative group">
                                 <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
-                                  src={nft.metadata?.pImage ? nft.metadata.pImage : nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
+                                  src={nft.metadata?.pImage}
                                   alt="NFT image unreachable" width={150} height={150} />
                                 <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
                                   <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
                                   </div>
                                   <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.name}</p>
+                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.collectionName}</p>
                                   </div>
                                 </div>
                               </div>
@@ -416,10 +418,10 @@ export default function CreateLobby() {
                 <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
                   <div className="col-span-1 flex justify-center">
                     <div className="card card-compact w-80 bg-base-200 shadow-xl">
-                      <figure><img src={selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl} alt="NFT Image" /></figure>
+                      <figure><img src={selectedNft?.metadata?.pImage} alt="NFT Image" /></figure>
                       <div className="card-body">
                         <h2 className="card-title">{selectedNft?.name} #{selectedNft?.tokenId}</h2>
-                        <p><span className="font-semibold">Symbol: </span> {selectedNft?.symbol}</p>
+                        <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol}</p>
                       </div>
                     </div>
                   </div>
@@ -440,7 +442,7 @@ export default function CreateLobby() {
                               </svg>
                             </div>
                           </h2>
-                          <p>{confirmNft?.name}</p>
+                          <p>{confirmNft?.collectionName}</p>
                         </div>
 
                         <div className="mb-4">
@@ -537,7 +539,7 @@ export default function CreateLobby() {
                   :
                   <figure>
                     <img className="rounded-lg drop-shadow-md"
-                      src={selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl}
+                      src={selectedNft?.metadata?.pImage}
                       alt="NFT image unreachable" />
                   </figure>
                 }
@@ -545,9 +547,9 @@ export default function CreateLobby() {
 
               <div className="col-span-1 mt-4 sm:mt-0 flex flex-col">
                 <div>
-                  <p><span className="font-semibold">Collection:</span> {selectedNft?.name}</p>
+                  <p><span className="font-semibold">Collection:</span> {selectedNft?.collectionName}</p>
                   <div className="divider"></div>
-                  <p><span className="font-semibold">Symbol:</span> {selectedNft?.symbol}</p>
+                  <p><span className="font-semibold">Symbol:</span> {selectedNft?.collectionSymbol}</p>
                   <p><span className="font-semibold">Token ID:</span> {selectedNft?.tokenId}</p>
                 </div>
                 <div className="mt-auto">

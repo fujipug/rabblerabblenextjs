@@ -2,7 +2,7 @@
 import { useAccount, useContractWrite } from "wagmi";
 import { getNetwork, watchNetwork } from "@wagmi/core";
 import { useEffect, useState } from "react";
-import { EvmChain, EvmNft } from "@moralisweb3/common-evm-utils";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 import Moralis from "moralis";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { collection, doc, documentId, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
@@ -18,6 +18,7 @@ import { firebaseConfig } from '../../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
 import React from "react";
 import confetti from "canvas-confetti";
+import { generateToken } from "../../../utils/functions.ts";
 
 declare global {
   interface Window {
@@ -31,9 +32,9 @@ const db = getFirestore(app);
 
 export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const [step, setStep] = useState(1);
-  const [nfts, setNfts] = useState([] as EvmNft[]);
-  const [selectedNft, setSelectedNft] = useState({} as EvmNft);
-  const [confirmNft, setConfirmNft] = useState({} as EvmNft);
+  const [nfts, setNfts] = useState([] as any[]);
+  const [selectedNft, setSelectedNft] = useState({} as any);
+  const [confirmNft, setConfirmNft] = useState({} as any);
   const { address, isConnected } = useAccount();
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -92,7 +93,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   })
 
   const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
-  const getNfts = async () => {
+  const getMoralisNfts = async () => {
     const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
@@ -104,11 +105,12 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     return response.result;
   }
   const fetchData = async (results: any) => {
+    console.log('results', results);
     try {
       const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
       const querySnapshot = await getDocs(q);
       for (const doc of querySnapshot.docs) {
-        const filtered = results.filter((nft: any) => nft?.name == doc.data().collection);
+        const filtered = results.filter((nft: any) => nft?.collectionName == doc.data().collection);
         setNfts(filtered);
         setLobbyDetails({ id: doc.id, data: doc.data() });
       }
@@ -117,17 +119,19 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     }
   };
   useEffect(() => {
-    if (address && isConnected)
-      getNfts().then((nfts) => {
+    if (address && isConnected && chain?.id === 80001)
+      getMoralisNfts().then((nfts) => {
         fetchData(nfts);
       });
+    if (address && isConnected && chain?.id === 43114)
+      getPicassoNfts();
   }, [address, isConnected, chain?.id]);
 
   // Join player to Lobby
   const [isApprovalLoading, setIsApprovalLoading] = useState(false);
   const handleFinalizeJoinLobby = async () => {
     if (confirmNft) {
-      verifyApproval(confirmNft?.tokenAddress, write, (isApprovalStatusLoading: boolean) => {
+      verifyApproval(confirmNft?.tokenAddress ? confirmNft?.tokenAddress : confirmNft?.collectionAddress, write, (isApprovalStatusLoading: boolean) => {
         setIsApprovalLoading(isApprovalStatusLoading);
       });
     }
@@ -143,6 +147,30 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       nfts: joinedNfts && joinedNfts,
       status: isCompleteLobby ? 'Completed' : 'Active'
     });
+  }
+
+  const getPicassoNfts = async () => {
+    fetch(
+      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=500&sortBy=updatedBlock&sortOrder=desc&verified=false`,
+      {
+        headers: {
+          'x-api-token': generateToken(),
+        }
+      },
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Something wrong happened');
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        fetchData(data.docs);
+      })
+      .catch((e) => {
+        console.log('fetch inventory error', e);
+      });
   }
 
   return (
@@ -198,7 +226,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                           :
                           <div className="relative group">
                             <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
-                              src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
+                              src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
                               alt="NFT image unreachable" width={150} height={150} />
                             <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
                               <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -235,7 +263,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
               <div className="col-span-1 flex justify-center">
                 <div className="card card-compact w-80 bg-base-200 shadow-xl">
                   <figure><img
-                    src={confirmNft?.media?.mediaCollection?.high?.url ? confirmNft?.media?.mediaCollection?.high?.url : confirmNft?.media?.originalMediaUrl}
+                    src={confirmNft?.metadata?.pImage ? confirmNft?.metadata?.pImage : confirmNft?.media?.mediaCollection?.high?.url ? confirmNft?.media?.mediaCollection?.high?.url : confirmNft?.media?.originalMediaUrl}
                     alt="NFT Image" /></figure>
                   <div className="card-body">
                     <h2 className="card-title">{confirmNft?.name} #{confirmNft?.tokenId}</h2>
@@ -317,7 +345,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                 :
                 <figure>
                   <img className="rounded-lg drop-shadow-md"
-                    src={selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl}
+                    src={selectedNft?.metadata.pImage ? selectedNft?.metadata.pImage : selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl}
                     alt="NFT image unreachable" />
                 </figure>
               }

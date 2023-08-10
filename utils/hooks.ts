@@ -10,10 +10,11 @@ import {
 } from "@wagmi/core";
 
 export const verifyApproval = async (
-  collection: EvmAddress,
+  collectionAddress: any,
   write: () => void,
   isApprovalStatusLoading: any,
 ) => {
+  console.log("verify approval", collectionAddress);
   const network = getNetwork();
   const account = getAccount();
   const address = network.chain?.id === 43114
@@ -23,7 +24,7 @@ export const verifyApproval = async (
     chainId: network.chain?.id,
   });
   const collectionContract = getContract({
-    address: collection.checksum as any,
+    address: collectionAddress,
     abi: nftAbi,
     walletClient: walletClient as any,
   });
