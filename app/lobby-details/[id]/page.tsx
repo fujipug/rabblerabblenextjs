@@ -108,12 +108,17 @@ function LobbyNftInfo(props: any) {
                 lobbyDetails?.data.nfts.map((nft: any, index: number) => (
                   <div key={index}>
                     {(winner.toLowerCase() == nft.ownerOf.toLowerCase()) &&
-                      <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="bottom" glareBorderRadius="20px">
+                      <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
                         <div className="card card-compact w-80 bg-base-100 shadow-xl">
                           <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
                           <div className="card-body">
                             <h2 className="card-title inner-element">{nft?.name} #{nft.tokenId}</h2>
-                            <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
+                            <div className='flex justify-between items-center'>
+                              <p><span className="font-semibold truncate">Collection: </span> {nft?.name}</p>
+                              {lobbyDetails?.data.battleCry &&
+                                <SoundButton battleCry={lobbyDetails?.data.battleCry} />
+                              }
+                            </div>
                           </div>
                         </div>
                       </Tilt>
@@ -157,27 +162,36 @@ function LobbyNftInfo(props: any) {
           <div className="snap-mandatory snap-x flex p-6 space-x-4 bg-neutral rounded-box w-full overflow-x-scroll">
             {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
               <div key={index} className="snap-center">
-                <div className="card card-compact w-80 bg-base-100 shadow-xl">
-                  <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
-                  <div className="card-body">
-                    <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
-                    <p><span className="font-semibold">Collection: </span> {nft?.name}</p>
+                <Tilt tiltEnable={false} glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="all" glareBorderRadius="20px">
+                  <div className="card card-compact w-80 bg-base-100 shadow-xl">
+                    <figure><img src={nft?.media?.mediaCollection?.high?.url ? nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                    <div className="card-body">
+                      <h2 className="card-title">{nft?.name} #{nft.tokenId}</h2>
+                      <div className='flex justify-between items-center'>
+                        <p><span className="font-semibold truncate">Collection: </span> {nft?.name}</p>
+                        {lobbyDetails?.data.battleCry &&
+                          <SoundButton battleCry={lobbyDetails?.data.battleCry} />
+                        }
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </Tilt>
               </div>
             ))}
 
             {placeholders.map((placeholder: any, index: number) => (
               <div key={index} className="snap-center">
-                <div className="card card-compact w-80 bg-base-100 shadow-xl">
-                  <figure><div className="bg-gray-200 flex justify-center items-center w-[320px] h-[320px]">
-                    <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500"><span className={myFont.className}>Player {converter.toWords(index + 2)}</span></span>
-                  </div></figure>
-                  <div className="card-body">
-                    <h2 className="card-title">Waiting for player to join<span className="loading loading-dots loading-xs -mb-3"></span></h2>
-                    <p><span className="font-semibold">Collection: </span> {placeholder.collection}</p>
+                <Tilt tiltEnable={false} glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="all" glareBorderRadius="20px">
+                  <div className="card card-compact w-80 bg-base-100 shadow-xl">
+                    <figure><div className="bg-gray-200 flex justify-center items-center w-[320px] h-[320px]">
+                      <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500"><span className={myFont.className}>Player {converter.toWords(index + 2)}</span></span>
+                    </div></figure>
+                    <div className="card-body">
+                      <h2 className="card-title">Waiting for player to join<span className="loading loading-dots loading-xs -mb-3"></span></h2>
+                      <p><span className="font-semibold">Collection: </span> {placeholder.collection}</p>
+                    </div>
                   </div>
-                </div>
+                </Tilt>
               </div>
             ))}
           </div>
@@ -272,6 +286,30 @@ function LobbyNftInfo(props: any) {
     </>
   )
 };
+
+function SoundButton(props: { battleCry: string }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioFile = props.battleCry;
+  const handleSoundButtonClick = () => {
+    const audioElement = new Audio(audioFile);
+
+    if (isPlaying) {
+      audioElement.pause();
+    } else {
+      audioElement.play();
+    }
+
+    setIsPlaying(!isPlaying);
+  };
+
+  return (
+    <div className="tooltip z-10" data-tip="Battle Cry">
+      <svg onClick={handleSoundButtonClick} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="orange" className="w-5 h-5 cursor-pointer">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+      </svg>
+    </div>
+  );
+}
 
 export default function LobbyDetails({ params }: { params: { id: string } }) {
   return (
