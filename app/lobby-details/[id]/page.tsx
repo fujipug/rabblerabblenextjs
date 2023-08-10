@@ -189,6 +189,9 @@ function LobbyNftInfo(props: any) {
       <div className="grid grid-cols-1 sm:grid-cols-2">
         <div className="col-span-1">
           <h2 className="font-bold text-lg mb-2">Raffle Details</h2>
+          <p className="leading-8"><span className="font-semibold">Lobby: </span>
+            <span className='text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'>{lobbyDetails?.data.lobbyName ? lobbyDetails?.data.lobbyName : lobbyDetails?.id}</span>
+          </p>
           <p className="leading-8"><span className="font-semibold">EVM Chain: </span>{lobbyDetails?.data.evmChain}</p>
           <p className="leading-8"><span className="font-semibold">Started: </span>
             {`${(lobbyDetails?.data.createdAt)?.toDate().toLocaleDateString(undefined, {
@@ -223,7 +226,7 @@ function LobbyNftInfo(props: any) {
                 hour12: true,
               })}`}</p>
           }
-          <p className="leading-8"><span className="font-semibold">Lobby: </span>{lobbyDetails?.data.isPrivate ? 'Private' : 'Public'}</p>
+          <p className="leading-8"><span className="font-semibold">Type: </span>{lobbyDetails?.data.isPrivate ? 'Private' : 'Public'}</p>
         </div>
         <div className="sm:hidden flex flex-col w-full">
           <div className="divider"></div>

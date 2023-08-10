@@ -32,10 +32,7 @@ export default function LearnMore() {
             <div className="flex justify-between items-center">
               <Link href="/" className="inline-flex space-x-6 cursor-pointer">
                 <div className="badge badge-outline p-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="hidden sm:block w-6 h-6 mr-1">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
-                  </svg>
-                  Home
+                  Return Home
                 </div>
               </Link>
               <div className="right-0 p-3"><ThemeToggle /></div>
