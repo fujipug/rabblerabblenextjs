@@ -81,7 +81,6 @@ export default function CreateLobby() {
     value: fee,
     onSuccess: () => {
       getRaffleCount().then(async (response) => {
-        console.log(response)
         createFirebaseLobby(Number(response) + 1);
       });
     },
@@ -128,9 +127,9 @@ export default function CreateLobby() {
     // Return the response
     return response
   }
-  const getNfts = async () => {
+  const getMoralisNfts = async () => {
     const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
-    const response = await Moralis.EvmApi.nft.getWalletNFTs({
+    await Moralis.EvmApi.nft.getWalletNFTs({
       address: address as string,
       chain: networkChain,
       limit: 100,
@@ -148,17 +147,23 @@ export default function CreateLobby() {
   }
 
   useEffect(() => {
-    if (address && isConnected)
-      getNfts();
+    getMoralisNfts();
+    // if (address && isConnected && chain?.id === 80001)
+    //   getMoralisNfts();
+    // if (address && isConnected && chain?.id === 43114)
+    //   getPicassoNfts();
   }, [address, isConnected, chain?.id]);
 
   useEffect(() => {
   }, [chain?.id]);
 
   // Finalize lobby and create the lobby in the blockchain
+  const [isApprovalLoading, setIsApprovalLoading] = useState(false);
   const handleFinalizeLobby = async () => {
     if (confirmNft) {
-      verifyApproval(confirmNft?.tokenAddress, write)
+      verifyApproval(confirmNft?.tokenAddress, write, (isApprovalStatusLoading: boolean) => {
+        setIsApprovalLoading(isApprovalStatusLoading);
+      });
     }
   }
 
@@ -221,6 +226,46 @@ export default function CreateLobby() {
       setShowClipboardAlert(false);
     }, 3000);
   }
+
+  const getPicassoNfts = async () => {
+    // if (chain.id === 43114) {
+    fetch(
+      `https://api.pickasso.net/v1/wallet/${address}/tokens&verified=false`,
+      {
+        //   headers: {
+        //     'x-api-token': generateToken(),
+        //   },
+      },
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Something wrong happened');
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setNfts(data.docs);
+      })
+      .catch((e) => {
+        console.log('fetch inventory error', e);
+      });
+    // } else {
+    //   let nfts = [];
+    //   const supply = await contract.balanceOf(address);
+    //   for (let i = 0; i < supply; i++) {
+    //     let owner = await contract.ownerOf(i);
+
+    //     if (owner.toLowerCase() === address.toLowerCase()) {
+    //       nfts.push({ tokenId: i, collectionAddress: blacklisted });
+    //     }
+    //   }
+    // setNfts(nfts);
+  }
+
+  // useEffect(() => {
+  //   getNFTs();
+  // }, [address]);
 
   return (
     <>
@@ -388,49 +433,51 @@ export default function CreateLobby() {
                     </div>
                   </div>
 
-                  <div className="col-span-1 relative mt-4">
-                    <div className="mb-4">
-                      <h2 className="font-semibold">EVM Chain</h2>
-                      <p>{chain?.name}</p>
+                  <div className="col-span-1 mt-4 sm:mt-0 flex flex-col">
+                    <div>
+                      <div className="mb-4">
+                        <h2 className="font-semibold">EVM Chain</h2>
+                        <p>{chain?.name}</p>
+                      </div>
+
+                      <div className="mb-4">
+                        <h2 className="font-semibold">Raffle Collection
+                          <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                            </svg>
+                          </div>
+                        </h2>
+                        <p>{confirmNft?.name}</p>
+                      </div>
+
+                      <div className="mb-4">
+                        <h2 className="font-semibold">Number of Players</h2>
+                        <p>{playerAmount}</p>
+                      </div>
+
+                      <div className="mb-4">
+                        <h2 className="font-semibold">Session Time Limit
+                          <div className="tooltip" data-tip="The maximum time allowed for all players to participate before the lobby is closed.">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                            </svg>
+                          </div>
+                        </h2>
+                        <p>24 hours</p>
+                      </div>
+
+                      <div className="mb-4">
+                        <h2 className="font-semibold">Lobby Fee</h2>
+                        <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
+                      </div>
                     </div>
 
-                    <div className="mb-4">
-                      <h2 className="font-semibold">Raffle Collection
-                        <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                          </svg>
-                        </div>
-                      </h2>
-                      <p>{confirmNft?.name}</p>
+                    <div className="mt-auto">
+                      <button onClick={() => handleFinalizeLobby()} className="btn btn-accent drop-shadow-md mt-4 w-full">
+                        {isLoading || isApprovalLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
+                      </button>
                     </div>
-
-                    <div className="mb-4">
-                      <h2 className="font-semibold">Number of Players</h2>
-                      <p>{playerAmount}</p>
-                    </div>
-
-                    <div className="mb-4">
-                      <h2 className="font-semibold">Session Time Limit
-                        <div className="tooltip" data-tip="The maximum time allowed for all players to participate before the lobby is closed.">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                          </svg>
-                        </div>
-                      </h2>
-                      <p>24 hours</p>
-                    </div>
-
-                    <div className="mb-4">
-                      <h2 className="font-semibold">Lobby Fee</h2>
-                      <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
-                    </div>
-
-                    <button onClick={() => handleFinalizeLobby()} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">
-                      {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}</button>
-                    <button onClick={() => handleFinalizeLobby()} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">
-                      {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Create Lobby'}
-                    </button>
                   </div >
                 </div >
               </>
@@ -500,13 +547,16 @@ export default function CreateLobby() {
                 }
               </div>
 
-              <div className="col-span-1 mt-4 sm:mt-0 relative">
-                <p><span className="font-semibold">Collection:</span> {selectedNft?.name}</p>
-                <div className="divider"></div>
-                <p><span className="font-semibold">Symbol:</span> {selectedNft?.symbol}</p>
-                <p><span className="font-semibold">Token ID:</span> {selectedNft?.tokenId}</p>
-                <button onClick={() => { setConfirmNft(selectedNft), setStep(3) }} className="hidden sm:block btn btn-accent drop-shadow-md bottom-0 absolute">Confirm</button>
-                <button onClick={() => { setConfirmNft(selectedNft); setStep(3) }} className="block sm:hidden btn btn-accent drop-shadow-md mt-4 w-full">Confirm</button>
+              <div className="col-span-1 mt-4 sm:mt-0 flex flex-col">
+                <div>
+                  <p><span className="font-semibold">Collection:</span> {selectedNft?.name}</p>
+                  <div className="divider"></div>
+                  <p><span className="font-semibold">Symbol:</span> {selectedNft?.symbol}</p>
+                  <p><span className="font-semibold">Token ID:</span> {selectedNft?.tokenId}</p>
+                </div>
+                <div className="mt-auto">
+                  <button onClick={() => { setConfirmNft(selectedNft); setStep(3) }} className="btn btn-accent drop-shadow-md mt-4 w-full">Confirm</button>
+                </div>
               </div>
             </div >
           </form >
