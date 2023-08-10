@@ -53,7 +53,7 @@ export default function Home() {
   return (
     <>
       <div className="relative isolate overflow-hidden bg-base-200 sm:h-screen drop-shadow-md">
-        <div className="fixed p-3 right-0"><ThemeToggle /></div>
+        <div className="absolute p-3 right-0"><ThemeToggle /></div>
         <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-40">
           <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:flex-shrink-0 lg:pt-8">
             <div className="mt-24 sm:mt-32 lg:mt-16">

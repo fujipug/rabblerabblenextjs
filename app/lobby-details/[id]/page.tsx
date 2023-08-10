@@ -184,7 +184,7 @@ function LobbyNftInfo(props: any) {
                 <Tilt tiltEnable={false} glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="all" glareBorderRadius="20px">
                   <div className="card card-compact w-80 bg-base-100 shadow-xl">
                     <figure><div className="bg-gray-200 flex justify-center items-center w-[320px] h-[320px]">
-                      <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500"><span className={myFont.className}>Player {converter.toWords(index + 2)}</span></span>
+                      <span className="text-3xl font-bold rpo text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500"><span className={myFont.className}>Player {converter.toWords(lobbyDetails?.data.confirmedPlayers + 1)}</span></span>
                     </div></figure>
                     <div className="card-body">
                       <h2 className="card-title">Waiting for player to join<span className="loading loading-dots loading-xs -mb-3"></span></h2>
