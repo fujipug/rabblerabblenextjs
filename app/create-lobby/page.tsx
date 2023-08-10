@@ -167,6 +167,12 @@ export default function CreateLobby() {
     }
   }
 
+  // Get the lobby name from the input
+  const [lobbyName, setLobbyName] = useState('');
+  const handleLobbyName = (event: any) => {
+    setLobbyName(event.target.value);
+  };
+
   // Create lobby in firebase for record keeping
   const firebaseLobby = async (lobby: any) => {
     addDoc(collection(db, 'lobbies'), lobby).then((response) => {
@@ -191,6 +197,7 @@ export default function CreateLobby() {
       status: 'Active',
       totalPlayers: playerAmount,
       raffleId: raffleId,
+      lobbyName: lobbyName,
     }
 
     firebaseLobby(lobby);
@@ -435,41 +442,46 @@ export default function CreateLobby() {
 
                   <div className="col-span-1 mt-4 sm:mt-0 flex flex-col">
                     <div>
-                      <div className="mb-4">
-                        <h2 className="font-semibold">EVM Chain</h2>
-                        <p>{chain?.name}</p>
-                      </div>
+                      <div className="flex flex-col w-full border-opacity-50">
+                        <div className="mb-4">
+                          <h2 className="font-semibold">EVM Chain</h2>
+                          <p>{chain?.name}</p>
+                        </div>
 
-                      <div className="mb-4">
-                        <h2 className="font-semibold">Raffle Collection
-                          <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                            </svg>
-                          </div>
-                        </h2>
-                        <p>{confirmNft?.name}</p>
-                      </div>
+                        <div className="mb-4">
+                          <h2 className="font-semibold">Raffle Collection
+                            <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                              </svg>
+                            </div>
+                          </h2>
+                          <p>{confirmNft?.name}</p>
+                        </div>
 
-                      <div className="mb-4">
-                        <h2 className="font-semibold">Number of Players</h2>
-                        <p>{playerAmount}</p>
-                      </div>
+                        <div className="mb-4">
+                          <h2 className="font-semibold">Number of Players</h2>
+                          <p>{playerAmount}</p>
+                        </div>
 
-                      <div className="mb-4">
-                        <h2 className="font-semibold">Session Time Limit
-                          <div className="tooltip" data-tip="The maximum time allowed for all players to participate before the lobby is closed.">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                            </svg>
-                          </div>
-                        </h2>
-                        <p>24 hours</p>
-                      </div>
+                        <div className="mb-4">
+                          <h2 className="font-semibold">Session Time Limit
+                            <div className="tooltip" data-tip="The maximum time allowed for all players to participate before the lobby is closed.">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                              </svg>
+                            </div>
+                          </h2>
+                          <p>24 hours</p>
+                        </div>
 
-                      <div className="mb-4">
-                        <h2 className="font-semibold">Lobby Fee</h2>
-                        <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
+                        <div className="mb-4">
+                          <h2 className="font-semibold">Lobby Fee</h2>
+                          <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
+                        </div>
+
+                        <div className="divider">Lobby Name</div>
+                        <input type="text" onChange={handleLobbyName} placeholder="Ex: Quokka Collective" className="input input-bordered w-full" />
                       </div>
                     </div>
 

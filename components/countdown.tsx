@@ -27,7 +27,7 @@ export default function Countdown(props: { endTime: Timestamp, size: string }) {
   }, [props.endTime]);
 
   useEffect(() => {
-    setInterval(() => {
+    const countdown = setInterval(() => {
       if (countdownSeconds > 0) {
         countdownSeconds--;
         document.getElementById('seconds')?.style.setProperty('--value', countdownSeconds.toString());
@@ -49,6 +49,8 @@ export default function Countdown(props: { endTime: Timestamp, size: string }) {
         }
       }
     }, 1000);
+
+    return () => clearInterval(countdown);
   }, [countdownTimeRemaining]);
 
   return (
@@ -88,7 +90,7 @@ export default function Countdown(props: { endTime: Timestamp, size: string }) {
         <span className="countdown">
           <span style={customHours}></span> h
           <span style={customMinutes}></span> m
-          {/* <span style={customSeconds}></span>s */}
+          {/* <span id="seconds" style={customSeconds}></span>s */}
         </span>
       }
     </>

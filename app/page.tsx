@@ -109,7 +109,10 @@ export default function Home() {
               <tbody>
                 {lobbies.map((lobby: DocumentData, index: number) => (
                   <tr key={index}>
-                    <th className="cursor-pointer hover:underline"><Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{lobby.id}</Link></th>
+                    <th className="cursor-pointer hover:underline">
+                      <Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
+                        {lobby.data.lobbyName ? lobby.data.lobbyName : lobby.id}
+                      </Link></th>
                     <td>{lobby.data.collection}</td>
                     <td>
                       {lobby.data.status === 'Expired' &&
@@ -130,7 +133,7 @@ export default function Home() {
                     </td>
                     <td>
                       {(lobby.data.status === 'Expired' || lobby.data.status === 'Completed') ?
-                        <span>0h0m</span>
+                        <span>-</span>
                         :
                         <Countdown endTime={lobby.data.endDate} size={'small'} />
                       }
