@@ -17,6 +17,7 @@ import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
+import SoundBoard from "../../components/soundboard.tsx";
 
 //Initialize firebase backend
 const app = initializeApp(firebaseConfig);
@@ -435,7 +436,10 @@ export default function CreateLobby() {
                       <figure><img src={selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl} alt="NFT Image" /></figure>
                       <div className="card-body">
                         <h2 className="card-title">{selectedNft?.name} #{selectedNft?.tokenId}</h2>
-                        <p><span className="font-semibold">Symbol: </span> {selectedNft?.symbol}</p>
+                        <div className="flex justify-between items-center">
+                          <p><span className="font-semibold">Symbol: </span> {selectedNft?.symbol}</p>
+                          <SoundBoard />
+                        </div>
                       </div>
                     </div>
                   </div>
