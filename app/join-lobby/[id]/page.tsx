@@ -105,7 +105,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     return response.result;
   }
   const fetchData = async (results: any) => {
-    console.log('results', results);
     try {
       const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
       const querySnapshot = await getDocs(q);

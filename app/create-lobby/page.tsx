@@ -252,7 +252,6 @@ export default function CreateLobby() {
         return response.json();
       })
       .then((data) => {
-        console.log('fetch inventory success', data.docs);
         setNfts(data.docs);
         setImutableNftList(data.docs);
       })
