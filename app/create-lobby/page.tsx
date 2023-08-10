@@ -18,6 +18,7 @@ import { rabbleAbi } from '../../utils/config.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
 import { generateToken, truncateAddress } from '../../utils/functions.ts';
+import SoundBoard from "../../components/soundboard.tsx";
 
 //Initialize firebase backend
 const app = initializeApp(firebaseConfig);
@@ -186,6 +187,7 @@ export default function CreateLobby() {
   }
   const createFirebaseLobby = async (raffleId: any) => {
     const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
+    const playerNft = { ...confirmNft, battleCry: battleCry };
     const lobby = {
       collection: confirmNft?.collectionName,
       createdAt: Timestamp.now(),
@@ -193,7 +195,7 @@ export default function CreateLobby() {
       endDate: Timestamp.fromDate(endDate),
       evmChain: chain?.name,
       isPrivate: false,
-      nfts: [confirmNft],
+      nfts: [playerNft],
       timeLimit: 24, // Update when time limits are added
       status: 'Active',
       totalPlayers: playerAmount,
@@ -259,6 +261,12 @@ export default function CreateLobby() {
         console.log('fetch inventory error', e);
       });
   }
+
+  // Handle battle cry
+  const [battleCry, setBattleCry] = useState(null);
+  const handleValueChange = (newValue: any) => {
+    setBattleCry(newValue);
+  };
 
   return (
     <>
@@ -421,6 +429,7 @@ export default function CreateLobby() {
                       <div className="card-body">
                         <h2 className="card-title">{selectedNft?.name} #{selectedNft?.tokenId}</h2>
                         <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol}</p>
+                        <SoundBoard onValueChange={handleValueChange} />
                       </div>
                     </div>
                   </div>
@@ -530,6 +539,7 @@ export default function CreateLobby() {
             <div className="grid grid-cols-1 mt-4 sm:grid-cols-2 sm:space-x-6">
               <div className="col-span-1">
                 {selectedNft?.media?.mimetype === 'video/mp4' ?
+                  // TODO: remove this maybe
                   <figure>
                     <video className="rounded-lg drop-shadow-md" width="500" height="500" autoPlay muted loop>
                       <source src={selectedNft?.media?.mediaCollection?.high?.url} type="video/mp4" />

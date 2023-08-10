@@ -115,8 +115,8 @@ function LobbyNftInfo(props: any) {
                             <h2 className="card-title inner-element">{nft?.name ? nft?.name : nft?.collectionName} #{nft.tokenId}</h2>
                             <div className='flex justify-between items-center'>
                               <p><span className="font-semibold truncate">Collection: </span> {nft?.name ? nft?.name : nft?.collectionName}</p>
-                              {lobbyDetails?.data.battleCry &&
-                                <SoundButton battleCry={lobbyDetails?.data.battleCry} />
+                              {nft?.battleCry &&
+                                <SoundButton battleCry={nft?.battleCry} />
                               }
                             </div>
                           </div>
@@ -169,8 +169,8 @@ function LobbyNftInfo(props: any) {
                       <h2 className="card-title">{nft?.name ? nft?.name : nft?.collectionName} #{nft.tokenId}</h2>
                       <div className='flex justify-between items-center'>
                         <p><span className="font-semibold truncate">Collection: </span> {nft?.name ? nft?.name : nft?.collectionName}</p>
-                        {lobbyDetails?.data.battleCry &&
-                          <SoundButton battleCry={lobbyDetails?.data.battleCry} />
+                        {nft?.battleCry &&
+                          <SoundButton battleCry={nft?.battleCry} />
                         }
                       </div>
                     </div>
