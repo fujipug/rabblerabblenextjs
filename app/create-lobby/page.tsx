@@ -240,7 +240,7 @@ export default function CreateLobby() {
       `https://api.pickasso.net/v1/wallet/${address}/tokens?count=100&sortBy=updatedBlock&sortOrder=desc&verified=false`,
       {
         headers: {
-          'x-api-token': await generateToken(),
+          'x-api-token': generateToken(),
         }
       },
     )
