@@ -19,6 +19,7 @@
     "ethers": "^5.7.2",
     "firebase": "^9.23.0",
     "lokijs": "^1.5.12",
+    "md5": "^2.3.0",
     "moralis": "^2.22.4",
     "next": "^13",
     "next-qrcode": "^2.5.0",
@@ -34,6 +35,7 @@
     "wagmi": "^1.3.9"
   },
   "devDependencies": {
+    "@types/md5": "^2.3.2",
     "@types/node": "^18.11.11",
     "@types/number-to-words": "^1.2.1",
     "@types/react": "^18",

@@ -10,18 +10,21 @@ import {
 } from "@wagmi/core";
 
 export const verifyApproval = async (
-  collection: EvmAddress,
+  collectionAddress: any,
   write: () => void,
   isApprovalStatusLoading: any,
 ) => {
+  console.log("verify approval", collectionAddress);
   const network = getNetwork();
   const account = getAccount();
-  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = network.chain?.id === 43114
+    ? rabbleAddress
+    : rabbleTestAddress;
   const walletClient = await getWalletClient({
     chainId: network.chain?.id,
   });
   const collectionContract = getContract({
-    address: collection.checksum as any,
+    address: collectionAddress,
     abi: nftAbi,
     walletClient: walletClient as any,
   });
@@ -49,12 +52,10 @@ export const verifyApproval = async (
         },
       );
       console.log("a", unwatch);
-
     } else {
       write();
     }
-  }
-  catch (e) {
+  } catch (e) {
     console.log("approval error", e);
   }
 };
@@ -62,7 +63,9 @@ export const verifyApproval = async (
 // get raffle count
 export const getRaffleCount = () => {
   const network = getNetwork();
-  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = network.chain?.id === 43114
+    ? rabbleAddress
+    : rabbleTestAddress;
 
   const count = readContract({
     address: address,
@@ -75,12 +78,14 @@ export const getRaffleCount = () => {
 
 export const getRaffleById = (id: number) => {
   const network = getNetwork();
-  const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+  const address = network.chain?.id === 43114
+    ? rabbleAddress
+    : rabbleTestAddress;
   const raffle = readContract({
     address: address,
     abi: rabbleAbi,
-    functionName: 'raffles',
-    args: [BigInt(id)]
+    functionName: "raffles",
+    args: [BigInt(id)],
   });
 
   return raffle;
@@ -91,7 +96,9 @@ export const useRabbleContract = () => {
   const network = getNetwork();
 
   useEffect(() => {
-    const address = network.chain?.id === 43114 ? rabbleAddress : rabbleTestAddress;
+    const address = network.chain?.id === 43114
+      ? rabbleAddress
+      : rabbleTestAddress;
     const contract = getContract({
       address: address,
       abi: rabbleAbi,
