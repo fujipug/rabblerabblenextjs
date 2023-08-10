@@ -8,6 +8,7 @@ import { collection, documentId, getDocs, getFirestore, where, query, updateDoc,
 import { firebaseConfig } from "../../../utils/firebase-config";
 import { getRaffleById, truncateAddress } from "../../../utils/hooks";
 
+// GLHF
 const RotatingGIF = () => {
   const [currentGifIndex, setCurrentGifIndex] = useState(0);
   const gifList = useMemo(() => [
