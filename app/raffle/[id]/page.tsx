@@ -91,7 +91,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
           <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Lobby Participants</div>
           {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
-              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf)}</p>
+              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf ? nft.ownerOf : nft.owner)}</p>
             )
           })}
         </div>
@@ -99,7 +99,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
         <div className="hidden sm:block absolute top-20 left-20 bg-white bg-opacity-50 rounded p-4 drop-shadow-md">
           <div className="flex items-center">
             <span className="loading loading-ring loading-lg"></span>
-            <span className="text-5xl mb-4 h-full mt-2">
+            <span className="text-5xl mb-4 h-full mt-2 font-mono">
               &nbsp;Choosing Winner&nbsp;
             </span>
             <span className="loading loading-ring loading-lg"></span>
@@ -110,7 +110,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
       <div className="block sm:hidden bg-white bg-opacity-50 rounded p-4 drop-shadow-md -mt-24">
         <div className="flex items-center justify-center">
           <span className="loading loading-ring loading-lg"></span>
-          <span className="text-2xl mb-4 h-full mt-2">
+          <span className="text-2xl mb-4 h-full mt-2 font-mono">
             &nbsp;Choosing Winner&nbsp;
           </span>
           <span className="loading loading-ring loading-lg"></span>
@@ -121,7 +121,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
         <div className="text-center">
           {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
-              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf)}</p>
+              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf ? nft.ownerOf : nft.owner)}</p>
             )
           })}
         </div>
