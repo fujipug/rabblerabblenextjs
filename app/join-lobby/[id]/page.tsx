@@ -124,9 +124,12 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   }, [address, isConnected, chain?.id]);
 
   // Join player to Lobby
+  const [isApprovalLoading, setIsApprovalLoading] = useState(false);
   const handleFinalizeJoinLobby = async () => {
     if (confirmNft) {
-      verifyApproval(confirmNft?.tokenAddress, write);
+      verifyApproval(confirmNft?.tokenAddress, write, (isApprovalStatusLoading: boolean) => {
+        setIsApprovalLoading(isApprovalStatusLoading);
+      });
     }
   }
 
@@ -283,7 +286,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                 </div>
                 <div className="mt-auto">
                   <button onClick={() => handleFinalizeJoinLobby()} className="btn btn-accent drop-shadow-md mt-4 w-full">
-                    {isLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Game'}
+                    {isLoading || isApprovalLoading ? <span className="loading loading-ring loading-lg"></span> : 'Join Game'}
                   </button>
                 </div>
               </div>

@@ -12,6 +12,7 @@ import {
 export const verifyApproval = async (
   collection: EvmAddress,
   write: () => void,
+  isApprovalStatusLoading: any,
 ) => {
   const network = getNetwork();
   const account = getAccount();
@@ -31,17 +32,19 @@ export const verifyApproval = async (
   try {
     if (!approved) {
       // @ts-ignore
-      const tx = await collectionContract.write.setApprovalForAll([
+      await collectionContract.write.setApprovalForAll([
         address,
         true,
       ]);
 
+      isApprovalStatusLoading(true);
       const unwatch = collectionContract.watchEvent.ApprovalForAll(
         { from: getAccount().address },
         {
           onLogs() {
             write();
             unwatch();
+            isApprovalStatusLoading(false);
           },
         },
       );
