@@ -32,7 +32,7 @@ export const Base64 = {
     }
     return t;
   },
-  decode: function (e) {
+  decode: function (e: any) {
     var t = "";
     var n, r, i;
     var s, o, u, a;
@@ -53,7 +53,7 @@ export const Base64 = {
     t = Base64._utf8_decode(t);
     return t;
   },
-  _utf8_encode: function (e) {
+  _utf8_encode: function (e: any) {
     e = e.replace(/\r\n/g, "\n");
     var t = "";
     for (var n = 0; n < e.length; n++) {
@@ -70,9 +70,10 @@ export const Base64 = {
     }
     return t;
   },
-  _utf8_decode: function (e) {
+  _utf8_decode: function (e: any) {
     var t = "";
     var n = 0;
+    //@ts-ignore
     var r = c1 = c2 = 0;
     while (n < e.length) {
       r = e.charCodeAt(n);
@@ -80,12 +81,17 @@ export const Base64 = {
         t += String.fromCharCode(r);
         n++;
       } else if (r > 191 && r < 224) {
+        // @ts-ignore
         c2 = e.charCodeAt(n + 1);
+        //@ts-ignore
         t += String.fromCharCode((r & 31) << 6 | c2 & 63);
         n += 2;
       } else {
+        //@ts-ignore
         c2 = e.charCodeAt(n + 1);
+        //@ts-ignore
         c3 = e.charCodeAt(n + 2);
+        //@ts-ignore
         t += String.fromCharCode((r & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
         n += 3;
       }
