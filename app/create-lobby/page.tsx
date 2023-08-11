@@ -3,7 +3,7 @@ import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { getNetwork, watchNetwork } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { getRaffleCount, useRabbleContract, verifyApproval, useFee } from '../../utils/hooks.ts';
+import { getRaffleCount, useRabbleContract, verifyApproval, useFee, getRaffleById } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
 import Moralis from 'moralis';
@@ -83,7 +83,11 @@ export default function CreateLobby() {
     value: fee,
     onSuccess: () => {
       getRaffleCount().then(async (response) => {
-        createFirebaseLobby(Number(response) + 1);
+        const raffleId = Number(response) + 1;
+        getRaffleById(raffleId).then((raffle: any) => {
+          const unixEpochEndDateTime = raffle?.endingTime?.toMillis();
+          createFirebaseLobby(raffleId);
+        });
       });
     },
     onError(error) {
@@ -395,7 +399,7 @@ export default function CreateLobby() {
                     <div className="card card-compact w-80 bg-base-200 shadow-xl">
                       <figure><img src={selectedNft.metadata?.pImage ? selectedNft.metadata?.pImage : (selectedNft.media?.mediaCollection?.high.url ? selectedNft.media?.mediaCollection?.high.url : selectedNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
                       <div className="card-body">
-                        <h2 className="card-title">{selectedNft?.name} #{selectedNft?.tokenId}</h2>
+                        <h2 className="card-title">{selectedNft?.name ? selectedNft?.name : selectedNft?.collectionName} #{selectedNft?.tokenId}</h2>
                         <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol ? selectedNft?.collectionSymbol : selectedNft.symbol}</p>
                         <SoundBoard onValueChange={handleValueChange} />
                       </div>
