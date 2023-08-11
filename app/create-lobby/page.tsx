@@ -75,7 +75,7 @@ export default function CreateLobby() {
     abi: rabbleAbi,
     functionName: 'createPublicRaffle',
     args: [
-      confirmNft.collectionAddress,
+      confirmNft.collectionAddress ? confirmNft.collectionAddress : confirmNft.tokenAddress?.checksum,
       playerAmount,
       confirmNft.tokenId,
       84600 // 24 hours
@@ -102,33 +102,6 @@ export default function CreateLobby() {
 
   // Get Nfts by calling the Moralis API
   const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
-  async function includeNextNPages(previous: any, numPages: number) {
-
-    // Define results for the remaining pages 
-    const result = previous.result || [];
-
-    // Always keep the latest response around
-    let response = previous;
-
-    // Loop through the remaining pages
-    for (let i = 0; i < numPages; i++) {
-
-      // Get the next page
-      response = await response.next(); //Best Practice: Always use next() to get the next page
-
-      // Exit if we are on the last page already
-      if (response.result.length == 0) break
-
-      // Add the results to the previous results
-      result.push(...response.result);
-    }
-
-    // Apply the results to the last page
-    response.result = result
-
-    // Return the response
-    return response
-  }
   const getMoralisNfts = async () => {
     const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
     await Moralis.EvmApi.nft.getWalletNFTs({
@@ -138,14 +111,9 @@ export default function CreateLobby() {
       mediaItems: true,
       normalizeMetadata: true,
     }).then((response) => {
-      // console.log('response', response)
-      // console.log('response.result', response.result)
-      // includeNextNPages(response, 4)
       setNfts(response.result);
       setImutableNftList(response.result);
     });
-    // setNfts(response.result);
-    // setImutableNftList(response.result);
   }
 
   useEffect(() => {
@@ -163,7 +131,7 @@ export default function CreateLobby() {
   const [isApprovalLoading, setIsApprovalLoading] = useState(false);
   const handleFinalizeLobby = async () => {
     if (confirmNft) {
-      verifyApproval(confirmNft?.collectionAddress, write, (isApprovalStatusLoading: boolean) => {
+      verifyApproval(confirmNft?.collectionAddress ? confirmNft?.collectionAddress : confirmNft.tokenAddress?.checksum, write, (isApprovalStatusLoading: boolean) => {
         setIsApprovalLoading(isApprovalStatusLoading);
       });
     }
@@ -187,9 +155,9 @@ export default function CreateLobby() {
   }
   const createFirebaseLobby = async (raffleId: any) => {
     const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-    const playerNft = { ...confirmNft, battleCry: battleCry };
+    const playerNft = chain?.id === 43114 ? { ...confirmNft, battleCry: battleCry } : { ...confirmNft.toJSON(), battleCry: battleCry };
     const lobby = {
-      collection: confirmNft?.collectionName,
+      collection: confirmNft?.collectionName ? confirmNft?.collectionName : confirmNft?.name,
       createdAt: Timestamp.now(),
       confirmedPlayers: 1,
       endDate: Timestamp.fromDate(endDate),
@@ -210,8 +178,8 @@ export default function CreateLobby() {
   useEffect(() => {
     const uniqueArray: any[] = [];
     imutableNftList.map((item: any) => {
-      if (!uniqueArray.includes(item?.collectionName)) {
-        uniqueArray.push(item?.collectionName);
+      if (!uniqueArray.includes(item?.collectionName ? item?.collectionName : item?.name)) {
+        uniqueArray.push(item?.collectionName ? item?.collectionName : item?.name);
       }
       setCollectionList(uniqueArray);
     });
@@ -221,7 +189,7 @@ export default function CreateLobby() {
   function filterCollection(collection: string) {
     const resetNftList = imutableNftList;
     if (collection !== 'all') {
-      const filtered = resetNftList.filter((nft: any) => nft?.collectionName == collection);
+      const filtered = resetNftList.filter((nft: any) => (nft?.collectionName ? nft?.collectionName : nft?.name) == collection);
       setNfts(filtered);
     } else {
       setNfts(resetNftList);
@@ -239,7 +207,7 @@ export default function CreateLobby() {
 
   const getPicassoNfts = async () => {
     fetch(
-      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=500&sortBy=updatedBlock&sortOrder=desc&verified=false`,
+      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=1000&sortBy=updatedBlock&sortOrder=desc&verified=false`,
       {
         headers: {
           'x-api-token': generateToken(),
@@ -379,21 +347,21 @@ export default function CreateLobby() {
                                     <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
                                   </div>
                                   <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.collectionName}</p>
+                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.collectionName ? nft?.collectionName : nft?.name}</p>
                                   </div>
                                 </div>
                               </div>
                               :
                               <div className="relative group">
                                 <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
-                                  src={nft.metadata?.pImage}
+                                  src={nft.metadata?.pImage ? nft.metadata?.pImage : (nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl)}
                                   alt="NFT image unreachable" width={150} height={150} />
                                 <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
                                   <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>
                                   </div>
                                   <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.collectionName}</p>
+                                    <p className="text-white text-lg font-bold truncate px-2">{nft?.collectionName ? nft?.collectionName : nft?.name}</p>
                                   </div>
                                 </div>
                               </div>
@@ -425,10 +393,10 @@ export default function CreateLobby() {
                 <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
                   <div className="col-span-1 flex justify-center">
                     <div className="card card-compact w-80 bg-base-200 shadow-xl">
-                      <figure><img src={selectedNft?.metadata?.pImage} alt="NFT Image" /></figure>
+                      <figure><img src={selectedNft.metadata?.pImage ? selectedNft.metadata?.pImage : (selectedNft.media?.mediaCollection?.high.url ? selectedNft.media?.mediaCollection?.high.url : selectedNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
                       <div className="card-body">
                         <h2 className="card-title">{selectedNft?.name} #{selectedNft?.tokenId}</h2>
-                        <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol}</p>
+                        <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol ? selectedNft?.collectionSymbol : selectedNft.symbol}</p>
                         <SoundBoard onValueChange={handleValueChange} />
                       </div>
                     </div>
@@ -443,14 +411,14 @@ export default function CreateLobby() {
                         </div>
 
                         <div className="mb-4">
-                          <h2 className="font-semibold">Raffle Collection
+                          <h2 className="font-semibold">Collection
                             <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                               </svg>
                             </div>
                           </h2>
-                          <p>{confirmNft?.collectionName}</p>
+                          <p>{confirmNft?.collectionName ? confirmNft?.collectionName : confirmNft?.name}</p>
                         </div>
 
                         <div className="mb-4">
@@ -459,7 +427,7 @@ export default function CreateLobby() {
                         </div>
 
                         <div className="mb-4">
-                          <h2 className="font-semibold">Session Time Limit
+                          <h2 className="font-semibold">Time Limit
                             <div className="tooltip" data-tip="The maximum time allowed for all players to participate before the lobby is closed.">
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
@@ -475,7 +443,7 @@ export default function CreateLobby() {
                         </div>
 
                         <div className="divider">Lobby Name</div>
-                        <input type="text" onChange={handleLobbyName} placeholder="Ex: Quokka Collective" className="input input-bordered w-full" />
+                        <input type="text" onChange={handleLobbyName} placeholder="Ex: Quokka Clan" className="input input-bordered w-full" />
                       </div>
                     </div>
 
@@ -548,7 +516,7 @@ export default function CreateLobby() {
                   :
                   <figure>
                     <img className="rounded-lg drop-shadow-md"
-                      src={selectedNft?.metadata?.pImage}
+                      src={selectedNft?.metadata?.pImage ? selectedNft?.metadata?.pImage : (selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl)}
                       alt="NFT image unreachable" />
                   </figure>
                 }
@@ -556,9 +524,9 @@ export default function CreateLobby() {
 
               <div className="col-span-1 mt-4 sm:mt-0 flex flex-col">
                 <div>
-                  <p><span className="font-semibold">Collection:</span> {selectedNft?.collectionName}</p>
+                  <p><span className="font-semibold">Collection:</span> {selectedNft?.collectionName ? selectedNft?.collectionName : selectedNft?.name}</p>
                   <div className="divider"></div>
-                  <p><span className="font-semibold">Symbol:</span> {selectedNft?.collectionSymbol}</p>
+                  <p><span className="font-semibold">Symbol:</span> {selectedNft?.collectionSymbol ? selectedNft?.collectionSymbol : selectedNft.symbol}</p>
                   <p><span className="font-semibold">Token ID:</span> {selectedNft?.tokenId}</p>
                 </div>
                 <div className="mt-auto">

@@ -110,7 +110,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
       const querySnapshot = await getDocs(q);
       for (const doc of querySnapshot.docs) {
-        const filtered = results.filter((nft: any) => nft?.collectionName == doc.data().collection);
+        const filtered = results.filter((nft: any) => (nft?.collectionName ? nft?.collectionName : nft?.name) == doc.data().collection);
         setNfts(filtered);
         setLobbyDetails({ id: doc.id, data: doc.data() });
       }
@@ -120,9 +120,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   };
   useEffect(() => {
     if (address && isConnected && chain?.id === 80001)
-      getMoralisNfts().then((nfts) => {
-        fetchData(nfts);
-      });
+      getMoralisNfts().then((nfts) => fetchData(nfts));
     if (address && isConnected && chain?.id === 43114)
       getPicassoNfts();
   }, [address, isConnected, chain?.id]);
@@ -131,7 +129,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const [isApprovalLoading, setIsApprovalLoading] = useState(false);
   const handleFinalizeJoinLobby = async () => {
     if (confirmNft) {
-      verifyApproval(confirmNft?.tokenAddress ? confirmNft?.tokenAddress : confirmNft?.collectionAddress, write, (isApprovalStatusLoading: boolean) => {
+      verifyApproval((confirmNft?.tokenAddress?.checksum ? confirmNft?.tokenAddress?.checksum : confirmNft?.collectionAddress), write, (isApprovalStatusLoading: boolean) => {
         setIsApprovalLoading(isApprovalStatusLoading);
       });
     }
@@ -140,7 +138,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   // Update the firebase database with the new player
   const updateFirebaseLobby = async (isCompleteLobby: boolean) => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
-    const playerNft = { ...confirmNft, battleCry: battleCry };
+    const playerNft = chain?.id === 43114 ? { ...confirmNft, battleCry: battleCry } : { ...confirmNft.toJSON(), battleCry: battleCry };
     const joinedNfts = [...lobbyDetails.data.nfts, playerNft];
 
     return await updateDoc(lobbyRef, {
@@ -158,7 +156,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
 
   const getPicassoNfts = async () => {
     fetch(
-      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=500&sortBy=updatedBlock&sortOrder=desc&verified=false`,
+      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=1000&sortBy=updatedBlock&sortOrder=desc&verified=false`,
       {
         headers: {
           'x-api-token': generateToken(),
@@ -293,7 +291,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                   </div>
 
                   <div className="mb-4">
-                    <h2 className="font-semibold">Raffle Collection
+                    <h2 className="font-semibold">Collection
                       <div className="tooltip" data-tip="Players can only raffle with NFTs in this collection.">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />

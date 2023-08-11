@@ -16,6 +16,12 @@ export default function SoundBoard({ onValueChange }: any) {
       <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
         <li><a onClick={() => soundHandler('/audio/fbi-open-the-door.mp3')}>FBI Open Up</a></li>
         <li><a onClick={() => soundHandler('/audio/original-sheesh.mp3')}>Sheesh</a></li>
+        <li><a onClick={() => soundHandler('/audio/call-an-ambulance.mp3')}>Call An Ambulance</a></li>
+        <li><a onClick={() => soundHandler('/audio/x-files-theme.mp3')}>X-files Theme</a></li>
+        <li><a onClick={() => soundHandler('/audio/gta.mp3')}>GTA</a></li>
+        <li><a onClick={() => soundHandler('/audio/amongus.mp3')}>Amongus Sus</a></li>
+        <li><a onClick={() => soundHandler('/audio/bruh.mp3')}>Bruh</a></li>
+        <li><a onClick={() => soundHandler('/audio/vine-boom.mp3')}>Vine Boom</a></li>
       </ul>
     </div>
   );
