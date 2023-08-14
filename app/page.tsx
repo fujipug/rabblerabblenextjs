@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import confetti from 'canvas-confetti';
-import { DocumentData, collection, doc, getCountFromServer, getDocs, getFirestore, limit, onSnapshot, orderBy, query, startAfter } from "firebase/firestore";
+import { DocumentData, collection, getCountFromServer, getDocs, getFirestore, limit, onSnapshot, orderBy, query, startAfter } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";

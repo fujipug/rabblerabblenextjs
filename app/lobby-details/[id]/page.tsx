@@ -3,7 +3,7 @@ import { WagmiConfig, useAccount } from 'wagmi'
 import { wagmiConfig } from '../../../utils/wagmi-config';
 import { getFirestore, onSnapshot, doc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import converter from 'number-to-words';
 import localFont from 'next/font/local'
 import Countdown from "../../../components/countdown";
