@@ -4,7 +4,7 @@ import Link from "next/link";
 import ThemeToggle from "./theme-toggle";
 import { useEffect, useState } from "react";
 import AVVY from '@avvy/client';
-import { useAccount, useEnsName } from "wagmi";
+import { useAccount } from "wagmi";
 import { providers } from 'ethers'
 
 export default function Navbar() {

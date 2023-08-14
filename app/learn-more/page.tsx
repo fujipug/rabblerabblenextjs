@@ -126,6 +126,12 @@ export default function LearnMore() {
           <Link className="cursor-pointer hover:text-emerald-500" href="https://twitter.com/0xPrimata"> 0xPrimata</Link>
         </span>
       </div >
+      <div>
+        <div className="flex justify-start items-center">
+          <Image src={'/images/pickasso_logo.png'} width={23} height={23} alt="Pickasso Logo" className="mr-1" />
+          <span className="font-mono">Powerd by <Link className="cursor-pointer hover:text-sky-400" href="https://twitter.com/0xpickasso">Pickasso</Link> API</span>
+        </div>
+      </div>
     </>
   )
 }
