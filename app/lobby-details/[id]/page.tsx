@@ -69,8 +69,11 @@ function LobbyNftInfo(props: any) {
           setRaffleId(doc.data()?.raffleId);
 
           if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers)) {
-            unsub();
-            if (!doc.data()?.winner) location.href = `/raffle/${props.lobbyId}`;
+            if (doc.data()?.winner) {
+              unsub();
+            } else {
+              location.href = `/raffle/${props.lobbyId}`;
+            }
           }
         });
       } catch (error) {
