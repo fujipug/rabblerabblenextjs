@@ -29,7 +29,6 @@ function LobbyNftInfo(props: any) {
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const [placeholders, setPlaceholders] = useState([]) as any;
   const [winner, setWinner] = useState(null) as any;
-  const [raffleId, setRaffleId] = useState(null) as any;
   const account = useAccount();
 
   useEffect(() => {
@@ -66,7 +65,6 @@ function LobbyNftInfo(props: any) {
           for (let i = 0; i < doc.data()?.totalPlayers - doc.data()?.confirmedPlayers; i++)
             blanks.push({ collection: doc.data()?.collection })
           setPlaceholders(blanks);
-          setRaffleId(doc.data()?.raffleId);
 
           if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers)) {
             if (doc.data()?.winner) {

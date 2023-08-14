@@ -13,7 +13,7 @@ import { chains, wagmiConfig } from "../utils/wagmi-config";
 
 const runApp = async () => {
   await Moralis.start({
-    apiKey: 'E88APZ59qtx9G5LJjPEjLgSjSK5ldhaYs8qvI7g9CTYkh2hWSK9omFd3NLgJzA76',
+    apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY,
   });
 };
 runApp();

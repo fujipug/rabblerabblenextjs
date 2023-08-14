@@ -144,9 +144,10 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     const playerNft = chain?.id === 43114 ? { ...modifiedObject, battleCry: battleCry } : { ...modifiedObject, battleCry: battleCry };
     const joinedNfts = [...lobbyDetails.data.nfts, playerNft];
 
+    console.log('updating', joinedNfts);
     return await updateDoc(lobbyRef, {
-      confirmedPlayers: lobbyDetails?.data.confirmedPlayers + 1 && lobbyDetails?.data.confirmedPlayers + 1,
-      nfts: joinedNfts && joinedNfts,
+      confirmedPlayers: lobbyDetails?.data.confirmedPlayers + 1,
+      nfts: joinedNfts,
       status: isCompleteLobby ? 'Completed' : 'Active'
     });
   }

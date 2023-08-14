@@ -11,10 +11,6 @@ export default function Navbar() {
   const provider = new providers.JsonRpcProvider('https://api.avax.network/ext/bc/C/rpc')
   const { address } = useAccount();
   const [avvyName, setAvvy] = useState('');
-  // const { data: ensName } = useEnsName({
-  //   address: address,
-  //   chainId: 1
-  // })
 
   const fetchAvvy = async () => {
     const avvy = new AVVY(provider, {});
