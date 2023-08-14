@@ -1,10 +1,9 @@
 'use client'
-import { WagmiConfig } from 'wagmi'
+import { WagmiConfig, useAccount } from 'wagmi'
 import { wagmiConfig } from '../../../utils/wagmi-config';
-import { useAccount } from "wagmi";
-import { collection, documentId, query, where, getFirestore, getDocs } from "firebase/firestore";
+import { getFirestore, onSnapshot, doc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import converter from 'number-to-words';
 import localFont from 'next/font/local'
 import Countdown from "../../../components/countdown";
@@ -30,6 +29,7 @@ function LobbyNftInfo(props: any) {
   const [lobbyDetails, setLobbyDetails] = useState() as any;
   const [placeholders, setPlaceholders] = useState([]) as any;
   const [winner, setWinner] = useState(null) as any;
+  const [raffleId, setRaffleId] = useState(null) as any;
   const account = useAccount();
 
   useEffect(() => {
@@ -54,27 +54,32 @@ function LobbyNftInfo(props: any) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const q = query(collection(db, 'lobbies'), where(documentId(), '==', props.lobbyId));
-        const querySnapshot = await getDocs(q);
-        for (const doc of querySnapshot.docs) {
-          setLobbyDetails({ id: doc.id, data: doc.data() })
-          getRaffleById(doc.data().raffleId).then((res: any) => {
+        const unsub = onSnapshot(doc(db, 'lobbies', props.lobbyId), (doc) => {
+          setLobbyDetails({ id: doc.id, data: doc.data() });
+          // TODO: Res[5] is equal to the 0 string if on the wrong network
+          getRaffleById(doc.data()?.raffleId).then((res: any) => {
             if (res[5] && res[5] !== '0x0000000000000000000000000000000000000000') {
               setWinner(res[5] as string);
             }
           });
           const blanks = [];
-          for (let i = 0; i < doc.data().totalPlayers - doc.data().confirmedPlayers; i++)
-            blanks.push({ collection: doc.data().collection })
+          for (let i = 0; i < doc.data()?.totalPlayers - doc.data()?.confirmedPlayers; i++)
+            blanks.push({ collection: doc.data()?.collection })
           setPlaceholders(blanks);
-        }
+          setRaffleId(doc.data()?.raffleId);
+
+          if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers)) {
+            unsub();
+            if (!doc.data()?.winner) location.href = `/raffle/${props.lobbyId}`;
+          }
+        });
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-  }, [props.lobbyId]);
+  }, [props.lobbyId, winner]);
 
   return (
     <>
@@ -110,7 +115,7 @@ function LobbyNftInfo(props: any) {
                     {(winner?.toLowerCase() == (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
                         <div className="card card-compact w-80 bg-base-100 shadow-xl">
-                          <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                          <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
                           <div className="card-body">
                             <h2 className="card-title inner-element">{nft?.name ? nft?.name : nft?.collectionName} #{nft.tokenId}</h2>
                             <div className='flex justify-between items-center'>
@@ -133,7 +138,7 @@ function LobbyNftInfo(props: any) {
                   <div key={index}>
                     {(winner?.toLowerCase() != (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <div className="w-16 ml-2.5 mr-2.5">
-                        <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
+                        <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
                       </div>
                     }
                   </div>
@@ -145,7 +150,7 @@ function LobbyNftInfo(props: any) {
                     {(winner?.toLowerCase() != (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <div className="avatar">
                         <div className="w-12">
-                          <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
+                          <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
                         </div>
                       </div>
                     }
@@ -164,7 +169,7 @@ function LobbyNftInfo(props: any) {
               <div key={index} className="snap-center">
                 <Tilt tiltEnable={false} glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="all" glareBorderRadius="20px">
                   <div className="card card-compact w-80 bg-base-100 shadow-xl">
-                    <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                    <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
                     <div className="card-body">
                       <h2 className="card-title">{nft?.name ? nft?.name : nft?.collectionName} #{nft.tokenId}</h2>
                       <div className='flex justify-between items-center'>
@@ -242,6 +247,7 @@ function LobbyNftInfo(props: any) {
                 hour12: true,
               })}`}</p>
           }
+
           <p className="leading-8"><span className="font-semibold">Type: </span>{lobbyDetails?.data.isPrivate ? 'Private' : 'Public'}</p>
         </div>
         <div className="sm:hidden flex flex-col w-full">

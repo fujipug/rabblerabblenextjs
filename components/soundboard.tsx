@@ -19,6 +19,8 @@ export default function SoundBoard({ onValueChange }: any) {
         <li><a onClick={() => soundHandler('/audio/call-an-ambulance.mp3')}>Call An Ambulance</a></li>
         <li><a onClick={() => soundHandler('/audio/x-files-theme.mp3')}>X-files Theme</a></li>
         <li><a onClick={() => soundHandler('/audio/gta.mp3')}>GTA</a></li>
+        <li><a onClick={() => soundHandler('/audio/onii-chan.mp3')}>Onni Chan</a></li>
+        <li><a onClick={() => soundHandler('/audio/augh.mp3')}>Augh</a></li>
         <li><a onClick={() => soundHandler('/audio/amongus.mp3')}>Amongus Sus</a></li>
         <li><a onClick={() => soundHandler('/audio/bruh.mp3')}>Bruh</a></li>
         <li><a onClick={() => soundHandler('/audio/vine-boom.mp3')}>Vine Boom</a></li>

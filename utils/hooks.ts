@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { nftAbi, rabbleAbi, rabbleAddress, rabbleTestAddress } from "./config";
-import { EvmAddress } from "@moralisweb3/common-evm-utils";
 import {
   getAccount,
   getContract,
@@ -14,7 +13,6 @@ export const verifyApproval = async (
   write: () => void,
   isApprovalStatusLoading: any,
 ) => {
-  console.log("verify approval", collectionAddress);
   const network = getNetwork();
   const account = getAccount();
   const address = network.chain?.id === 43114

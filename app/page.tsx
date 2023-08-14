@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import confetti from 'canvas-confetti';
-import { DocumentData, collection, getDocs, getFirestore, limit, orderBy, query } from "firebase/firestore";
+import { DocumentData, collection, doc, getCountFromServer, getDocs, getFirestore, limit, onSnapshot, orderBy, query, startAfter } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
@@ -31,16 +31,25 @@ function fireAction() {
 
 export default function Home() {
   const [lobbies, setLobbies] = useState([]) as any;
+  const [lastVisible, setLastVisible] = useState(null) as any;
+  const [showMoreButton, setShowMoreButton] = useState(false) as any;
+  const [count, setCount] = useState(0) as any;
 
   const fetchData = async () => {
     try {
-      const q = query(collection(db, 'lobbies'), orderBy('createdAt', 'desc'), limit(10));
-      const querySnapshot = await getDocs(q);
-      const lobbies = [];
-      for (const doc of querySnapshot.docs) {
-        lobbies.push({ id: doc.id, data: doc.data() });
-      }
-      setLobbies(lobbies);
+      const coll = collection(db, 'lobbies');
+      const snapshot = await getCountFromServer(coll);
+      setCount(snapshot.data().count);
+      const q = query(collection(db, 'lobbies'), orderBy('createdAt', 'desc'), limit(25));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const tempLobbies = [] as any;
+        for (const doc of querySnapshot.docs) {
+          tempLobbies.push({ id: doc.id, data: doc.data() });
+        }
+        (querySnapshot.docs.length === 25) ? setShowMoreButton(true) : setShowMoreButton(false);
+        setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+        setLobbies(tempLobbies);
+      });
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -49,6 +58,21 @@ export default function Home() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const getMoreLobbies = async () => {
+    const next = query(collection(db, 'lobbies'),
+      orderBy('createdAt', 'desc'),
+      startAfter(lastVisible),
+      limit(25));
+    const documentSnapshots = await getDocs(next);
+    const tempLobbies = [] as any;
+    for (const doc of documentSnapshots.docs) {
+      tempLobbies.push({ id: doc.id, data: doc.data() });
+    }
+    setLastVisible(documentSnapshots.docs[documentSnapshots.docs.length - 1]);
+    setLobbies([...lobbies, ...tempLobbies]);
+    (documentSnapshots.docs.length === 25 && (lobbies.length + tempLobbies.length) !== count) ? setShowMoreButton(true) : setShowMoreButton(false);
+  };
 
   return (
     <>
@@ -96,6 +120,7 @@ export default function Home() {
             <h1 className="font-semibold text-2xl ml-3 my-2">Recent Lobbies</h1>
             <div className="block sm:hidden transform animate-moveUpDown z-0 right-0 -mt-4 absolute"><Image src="/images/Face_2.png" alt="Quokka Face" width={200} height={200}></Image></div>
             <div className="block sm:hidden z-30 -mt-7 absolute right-0"><Image src="/images/Hands_2.png" alt="Quokka Hands" width={200} height={200}></Image></div>
+            {/* <input type="text" placeholder="Search" className="input w-full max-w-xs" /> */}
             <table className="table bg-base-100">
               <thead>
                 <tr>
@@ -151,7 +176,24 @@ export default function Home() {
                 ))}
               </tbody>
             </table>
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-end">
+                <span className="bg-base-100 pl-2 text-sm">
+                  <span className="badge badge-outline mr-2">
+                    {lobbies.length}/{count}
+                  </span></span>
+              </div>
+            </div>
           </div>
+
+          {showMoreButton &&
+            <div className="flex justify-center my-2">
+              <button onClick={() => getMoreLobbies()} className="btn btn-outline btn-primary">Load More</button>
+            </div>
+          }
         </>
       }
     </>

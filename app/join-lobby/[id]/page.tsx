@@ -110,7 +110,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
       const querySnapshot = await getDocs(q);
       for (const doc of querySnapshot.docs) {
-        const filtered = results.filter((nft: any) => (nft?.collectionName ? nft?.collectionName : nft?.name) == doc.data().collection);
+        const filtered = results.filter((nft: any) => (nft?.collectionAddress ? nft?.collectionAddress : nft?.tokenAddress.lowercase) == doc.data().collectionAddress);
         setNfts(filtered);
         setLobbyDetails({ id: doc.id, data: doc.data() });
       }
@@ -138,7 +138,10 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   // Update the firebase database with the new player
   const updateFirebaseLobby = async (isCompleteLobby: boolean) => {
     const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
-    const playerNft = chain?.id === 43114 ? { ...confirmNft, battleCry: battleCry } : { ...confirmNft.toJSON(), battleCry: battleCry };
+    const modifiedObject = Object.fromEntries(
+      Object.entries(chain?.id === 43114 ? confirmNft : confirmNft.toJSON()).map(([key, value]) => [key, value !== undefined ? value : null])
+    );
+    const playerNft = chain?.id === 43114 ? { ...modifiedObject, battleCry: battleCry } : { ...modifiedObject, battleCry: battleCry };
     const joinedNfts = [...lobbyDetails.data.nfts, playerNft];
 
     return await updateDoc(lobbyRef, {

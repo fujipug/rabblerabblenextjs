@@ -56,7 +56,6 @@ export default function CreateLobby() {
   const [confirmNft, setConfirmNft] = useState({} as any);
   const [shareUrl, setShareUrl] = useState('');
   const { address, isConnected } = useAccount();
-
   const [showClipboardAlert, setShowClipboardAlert] = useState(false);
   const { SVG } = useQRCode();
   const [showQuokkas, setShowQuokkas] = useState(5);
@@ -78,16 +77,13 @@ export default function CreateLobby() {
       confirmNft.collectionAddress ? confirmNft.collectionAddress : confirmNft.tokenAddress?.checksum,
       playerAmount,
       confirmNft.tokenId,
-      84600 // 24 hours
+      86400 // 24 hours
     ],
     value: fee,
-    onSuccess: () => {
+    onSuccess: (res: any) => {
       getRaffleCount().then(async (response) => {
         const raffleId = Number(response) + 1;
-        getRaffleById(raffleId).then((raffle: any) => {
-          const unixEpochEndDateTime = raffle?.endingTime?.toMillis();
-          createFirebaseLobby(raffleId);
-        });
+        createFirebaseLobby(raffleId); // Not exact match with the contract timestamp
       });
     },
     onError(error) {
@@ -159,9 +155,13 @@ export default function CreateLobby() {
   }
   const createFirebaseLobby = async (raffleId: any) => {
     const endDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // the 24 will change when time limits are added
-    const playerNft = chain?.id === 43114 ? { ...confirmNft, battleCry: battleCry } : { ...confirmNft.toJSON(), battleCry: battleCry };
+    const modifiedObject = Object.fromEntries(
+      Object.entries(chain?.id === 43114 ? confirmNft : confirmNft.toJSON()).map(([key, value]) => [key, value !== undefined ? value : null])
+    );
+    const playerNft = chain?.id === 43114 ? { ...modifiedObject, battleCry: battleCry } : { ...modifiedObject, battleCry: battleCry };
     const lobby = {
       collection: confirmNft?.collectionName ? confirmNft?.collectionName : confirmNft?.name,
+      collectionAddress: confirmNft?.collectionAddress ? confirmNft?.collectionAddress : confirmNft?.tokenAddress.lowercase,
       createdAt: Timestamp.now(),
       confirmedPlayers: 1,
       endDate: Timestamp.fromDate(endDate),
