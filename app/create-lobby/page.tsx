@@ -309,6 +309,8 @@ export default function CreateLobby() {
           <div className="mt-12 text-center">
             {address && isConnected ?
               <>
+                <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
+                <span className="hidden sm:block">{address}</span>
                 <span className="block sm:hidden">{truncateAddress(address)}</span>
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
@@ -550,9 +552,8 @@ export default function CreateLobby() {
               </div>
               <div className="px-4 py-16 bg-base-200">
                 <p className="mb-4">Players must have the same NFT collection</p>
-                <p className="mb-4">The lobby will be accesible to anyone with the &apos;Share Link&apos;
-                  <span className="text-gray-50"> (Only share with people you want to play with)</span>
-                </p>
+                <p className="mb-4">Public lobbies will be accesible to anyone with the &apos;Share Link&apos;</p>
+                <p className="mb-4">Private lobbies will be accesible to anyone whiteliested by the lobby creator</p>
                 <p className="mb-4">The lobby will be open for 24 hours from the time it is created</p>
                 <p className="mb-4">A winner will be chosen when all players have joined the lobby</p>
                 <p className="mb-4">If all players have not joined the lobby by 24 hours, NFTs will be returned to their original owners</p>
