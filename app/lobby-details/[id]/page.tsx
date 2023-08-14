@@ -298,12 +298,7 @@ function SoundButton(props: { battleCry: string }) {
   const audioFile = props.battleCry;
   const handleSoundButtonClick = () => {
     const audioElement = new Audio(audioFile);
-
-    if (isPlaying) {
-      audioElement.pause();
-    } else {
-      audioElement.play();
-    }
+    audioElement.play();
 
     setIsPlaying(!isPlaying);
   };
