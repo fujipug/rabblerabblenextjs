@@ -117,7 +117,6 @@ export default function CreateLobby() {
   }
 
   useEffect(() => {
-    // getMoralisNfts();
     if (address && isConnected && chain?.id === 80001)
       getMoralisNfts();
     if (address && isConnected && chain?.id === 43114)
@@ -346,7 +345,7 @@ export default function CreateLobby() {
                             {nft.media?.mimetype === 'video/mp4' ?
                               <div className="relative group">
                                 <video className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent hover:outline-success" width="100" height="100" muted loop autoPlay>
-                                  <source src={nft.media?.media_collection?.medium.url} type="video/mp4" />
+                                  <source src={nft.metadata?.pImage ? nft.metadata?.pImage : nft.media?.mediaCollection?.medium.url} type="video/mp4" />
                                 </video>
                                 <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
                                   <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -557,7 +556,7 @@ export default function CreateLobby() {
                 <p className="mb-4">The lobby will be open for 24 hours from the time it is created</p>
                 <p className="mb-4">A winner will be chosen when all players have joined the lobby</p>
                 <p className="mb-4">If all players have not joined the lobby by 24 hours, NFTs will be returned to their original owners</p>
-                <p className="mb-4 flex items-end">GLHF &nbsp;<span className="loading loading-dots loading-xs"></span></p>
+                <p className="mb-4 flex items-end">😎 GLHF &nbsp;<span className="loading loading-dots loading-xs"></span></p>
               </div>
             </div>
             <div className="modal-action">
