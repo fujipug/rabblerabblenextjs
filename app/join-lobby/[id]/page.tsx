@@ -75,11 +75,13 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       updateFirebaseLobby(completedLobby).then(async () => {
         fireAction();
         getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
-          if (Number(res[3]) == lobbyDetails?.data.confirmedPlayers + 1) {
-            location.href = `/raffle/${params.id}`;
-          } else {
-            location.href = `/lobby-details/${params.id}`;
-          }
+          setTimeout(() => {
+            if (Number(res[3]) == lobbyDetails?.data.confirmedPlayers + 1) {
+              location.href = `/raffle/${params.id}`;
+            } else {
+              location.href = `/lobby-details/${params.id}`;
+            }
+          }, 1500);
         })
       });
     },
