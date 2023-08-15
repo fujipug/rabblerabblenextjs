@@ -13,12 +13,13 @@ const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 import Image from "next/image";
 import Countdown from "../../../components/countdown";
 import { rabbleAbi } from '../../../utils/config.ts';
-import { useRabbleContract, verifyApproval, useFee, truncateAddress, getRaffleById } from '../../../utils/hooks.ts';
+import { useRabbleContract, verifyApproval, useFee, getRaffleById } from '../../../utils/hooks.ts';
 import { firebaseConfig } from '../../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
 import confetti from "canvas-confetti";
 import { generateToken } from "../../../utils/functions.ts";
 import SoundBoard from "../../../components/soundboard.tsx";
+import RenderName from "../../../components/render-name.tsx";
 import { get } from "http";
 
 declare global {
@@ -195,8 +196,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
           {address && isConnected && lobbyDetails ?
             <>
               <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-              <span className="hidden sm:block">{address}</span>
-              <span className="block sm:hidden">{truncateAddress(address)}</span>
+              <RenderName address={address} classData={'hidden sm:block text-2xl'} />
+              <RenderName address={address} classData={'block sm:hidden text-2xl'} />
               <div className="flex justify-between items-center mt-6">
                 <div className="dropdown">
                   <label tabIndex={0} className="btn m-1 cursor-default">
