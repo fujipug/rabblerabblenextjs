@@ -70,18 +70,16 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       confirmNft.tokenId,
     ],
     value: fee,
-    onSuccess: () => {
-      const completedLobby = ((lobbyDetails?.data.confirmedPlayers + 1) === lobbyDetails?.data.totalPlayers) ? true : false;
-      updateFirebaseLobby(completedLobby).then(async () => {
+    onSuccess: async () => {
+      const completedLobby = ((await lobbyDetails?.data.confirmedPlayers + 1) === await lobbyDetails?.data.totalPlayers) ? true : false;
+      await updateFirebaseLobby(await completedLobby).then(async () => {
         fireAction();
-        getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
-          setTimeout(() => {
-            if (Number(res[3]) == lobbyDetails?.data.confirmedPlayers + 1) {
-              location.href = `/raffle/${params.id}`;
-            } else {
-              location.href = `/lobby-details/${params.id}`;
-            }
-          }, 1500);
+        await getRaffleById(await lobbyDetails?.data.raffleId).then(async (res: any) => {
+          if (await Number(await res[3]) == await lobbyDetails?.data.confirmedPlayers + 1) {
+            location.href = `/raffle/${params.id}`;
+          } else {
+            location.href = `/lobby-details/${params.id}`;
+          }
         })
       });
     },
