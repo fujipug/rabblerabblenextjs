@@ -102,10 +102,3 @@ export const Base64 = {
 
 export const halt = (ms: any) =>
   new Promise((resolve) => setTimeout(resolve, ms));
-
-export const truncateAddress = (address: string) => {
-  const firstPart = address.slice(0, 5);
-  const lastPart = address.slice(-4);
-
-  return `${firstPart}...${lastPart}`;
-};

@@ -17,8 +17,9 @@ import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
-import { generateToken, truncateAddress } from '../../utils/functions.ts';
+import { generateToken } from '../../utils/functions.ts';
 import SoundBoard from "../../components/soundboard.tsx";
+import RenderName from "../../components/render-name.tsx";
 
 //Initialize firebase backend
 const app = initializeApp(firebaseConfig);
@@ -309,8 +310,7 @@ export default function CreateLobby() {
             {address && isConnected ?
               <>
                 <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-                <span className="hidden sm:block">{address}</span>
-                <span className="block sm:hidden">{truncateAddress(address)}</span>
+                <RenderName address={address} classData={'text-2xl'} />
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
                     <label tabIndex={0} className="btn m-1">

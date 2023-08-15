@@ -9,11 +9,12 @@ import localFont from 'next/font/local'
 import Countdown from "../../../components/countdown";
 import Link from "next/link";
 import { firebaseConfig } from "../../../utils/firebase-config";
-import { getRaffleById, truncateAddress } from '../../../utils/hooks';
+import { getRaffleById } from '../../../utils/hooks';
 import Confetti from 'react-confetti'
 import Image from 'next/image'
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 import Tilt from 'react-parallax-tilt';
+import RenderName from '../../../components/render-name';
 
 declare global {
   interface Window {
@@ -88,7 +89,12 @@ function LobbyNftInfo(props: any) {
       <div className="flex justify-between items-center mb-4">
         {winner && <Confetti width={window.outerWidth} />}
         {winner &&
-          <div><span className='font-semibold text-3xl'>Winner: </span><span className='text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'>{truncateAddress(winner)}</span></div>
+          <div>
+            <span className='font-semibold text-3xl flex items-center'>
+              <span>Winner:&nbsp;</span>
+              <RenderName address={winner} isWinner={true} classData={'text-3xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'} />
+            </span>
+          </div>
         }
         {(!winner && lobbyDetails?.data.status === 'Active') &&
           <Countdown endTime={lobbyDetails?.data.endDate} size={'large'} />
@@ -271,9 +277,10 @@ function LobbyNftInfo(props: any) {
                       <th>Player {index + 1}</th>
                       <td>
                         {winner?.toLowerCase() == ((nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) ?
-                          <span className='text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'>{truncateAddress(nft.ownerOf ? nft.ownerOf : nft.owner)}</span>
+                          <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} classData={'text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'} />
                           :
-                          <span>{truncateAddress(nft.ownerOf ? nft.ownerOf : nft.owner)}</span>
+                          <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} classData={''} />
+
                         }
                       </td>
                     </tr>

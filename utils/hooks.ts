@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { nftAbi, rabbleAbi, rabbleAddress, rabbleTestAddress } from "./config";
+import {
+  avvyAbi,
+  avvyDomainsAddress,
+  nftAbi,
+  rabbleAbi,
+  rabbleAddress,
+  rabbleTestAddress,
+} from "./config";
 import {
   getAccount,
   getContract,
@@ -7,6 +14,8 @@ import {
   getWalletClient,
   readContract,
 } from "@wagmi/core";
+import AVVY from "@avvy/client";
+import { providers } from "ethers";
 
 export const verifyApproval = async (
   collectionAddress: any,
@@ -127,4 +136,30 @@ export const truncateAddress = (address: string) => {
   const lastPart = address.slice(-4);
 
   return `${firstPart}...${lastPart}`;
+};
+
+export const avvyAddress = async (
+  address: any,
+  isLoaded: any,
+) => {
+  const network = getNetwork();
+  const walletClient = await getWalletClient({
+    chainId: network.chain?.id,
+  });
+  const avvyContract = getContract({
+    address: avvyDomainsAddress,
+    abi: avvyAbi,
+    walletClient: walletClient as any,
+  });
+  const name = await avvyContract.read.reverseResolveEVMToName([address]);
+  console.log("name", name);
+  try {
+    if (name == "") {
+      return truncateAddress(address);
+    } else {
+      return name;
+    }
+  } catch (e) {
+    console.log("approval error", e);
+  }
 };

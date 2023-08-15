@@ -1,6 +1,7 @@
 'use client'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "./theme-toggle";
 import { useEffect, useState } from "react";
 import AVVY from '@avvy/client';
@@ -30,9 +31,9 @@ export default function Navbar() {
   return (
     <div className="navbar bg-neutral flex justify-between drop-shadow-md items-center">
       <div>
-        <Link href="/" className="-ml-1.5 hidden sm:flex btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</Link>
-        <Link href="/" className="flex sm:hidden btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">R R</Link>
-        <p className="hidden sm:block text-xs absolute bottom-2 left-5">ByQuokkas</p>
+        <Link href="/" className="-ml-1.5 hidden sm:flex btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 absolute bottom-3">Rabble Rabble</Link>
+        <Link className="flex sm:hidden" href="/"><Image src="/images/Face_2.png" alt="Rabble Rabble Logo" width={60} height={60} /></Link>
+        <p className="hidden sm:block text-xs absolute bottom-3 left-5">ByQuokkas</p>
       </div>
       <div className="flex items-center">
         <ConnectButton.Custom>

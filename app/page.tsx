@@ -7,8 +7,8 @@ import { DocumentData, collection, getCountFromServer, getDocs, getFirestore, li
 import { initializeApp } from "firebase/app";
 import ThemeToggle from "../components/theme-toggle";
 import Countdown from "../components/countdown";
-import { truncateAddress } from "../utils/hooks";
 import { firebaseConfig } from "../utils/firebase-config";
+import RenderName from "../components/render-name";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -170,7 +170,8 @@ export default function Home() {
                       <td>TBA</td>
                     }
                     {lobby.data.status === 'Completed' && lobby.data.winner &&
-                      <td><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{truncateAddress(lobby.data.winner)}</span></td>
+                      <td><RenderName address={lobby.data.winner} isWinner={true} classData="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500" /></td>
+
                     }
                   </tr>
                 ))}

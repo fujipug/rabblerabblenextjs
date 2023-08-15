@@ -6,7 +6,8 @@ import Image from "next/image";
 import { initializeApp } from "firebase/app";
 import { collection, documentId, getDocs, getFirestore, where, query, updateDoc, doc, Timestamp } from "firebase/firestore";
 import { firebaseConfig } from "../../../utils/firebase-config";
-import { getRaffleById, truncateAddress } from "../../../utils/hooks";
+import { getRaffleById } from "../../../utils/hooks";
+import RenderName from "../../../components/render-name";
 
 // GLHF
 const RotatingGIF = () => {
@@ -92,7 +93,11 @@ export default function RafflePage({ params }: { params: { id: string } }) {
           <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Lobby Participants</div>
           {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
-              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf ? nft.ownerOf : nft.owner)}</p>
+              <p key={index}><span className="font-semibold">Player {index + 1}:
+              </span>
+                <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} />
+
+              </p>
             )
           })}
         </div>
@@ -122,7 +127,9 @@ export default function RafflePage({ params }: { params: { id: string } }) {
         <div className="text-center">
           {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
-              <p key={index}><span className="font-semibold">Player {index + 1}: </span>{truncateAddress(nft.ownerOf ? nft.ownerOf : nft.owner)}</p>
+              <p key={index}><span className="font-semibold">Player {index + 1}:
+                <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} /></span>
+              </p>
             )
           })}
         </div>
