@@ -310,8 +310,7 @@ export default function CreateLobby() {
             {address && isConnected ?
               <>
                 <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-                <RenderName address={address} classData={'hidden sm:block text-2xl'} />
-                <RenderName address={address} classData={'block sm:hidden text-2xl'} />
+                <RenderName address={address} classData={'text-2xl'} />
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
                     <label tabIndex={0} className="btn m-1">
