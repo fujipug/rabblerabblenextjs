@@ -74,7 +74,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       const completedLobby = ((lobbyDetails?.data.confirmedPlayers + 1) === lobbyDetails?.data.totalPlayers) ? true : false;
       updateFirebaseLobby(completedLobby).then(async () => {
         fireAction();
-        await getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
+        getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
           if (Number(res[3]) == lobbyDetails?.data.confirmedPlayers + 1) {
             location.href = `/raffle/${params.id}`;
           } else {
