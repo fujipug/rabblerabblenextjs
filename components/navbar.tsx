@@ -29,8 +29,11 @@ export default function Navbar() {
   }, [address]);
   return (
     <div className="navbar bg-neutral flex justify-between drop-shadow-md items-center">
-      <Link href="/" className="hidden sm:flex btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</Link>
-      <Link href="/" className="flex sm:hidden btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">R R</Link>
+      <div>
+        <Link href="/" className="-ml-1.5 hidden sm:flex btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</Link>
+        <Link href="/" className="flex sm:hidden btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">R R</Link>
+        <p className="hidden sm:block text-xs absolute bottom-2 left-5">ByQuokkas</p>
+      </div>
       <div className="flex items-center">
         <ConnectButton.Custom>
           {({
