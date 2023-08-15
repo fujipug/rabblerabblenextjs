@@ -72,7 +72,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     value: fee,
     onSuccess: async () => {
       const completedLobby = ((lobbyDetails?.data.confirmedPlayers + 1) === lobbyDetails?.data.totalPlayers) ? true : false;
-      await updateFirebaseLobby(completedLobby).then(async () => {
+      updateFirebaseLobby(completedLobby).then(async () => {
         fireAction();
         getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
           if (Number(res[3]) == lobbyDetails?.data.confirmedPlayers + 1) {
