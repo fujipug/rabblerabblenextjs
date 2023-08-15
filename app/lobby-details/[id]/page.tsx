@@ -66,10 +66,12 @@ function LobbyNftInfo(props: any) {
             blanks.push({ collection: doc.data()?.collection })
           setPlaceholders(blanks);
 
-          if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers)) {
-            if (doc.data()?.winner) {
+          if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers) && (doc.data()?.nfts.length === doc.data()?.totalPlayers)) {
+            if (doc?.data()?.status === 'Completed' && doc.data()?.winner) {
               unsub();
-            } else {
+              return;
+            }
+            if (doc?.data()?.status === 'Completed' && (!doc.data()?.winner)) {
               location.href = `/raffle/${props.lobbyId}`;
             }
           }
