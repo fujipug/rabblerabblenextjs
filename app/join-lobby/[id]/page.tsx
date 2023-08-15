@@ -71,10 +71,10 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     ],
     value: fee,
     onSuccess: async () => {
-      const completedLobby = ((await lobbyDetails?.data.confirmedPlayers + 1) === await lobbyDetails?.data.totalPlayers) ? true : false;
-      await updateFirebaseLobby(await completedLobby).then(async () => {
+      const completedLobby = ((lobbyDetails?.data.confirmedPlayers + 1) === lobbyDetails?.data.totalPlayers) ? true : false;
+      await updateFirebaseLobby(completedLobby).then(async () => {
         fireAction();
-        await getRaffleById(await lobbyDetails?.data.raffleId).then(async (res: any) => {
+        await getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
           if (Number(res[3]) == lobbyDetails?.data.confirmedPlayers + 1) {
             location.href = `/raffle/${params.id}`;
           } else {
