@@ -94,6 +94,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     },
   })
 
+  // Retrieves Moralis NFts
   const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
   const getMoralisNfts = async () => {
     const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
