@@ -89,8 +89,11 @@ function LobbyNftInfo(props: any) {
       <div className="flex justify-between items-center mb-4">
         {winner && <Confetti width={window.outerWidth} />}
         {winner &&
-          <div><span className='font-semibold text-3xl flex'>Winner:
-            <RenderName address={winner} isWinner={true} classData={'text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'} /></span>
+          <div>
+            <span className='font-semibold text-3xl flex items-center'>
+              <span>Winner:&nbsp;</span>
+              <RenderName address={winner} isWinner={true} classData={'text-3xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'} />
+            </span>
           </div>
         }
         {(!winner && lobbyDetails?.data.status === 'Active') &&
