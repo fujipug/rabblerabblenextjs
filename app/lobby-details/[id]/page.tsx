@@ -56,7 +56,6 @@ function LobbyNftInfo(props: any) {
       try {
         const unsub = onSnapshot(doc(db, 'lobbies', props.lobbyId), (doc) => {
           setLobbyDetails({ id: doc.id, data: doc.data() });
-          // TODO: Res[5] is equal to the 0 string if on the wrong network
           getRaffleById(doc.data()?.raffleId).then((res: any) => {
             if (res[5] && res[5] !== '0x0000000000000000000000000000000000000000') {
               setWinner(res[5] as string);
@@ -67,10 +66,12 @@ function LobbyNftInfo(props: any) {
             blanks.push({ collection: doc.data()?.collection })
           setPlaceholders(blanks);
 
-          if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers)) {
-            if (doc.data()?.winner) {
+          if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers) && (doc.data()?.nfts.length === doc.data()?.totalPlayers)) {
+            if (doc?.data()?.status === 'Completed' && doc.data()?.winner) {
               unsub();
-            } else {
+              return;
+            }
+            if (doc?.data()?.status === 'Completed' && (!doc.data()?.winner)) {
               location.href = `/raffle/${props.lobbyId}`;
             }
           }

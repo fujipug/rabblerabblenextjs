@@ -105,7 +105,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
         <div className="hidden sm:block absolute top-20 left-20 bg-white bg-opacity-50 rounded p-4 drop-shadow-md">
           <div className="flex items-center">
             <span className="loading loading-ring loading-lg"></span>
-            <span className="text-5xl mb-4 h-full mt-2 font-mono">
+            <span className="text-5xl mb-4 h-full mt-2 font-mono text-slate-700">
               &nbsp;Choosing Winner&nbsp;
             </span>
             <span className="loading loading-ring loading-lg"></span>
@@ -116,7 +116,7 @@ export default function RafflePage({ params }: { params: { id: string } }) {
       <div className="block sm:hidden bg-white bg-opacity-50 rounded p-4 drop-shadow-md -mt-24">
         <div className="flex items-center justify-center">
           <span className="loading loading-ring loading-lg"></span>
-          <span className="text-2xl mb-4 h-full mt-2 font-mono">
+          <span className="text-2xl mb-4 h-full mt-2 font-mono text-slate-700">
             &nbsp;Choosing Winner&nbsp;
           </span>
           <span className="loading loading-ring loading-lg"></span>

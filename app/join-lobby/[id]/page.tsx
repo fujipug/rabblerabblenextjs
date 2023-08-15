@@ -20,7 +20,6 @@ import confetti from "canvas-confetti";
 import { generateToken } from "../../../utils/functions.ts";
 import SoundBoard from "../../../components/soundboard.tsx";
 import RenderName from "../../../components/render-name.tsx";
-import { get } from "http";
 
 declare global {
   interface Window {
@@ -71,12 +70,14 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       confirmNft.tokenId,
     ],
     value: fee,
-    onSuccess: () => {
+    onSuccess: async () => {
       const completedLobby = ((lobbyDetails?.data.confirmedPlayers + 1) === lobbyDetails?.data.totalPlayers) ? true : false;
-      updateFirebaseLobby(completedLobby).then(async () => {
+      await updateFirebaseLobby(completedLobby).then(async () => {
+        console.log('Update Complete');
         fireAction();
-        getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
-          if (Number(res[3]) == lobbyDetails?.data.confirmedPlayers + 1) {
+        await getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
+          if (Number(res[3]) === lobbyDetails?.data.confirmedPlayers + 1) {
+            console.log('Raffle Animation');
             location.href = `/raffle/${params.id}`;
           } else {
             location.href = `/lobby-details/${params.id}`;
@@ -94,6 +95,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     },
   })
 
+  // Retrieves Moralis NFts
   const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
   const getMoralisNfts = async () => {
     const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
@@ -146,11 +148,14 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     const joinedNfts = [...lobbyDetails.data.nfts, playerNft];
 
     console.log('updating', joinedNfts);
-    return await updateDoc(lobbyRef, {
+    const result = updateDoc(lobbyRef, {
       confirmedPlayers: lobbyDetails?.data.confirmedPlayers + 1,
       nfts: joinedNfts,
       status: isCompleteLobby ? 'Completed' : 'Active'
     });
+
+    console.log('result', result);
+    return result;
   }
 
   // Handle battle cry
