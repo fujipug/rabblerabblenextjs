@@ -57,7 +57,7 @@ export default function RootLayout(
               <Link href="/learn-more" className="link link-hover">Learn More</Link>
             </div>
             <div className="w-52">
-              <p className="text-xs">* Please research if rabblerabble.xyz is legal to use in your jurisdiction prior to use. rabblerabble.xyz assumes no responsibility for your use of the platform. </p>
+              <p className="text-xs">Please research if rabblerabble.xyz is legal to use in your jurisdiction prior to use. rabblerabble.xyz assumes no responsibility for your use of the platform. </p>
             </div>
           </footer>
         </main>
