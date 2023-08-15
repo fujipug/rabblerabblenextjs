@@ -55,7 +55,6 @@ function LobbyNftInfo(props: any) {
       try {
         const unsub = onSnapshot(doc(db, 'lobbies', props.lobbyId), (doc) => {
           setLobbyDetails({ id: doc.id, data: doc.data() });
-          // TODO: Res[5] is equal to the 0 string if on the wrong network
           getRaffleById(doc.data()?.raffleId).then((res: any) => {
             if (res[5] && res[5] !== '0x0000000000000000000000000000000000000000') {
               setWinner(res[5] as string);
