@@ -15,9 +15,9 @@ export const verifyApproval = async (
 ) => {
   const network = getNetwork();
   const account = getAccount();
-  const address = network.chain?.id === 43114
-    ? rabbleAddress
-    : rabbleTestAddress;
+  const address = network.chain?.id === 80001
+    ? rabbleTestAddress
+    : rabbleAddress;
   const walletClient = await getWalletClient({
     chainId: network.chain?.id,
   });
@@ -61,10 +61,9 @@ export const verifyApproval = async (
 // get raffle count
 export const getRaffleCount = () => {
   const network = getNetwork();
-  const address = network.chain?.id === 43114
-    ? rabbleAddress
-    : rabbleTestAddress;
-
+  const address = network.chain?.id === 80001
+    ? rabbleTestAddress
+    : rabbleAddress;
   const count = readContract({
     address: address,
     abi: rabbleAbi,
@@ -76,9 +75,9 @@ export const getRaffleCount = () => {
 
 export const getRaffleById = (id: number) => {
   const network = getNetwork();
-  const address = network.chain?.id === 43114
-    ? rabbleAddress
-    : rabbleTestAddress;
+  const address = network.chain?.id === 80001
+    ? rabbleTestAddress
+    : rabbleAddress;
   const raffle = readContract({
     address: address,
     abi: rabbleAbi,
@@ -94,9 +93,9 @@ export const useRabbleContract = () => {
   const network = getNetwork();
 
   useEffect(() => {
-    const address = network.chain?.id === 43114
-      ? rabbleAddress
-      : rabbleTestAddress;
+    const address = network.chain?.id === 80001
+      ? rabbleTestAddress
+      : rabbleAddress;
     const contract = getContract({
       address: address,
       abi: rabbleAbi,

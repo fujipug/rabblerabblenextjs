@@ -163,7 +163,6 @@ function LobbyNftInfo(props: any) {
               </div>
             </div>
           </>
-
           :
           <div className="snap-mandatory snap-x flex p-6 space-x-4 bg-neutral rounded-box w-full overflow-x-scroll">
             {lobbyDetails?.data.nfts.map((nft: any, index: number) => (

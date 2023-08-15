@@ -553,7 +553,7 @@ export default function CreateLobby() {
               <div className="px-4 py-16 bg-base-200">
                 <p className="mb-4">Players must have the same NFT collection</p>
                 <p className="mb-4">Public lobbies will be accesible to anyone with the &apos;Share Link&apos;</p>
-                <p className="mb-4">Private lobbies will be accesible to anyone whiteliested by the lobby creator</p>
+                <p className="mb-4">Private lobbies will be accesible to anyone white listed by the lobby creator</p>
                 <p className="mb-4">The lobby will be open for 24 hours from the time it is created</p>
                 <p className="mb-4">A winner will be chosen when all players have joined the lobby</p>
                 <p className="mb-4">If all players have not joined the lobby by 24 hours, NFTs will be returned to their original owners</p>
