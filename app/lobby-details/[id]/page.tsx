@@ -66,15 +66,15 @@ function LobbyNftInfo(props: any) {
             blanks.push({ collection: doc.data()?.collection })
           setPlaceholders(blanks);
 
-          if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers) && (doc.data()?.nfts.length === doc.data()?.totalPlayers)) {
-            if (doc?.data()?.status === 'Completed' && doc.data()?.winner) {
-              unsub();
-              return;
-            }
-            if (doc?.data()?.status === 'Completed' && (!doc.data()?.winner)) {
-              location.href = `/raffle/${props.lobbyId}`;
-            }
-          }
+          // if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers) && (doc.data()?.nfts.length === doc.data()?.totalPlayers)) {
+          //   if (doc?.data()?.status === 'Completed' && doc.data()?.winner) {
+          //     unsub();
+          //     return;
+          //   }
+          //   if (doc?.data()?.status === 'Completed' && (!doc.data()?.winner)) {
+          //     location.href = `/raffle/${props.lobbyId}`;
+          //   }
+          // }
         });
       } catch (error) {
         console.error('Error fetching data:', error);
