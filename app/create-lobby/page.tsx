@@ -255,7 +255,7 @@ export default function CreateLobby() {
         </div>
       }
       <WagmiConfig config={wagmiConfig}>
-        <div className="flex justify-center">
+        <div className="flex justify-center px-4">
           <ul className="steps">
             <li onClick={() => (step > 1 && step !== 4) && setStep(1)} className={step >= 1 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}># Players</li>
             <li onClick={() => (step > 2 && step !== 4) && setStep(2)} className={step >= 2 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Select NFT</li>
@@ -267,7 +267,8 @@ export default function CreateLobby() {
         {/* step 1 */}
         {(step == 1) &&
           <div className="mt-12 text-center">
-            <h1 className="font-semibold text-2xl mb-4">Choose the number of players</h1>
+            <h1 className="font-semibold text-2xl mb-2">Choose the number of players</h1>
+            <p className="mb-4">Choose the number of players you would like to invite to your lobby and compete for the chance to win all the NFTs from your selected collection.</p>
             <div className="hidden sm:block join drop-shadow-md">
               <button onClick={() => processStep2(3)} onMouseEnter={() => setShowQuokkas(3)} className="btn btn-secondary join-item">3 Players</button>
               <button onClick={() => processStep2(5)} onMouseEnter={() => setShowQuokkas(5)} className="btn btn-secondary join-item">5 Players</button>
@@ -309,8 +310,8 @@ export default function CreateLobby() {
           <div className="mt-12 text-center">
             {address && isConnected ?
               <>
-                <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-                <RenderName address={address} classData={'text-2xl'} />
+                {/* <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
+                <RenderName address={address} classData={'text-2xl'} /> */}
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
                     <label tabIndex={0} className="btn m-1">
@@ -326,6 +327,7 @@ export default function CreateLobby() {
                       <li><a onClick={() => filterCollection('all')}>Show All</a></li>
                     </ul>
                   </div>
+                  <div className="text-2xl hidden sm:flex">Select The Raffle Collection</div>
                   <button className="btn btn-secondary drop-shadow-md" onClick={() => window.rulesModal.showModal()}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -377,7 +379,6 @@ export default function CreateLobby() {
                     </ul>
                   }
                 </div>
-                <div className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</div>
               </>
               :
               <>
@@ -447,7 +448,7 @@ export default function CreateLobby() {
                           <p>{formatUnits(fee, 18)} {chain?.nativeCurrency.symbol}</p>
                         </div>
 
-                        <div className="divider">Lobby Name</div>
+                        <div className="divider"><span>Lobby Name <span className="text-sm text-gray-500">(Optional)</span></span></div>
                         <input type="text" onChange={handleLobbyName} placeholder="Ex: Quokka Clan" className="input input-bordered w-full" />
                       </div>
                     </div>

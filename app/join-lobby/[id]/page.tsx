@@ -200,8 +200,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
         <div className="mt-12 text-center">
           {address && isConnected && lobbyDetails ?
             <>
-              <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-              <RenderName address={address} classData={'text-2xl'} />
+              {/* <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
+              <RenderName address={address} classData={'text-2xl'} /> */}
               <div className="flex justify-between items-center mt-6">
                 <div className="dropdown">
                   <label tabIndex={0} className="btn m-1 cursor-default">
@@ -257,7 +257,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                   </ul>
                 }
               </div>
-              <div className="text-sm text-accent mt-8">* If some images are missing it might be due to your ad blocker</div>
             </>
             :
             <>

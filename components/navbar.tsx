@@ -30,10 +30,13 @@ export default function Navbar() {
   }, [address]);
   return (
     <div className="navbar bg-neutral flex justify-between drop-shadow-md items-center">
-      <div>
-        <Link href="/" className="-ml-1.5 hidden sm:flex btn btn-ghost normal-case text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 absolute bottom-3">Rabble Rabble</Link>
-        <Link className="flex sm:hidden" href="/"><Image src="/images/Face_2.png" alt="Rabble Rabble Logo" width={60} height={60} /></Link>
-        <p className="hidden sm:block text-xs absolute bottom-3 left-5">ByQuokkas</p>
+      <Link className="flex sm:hidden" href="/"><Image src="/images/Face_2.png" alt="Rabble Rabble Logo" width={60} height={60} /></Link>
+      <div className="hidden sm:flex items-center ml-2">
+        <Link className="-ml-2" href="/"><Image src="/images/Face_2.png" alt="Rabble Rabble Logo" width={60} height={60} /></Link>
+        <div className="mb-2">
+          <Link href="/"><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 text-xl">Rabble Rabble</span><br /></Link>
+          <span className="text-xs absolute -mt-1.5">ByQuokkas</span>
+        </div>
       </div>
       <div className="flex items-center">
         <ConnectButton.Custom>
