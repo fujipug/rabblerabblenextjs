@@ -41,7 +41,7 @@ export default function RootLayout(
                 <Link className="-ml-2" href="/"><Image src="/images/Face_2.png" alt="Rabble Rabble Logo" width={60} height={60} /></Link>
                 <div>
                   <Link href="/"><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 text-xl">Rabble Rabble</span><br /></Link>
-                  <span className="text-xs absolute -mt-1.5">ByQuokkas</span>
+                  <div className="text-xs absolute -mt-1.5">ByQuokkas</div>
                 </div>
               </div>
               <span className="flex items-center font-mono text-xs">

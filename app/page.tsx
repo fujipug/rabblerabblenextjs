@@ -126,8 +126,8 @@ export default function Home() {
                 <tr>
                   <th>Lobby</th>
                   <th>Type</th>
-                  <th>Collection</th>
                   <th>Status</th>
+                  <th>Collection</th>
                   <th>Time Remaining</th>
                   <th>Players</th>
                   <th>Winner</th>
@@ -145,7 +145,6 @@ export default function Home() {
                       :
                       <td>Public</td>
                     }
-                    <td className="truncate">{lobby.data.collection}</td>
                     <td>
                       {lobby.data.status === 'Expired' &&
                         <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/10">
@@ -163,6 +162,7 @@ export default function Home() {
                         </span>
                       }
                     </td>
+                    <td className="truncate">{lobby.data.collection}</td>
                     <td>
                       {(lobby.data.status === 'Expired' || lobby.data.status === 'Completed') ?
                         <span>-</span>
