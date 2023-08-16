@@ -129,6 +129,7 @@ export default function Home() {
                   <th>Collection</th>
                   <th>Status</th>
                   <th>Time Remaining</th>
+                  <th>Players</th>
                   <th>Winner</th>
                 </tr>
               </thead>
@@ -144,7 +145,7 @@ export default function Home() {
                       :
                       <td>Public</td>
                     }
-                    <td>{lobby.data.collection}</td>
+                    <td className="truncate">{lobby.data.collection}</td>
                     <td>
                       {lobby.data.status === 'Expired' &&
                         <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/10">
@@ -169,6 +170,7 @@ export default function Home() {
                         <Countdown endTime={lobby.data.endDate} size={'small'} />
                       }
                     </td>
+                    <td>{lobby.data.confirmedPlayers} of {lobby.data.totalPlayers}</td>
                     {lobby.data.status === 'Expired' &&
                       <td>N/A</td>
                     }
