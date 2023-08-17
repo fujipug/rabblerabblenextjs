@@ -1,5 +1,5 @@
 import { configureChains, createConfig } from "wagmi";
-import { avalanche } from "wagmi/chains";
+import { avalanche, polygonMumbai } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import {
@@ -16,7 +16,7 @@ import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 const projectId = process.env.NEXT_PUBLIC_CLOUD_WALLET_API_KEY as string; // connect cloud wallet
 const appName = "Rabble Rabble";
 export const { chains, publicClient } = configureChains(
-  [avalanche],
+  [avalanche, polygonMumbai],
   [
     alchemyProvider({
       apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { collection, getCountFromServer, getDocs, getFirestore, limit, onSnapshot, orderBy, query, startAfter } from "firebase/firestore";
+import { Timestamp, collection, doc, getCountFromServer, getDocs, getFirestore, limit, onSnapshot, orderBy, query, startAfter, updateDoc } from "firebase/firestore";
 import { firebaseConfig } from "../utils/firebase-config";
 import { Lobby } from "../types";
 
@@ -51,3 +51,11 @@ export const getLobbyCount = async () => {
     return 0;
   }
 };
+
+export const updateFirebaseWinner = async (winner: string, lobbyId: string) => {
+  const lobbyRef = doc(db, 'lobbies', lobbyId);
+  return await updateDoc(lobbyRef, {
+    winner: winner,
+    completedDate: Timestamp.now()
+  });
+}

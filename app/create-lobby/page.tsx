@@ -40,7 +40,6 @@ export default function CreateLobby() {
   const { address, isConnected } = useAccount();
   const [showClipboardAlert, setShowClipboardAlert] = useState(false);
   const { SVG } = useQRCode();
-  const [showQuokkas, setShowQuokkas] = useState(5);
   const [collectionList, setCollectionList] = useState([] as string[]);
   const [imutableNftList, setImutableNftList] = useState([] as any[]);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -48,9 +47,6 @@ export default function CreateLobby() {
   const rabbleContract = useRabbleContract();
   const fee = useFee();
   const [chain, setChain] = useState(getNetwork().chain);
-  const quokkas = [
-    'Quokka_Cool', 'Quokka_Leaf', 'Quokka_Bowl_Hat', 'Quokka', 'Quokka_Wave',
-    'Quokka', 'Quokka_Wave', 'Quokka_Bowl_Hat', 'Quokka_Cool', 'Quokka_Leaf'];
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
     abi: rabbleAbi,
@@ -88,6 +84,7 @@ export default function CreateLobby() {
   useEffect(() => {
     if (address && isConnected && chain?.id === 80001)
       getMoralisNfts(address).then((response: any) => {
+        console.log(response)
         setNfts(response);
         setImutableNftList(response);
       });
@@ -206,10 +203,10 @@ export default function CreateLobby() {
       <WagmiConfig config={wagmiConfig}>
         <div className="flex justify-center px-4">
           <ul className="steps">
-            <li onClick={() => (step > 1 && step !== 4) && setStep(1)} className={step >= 1 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}># Players</li>
-            <li onClick={() => (step > 2 && step !== 4) && setStep(2)} className={step >= 2 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Select NFT</li>
-            <li onClick={() => (step > 3 && step !== 4) && setStep(3)} className={step >= 3 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Final Details</li>
-            <li className={step === 4 ? "step mr-2 sm:mr-4 cursor-pointer step-primary" : "step mr-2 sm:mr-4"}>Share</li>
+            <li onClick={() => (step > 1 && step !== 4) && setStep(1)} className={step >= 1 ? "step cursor-pointer step-primary" : "step"}></li>
+            <li onClick={() => (step > 2 && step !== 4) && setStep(2)} className={step >= 2 ? "step cursor-pointer step-primary" : "step"}></li>
+            <li onClick={() => (step > 3 && step !== 4) && setStep(3)} className={step >= 3 ? "step cursor-pointer step-primary" : "step"}></li>
+            <li className={step === 4 ? "step cursor-pointer step-primary" : "step"}></li>
           </ul>
         </div>
 
@@ -221,7 +218,7 @@ export default function CreateLobby() {
 
             <div className="p-6 bg-neutral rounded-box w-full grid grid-cols-2 sm:grid-cols-4 gap-4">
               <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
-                <div onClick={() => processStep2(3)} onMouseEnter={() => setShowQuokkas(3)}
+                <div onClick={() => processStep2(3)}
                   className="card card-compact w-full h-full bg-base-100 shadow-xl cursor-pointer col-span-1">
                   <div className="card-body">
                     <div className="flex items-center justify-center">
@@ -233,7 +230,7 @@ export default function CreateLobby() {
               </Tilt>
 
               <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
-                <div onClick={() => processStep2(5)} onMouseEnter={() => setShowQuokkas(5)}
+                <div onClick={() => processStep2(5)}
                   className="card card-compact w-full h-full bg-base-100 shadow-xl cursor-pointer col-span-1">
                   <div className="card-body">
                     <div className="flex items-center justify-center">
@@ -245,7 +242,7 @@ export default function CreateLobby() {
               </Tilt>
 
               <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
-                <div onClick={() => processStep2(7)} onMouseEnter={() => setShowQuokkas(7)}
+                <div onClick={() => processStep2(7)}
                   className="card card-compact w-full h-full bg-base-100 shadow-xl cursor-pointer col-span-1">
                   <div className="card-body">
                     <div className="flex items-center justify-center">
@@ -257,7 +254,7 @@ export default function CreateLobby() {
               </Tilt>
 
               <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
-                <div onClick={() => processStep2(10)} onMouseEnter={() => setShowQuokkas(10)}
+                <div onClick={() => processStep2(10)}
                   className="card card-compact w-full h-full bg-base-100 shadow-xl cursor-pointer col-span-1">
                   <div className="card-body">
                     <div className="flex items-center justify-center">
@@ -274,8 +271,11 @@ export default function CreateLobby() {
         {/* step 2 */}
         {(step == 2) &&
           <div className="mt-12 text-center">
+
             {address && isConnected ?
               <>
+                <h1 className="font-semibold text-2xl mb-2">Select an NFT</h1>
+                <p className="mb-4">Choose the NFT you would like to raffle for this lobby. All players will raffle NFTs in the same collection of the NFT choosen.</p>
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
                     <label tabIndex={0} className="btn m-1">
@@ -291,7 +291,6 @@ export default function CreateLobby() {
                       <li><a onClick={() => filterCollection('all')}>Show All</a></li>
                     </ul>
                   </div>
-                  <div className="text-2xl hidden sm:flex">Select The Raffle Collection</div>
                   <button className="btn btn-secondary drop-shadow-md" onClick={() => window.rulesModal.showModal()}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -359,7 +358,7 @@ export default function CreateLobby() {
               </>
               :
               <>
-                <h1 className="font-semibold text-2xl mb-4">Sign into your NFT wallet</h1>
+                <h1 className="font-semibold text-2xl mb-4">Sign into your wallet to continue</h1>
                 <div className="w-full flex justify-center">
                   <ConnectButton />
                 </div>
@@ -373,14 +372,19 @@ export default function CreateLobby() {
           <div className="mt-12">
             {address && isConnected ?
               <>
-                <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2">
+                <h1 className="font-semibold text-2xl mb-2 text-center">Review selection</h1>
+                <p className="mb-4 text-center">Go over the details of your selection and prepare to play. Additionaly, you can name your lobby and even choose a battle cry.</p>
+                <div className="grid grid-cols-1 space-x-6 sm:grid-cols-2 mt-6">
                   <div className="col-span-1 flex justify-center">
-                    <div className="card card-compact w-80 bg-base-200 shadow-xl">
-                      <figure><img src={selectedNft.metadata?.pImage ? selectedNft.metadata?.pImage : (selectedNft.media?.mediaCollection?.high.url ? selectedNft.media?.mediaCollection?.high.url : selectedNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
-                      <div className="card-body">
-                        <h2 className="card-title">{selectedNft?.name ? selectedNft?.name : selectedNft?.collectionName} #{selectedNft?.tokenId}</h2>
-                        <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol ? selectedNft?.collectionSymbol : selectedNft.symbol}</p>
-                        <SoundBoard onValueChange={handleValueChange} />
+
+                    <div className="p-6 bg-neutral rounded-box flex justify-center">
+                      <div className="card card-compact w-80 bg-base-200 shadow-xl">
+                        <figure><img src={selectedNft.metadata?.pImage ? selectedNft.metadata?.pImage : (selectedNft.media?.mediaCollection?.high.url ? selectedNft.media?.mediaCollection?.high.url : selectedNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
+                        <div className="card-body">
+                          <h2 className="card-title">{selectedNft?.name ? selectedNft?.name : selectedNft?.collectionName} #{selectedNft?.tokenId}</h2>
+                          <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol ? selectedNft?.collectionSymbol : selectedNft.symbol}</p>
+                          <SoundBoard onValueChange={handleValueChange} />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -452,9 +456,7 @@ export default function CreateLobby() {
         {/* step 4 */}
         {(step == 4) &&
           <div className="mt-12">
-            <div className="text-center">
-              <h1 className="font-semibold text-xl mb-4">Share QR Code</h1>
-            </div>
+            <h1 className="font-semibold text-xl mb-4 text-center">Share QR Code</h1>
             <div className="flex justify-center">
               <div className="qrcodeImage">
                 <SVG
