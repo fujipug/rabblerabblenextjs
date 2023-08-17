@@ -1,13 +1,13 @@
 'use client'
 import { WagmiConfig } from "wagmi";
-import { wagmiConfig } from "../../../utils/wagmi-config.ts";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { initializeApp } from "firebase/app";
-import { collection, documentId, getDocs, getFirestore, where, query, updateDoc, doc, Timestamp } from "firebase/firestore";
-import { firebaseConfig } from "../../../utils/firebase-config";
-import { getRaffleById } from "../../../utils/hooks";
-import RenderName from "../../../components/render-name";
+import { getFirestore } from "firebase/firestore";
+import { firebaseConfig } from "../utils/firebase-config";
+import RenderName from "../components/render-name";
+import { wagmiConfig } from "../utils/wagmi-config";
+import { Lobby } from "../types";
 
 // GLHF
 const RotatingGIF = () => {
@@ -36,69 +36,25 @@ const RotatingGIF = () => {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export default function RafflePage({ params }: { params: { id: string } }) {
-  const [lobbyDetails, setLobbyDetails] = useState() as any;
-
-  const fetchFirebaseData = async () => {
-    try {
-      const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
-      const querySnapshot = await getDocs(q);
-      for (const doc of querySnapshot.docs) {
-        setLobbyDetails({ id: doc.id, data: doc.data() });
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  // Update the firebase database with the winner
-  const updateFirebaseLobby = async (winner: string) => {
-    const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
-    return await updateDoc(lobbyRef, {
-      winner: winner,
-      completedDate: Timestamp.now()
-    });
-  }
-
-  const [count, setCount] = useState(0); // Initial Count time in seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
-        if (res[5].toString() !== '0x0000000000000000000000000000000000000000') {
-          updateFirebaseLobby(res[5].toString()).then(() => {
-            location.href = `/lobby-details/${params.id}`;
-            clearInterval(interval);
-          });
-        } else {
-          setCount(prevCounter => prevCounter + 1);
-        }
-      })
-    }, 1000); // Execute every second (1000 milliseconds)
-
-    return () => {
-      clearInterval(interval); // Clean up the interval on component unmount
-    };
-  }, [count, lobbyDetails?.data.raffleId, params.id]);
-
-
-  useEffect(() => {
-    fetchFirebaseData();
-  }, [params.id]);
-
+export default function RaffleAnimation(props: { lobbyDetails: Lobby, finalPlayerAddress?: string }) {
   return (
     <WagmiConfig config={wagmiConfig}>
       <div className="w-full relative">
         <RotatingGIF />
         <div className="hidden sm:block absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
-          <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Player Pool</div>
-          {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
+          <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Lobby Participants</div>
+          {props?.lobbyDetails?.data && props?.lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
-              <div className="flex justify-center items-center" key={index}>
-                <span className="font-semibold">Player {index + 1}: </span>
+              <span key={index}>
+                <span className="font-semibold">Player {index + 1}:</span>
                 <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} />
-              </div>
+              </span>
             )
           })}
+          <span>
+            <span className="font-semibold">Player {props?.lobbyDetails?.nfts?.length + 1}:</span>
+            <RenderName address={props?.finalPlayerAddress} isWinner={false} classData={''} />
+          </span>
         </div>
 
         <div className="hidden sm:block absolute top-20 left-20 bg-white bg-opacity-50 rounded p-4 drop-shadow-md">
@@ -122,16 +78,19 @@ export default function RafflePage({ params }: { params: { id: string } }) {
         </div>
       </div>
       <div className="block sm:hidden bg-white rounded p-4 drop-shadow-md">
-        <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-2xl mb-4 text-center">Player Pool</div>
+        <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-2xl mb-4 text-center">Lobby Participants</div>
         <div className="text-center">
-          {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
+          {props?.lobbyDetails?.data && props?.lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
-              <div className="flex justify-center items-center" key={index}>
-                <span className="font-semibold">Player {index + 1}: </span>
-                <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} />
-              </div>
+              <span key={index}><span className="font-semibold">Player {index + 1}:
+                <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} /></span>
+              </span>
             )
           })}
+          <span>
+            <span className="font-semibold">Player {props?.lobbyDetails?.nfts?.length + 1}:</span>
+            <RenderName address={props?.finalPlayerAddress} isWinner={false} classData={''} />
+          </span>
         </div>
       </div>
     </WagmiConfig >

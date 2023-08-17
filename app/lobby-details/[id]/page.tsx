@@ -15,11 +15,14 @@ import Image from 'next/image'
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
 import Tilt from 'react-parallax-tilt';
 import RenderName from '../../../components/render-name';
+import RaffleAnimation from '../../../components/raffle-animation';
+import { Lobby } from '../../../types';
 
 declare global {
   interface Window {
     showRespects: any;
     showCelebrate: any;
+    raffle: any
   }
 }
 
@@ -27,7 +30,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 function LobbyNftInfo(props: any) {
-  const [lobbyDetails, setLobbyDetails] = useState() as any;
+  const [lobbyDetails, setLobbyDetails] = useState() as Lobby;
   const [placeholders, setPlaceholders] = useState([]) as any;
   const [winner, setWinner] = useState(null) as any;
   const account = useAccount();
@@ -36,16 +39,16 @@ function LobbyNftInfo(props: any) {
     const accountAddress = account.address?.toLocaleLowerCase() ? account.address?.toLocaleLowerCase() : '';
     document.addEventListener('keydown', function (event) {
       if (event.key === 'f' && winner?.toLowerCase() !== accountAddress.toLocaleLowerCase()) {
-        window.showRespects.showModal()
+        window.showRespects.showModal();
         setTimeout(() => {
           window.showRespects.close()
         }, 5000);
       }
 
       if (event.key === 'g' && winner?.toLowerCase() === accountAddress.toLocaleLowerCase()) {
-        window.showCelebrate.showModal()
+        window.showCelebrate.showModal();
         setTimeout(() => {
-          window.showCelebrate.close()
+          window.showCelebrate.close();
         }, 5000);
       }
     });
@@ -66,15 +69,15 @@ function LobbyNftInfo(props: any) {
             blanks.push({ collection: doc.data()?.collection })
           setPlaceholders(blanks);
 
-          // if ((doc.data()?.totalPlayers === doc.data()?.confirmedPlayers) && (doc.data()?.nfts.length === doc.data()?.totalPlayers)) {
-          //   if (doc?.data()?.status === 'Completed' && doc.data()?.winner) {
-          //     unsub();
-          //     return;
-          //   }
-          //   if (doc?.data()?.status === 'Completed' && (!doc.data()?.winner)) {
-          //     location.href = `/raffle/${props.lobbyId}`;
-          //   }
-          // }
+          if (!doc.data()?.winner && (doc.data()?.totalPlayers === doc.data()?.confirmedPlayers)) {
+            window.raffle.showModal()
+          }
+
+          if (doc.data()?.winner && (doc.data()?.totalPlayers === doc.data()?.confirmedPlayers)) {
+            unsub();
+            window.raffle.close()
+          }
+
         });
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -261,7 +264,7 @@ function LobbyNftInfo(props: any) {
           <div className="divider"></div>
         </div>
         <div className="col-span-1">
-          <h2 className="font-bold text-lg">Participants</h2>
+          <h2 className="font-bold text-lg">Player Pool</h2>
           <div className="overflow-x-auto">
             <table className="table">
               <thead>
@@ -280,7 +283,6 @@ function LobbyNftInfo(props: any) {
                           <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} classData={'text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'} />
                           :
                           <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} classData={''} />
-
                         }
                       </td>
                     </tr>
@@ -296,6 +298,9 @@ function LobbyNftInfo(props: any) {
       </dialog>
       <dialog id="showCelebrate" className="modal">
         <Image src={'/images/winner.gif'} className="max-w-full max-h-full" fill alt="Celebrate" />
+      </dialog>
+      <dialog id="raffle" className="modal">
+        <RaffleAnimation lobbyDetails={lobbyDetails} />
       </dialog>
     </>
   )

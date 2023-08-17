@@ -3,6 +3,7 @@ import Moralis from 'moralis';
 import { generateToken } from "../utils/functions";
 
 export const getMoralisNfts = async (address: string) => {
+  let result: any = [];
   await Moralis.EvmApi.nft.getWalletNFTs({
     address: address as string,
     chain: EvmChain.MUMBAI,
@@ -10,8 +11,10 @@ export const getMoralisNfts = async (address: string) => {
     mediaItems: true,
     normalizeMetadata: true,
   }).then((response) => {
-    return response.result;
+    result = response.result;
   });
+
+  return result;
 };
 
 export const getPicassoNfts = async (address: string) => {
