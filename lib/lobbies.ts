@@ -53,9 +53,13 @@ export const getLobbyCount = async () => {
 };
 
 export const updateFirebaseWinner = async (winner: string, lobbyId: string) => {
+  console.log('winner', winner)
+  console.log('lobbyId', lobbyId)
   const lobbyRef = doc(db, 'lobbies', lobbyId);
-  return await updateDoc(lobbyRef, {
+  const updateWinner = await updateDoc(lobbyRef, {
     winner: winner,
     completedDate: Timestamp.now()
   });
+
+  return await updateWinner;
 }

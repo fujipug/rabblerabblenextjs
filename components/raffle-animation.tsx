@@ -36,7 +36,7 @@ const RotatingGIF = () => {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export default function RaffleAnimation(props: { lobbyDetails: Lobby }) {
+export default function RaffleAnimation(props: { lobbyDetails: Lobby, finalPlayerAddress?: string }) {
   return (
     <WagmiConfig config={wagmiConfig}>
       <div className="w-full relative">
@@ -51,6 +51,10 @@ export default function RaffleAnimation(props: { lobbyDetails: Lobby }) {
               </span>
             )
           })}
+          <span>
+            <span className="font-semibold">Player {props?.lobbyDetails?.nfts?.length + 1}:</span>
+            <RenderName address={props?.finalPlayerAddress} isWinner={false} classData={''} />
+          </span>
         </div>
 
         <div className="hidden sm:block absolute top-20 left-20 bg-white bg-opacity-50 rounded p-4 drop-shadow-md">
@@ -83,6 +87,10 @@ export default function RaffleAnimation(props: { lobbyDetails: Lobby }) {
               </span>
             )
           })}
+          <span>
+            <span className="font-semibold">Player {props?.lobbyDetails?.nfts?.length + 1}:</span>
+            <RenderName address={props?.finalPlayerAddress} isWinner={false} classData={''} />
+          </span>
         </div>
       </div>
     </WagmiConfig >

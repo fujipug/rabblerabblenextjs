@@ -61,15 +61,10 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     onSuccess: async () => {
       const completedLobby = ((lobbyDetails?.data.confirmedPlayers + 1) === lobbyDetails?.data.totalPlayers) ? true : false;
       await updateFirebaseLobby(completedLobby).then(async () => {
-        console.log('Update Complete');
         fireAction();
         await getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
           if (Number(res[3]) === lobbyDetails?.data.confirmedPlayers + 1) {
-            console.log('Raffle Animation');
-            // start raffle animation
             raffle();
-          } else {
-            location.href = `/lobby-details/${params.id}`;
           }
         })
       });
@@ -158,11 +153,12 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
 
   const [count, setCount] = useState(0); // Initial Count time in seconds
   const raffle = () => {
+
     window.raffle.showModal();
     const interval = setInterval(() => {
-      getRaffleById(lobbyDetails?.data.raffleId).then(async (res: any) => {
+      getRaffleById(lobbyDetails?.data?.raffleId).then(async (res: any) => {
         if (res[5].toString() !== '0x0000000000000000000000000000000000000000') {
-          updateFirebaseWinner(res[5].toString(), lobbyDetails?.data.raffleId).then(() => {
+          await updateFirebaseWinner(res[5].toString(), lobbyDetails?.id).then(() => {
             window.raffle.close();
             clearInterval(interval);
             location.href = `/lobby-details/${params.id}`;
@@ -448,8 +444,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
             </div>
             <div className="px-4 py-16 bg-base-200">
               <p className="mb-4">Players must have the same NFT collection</p>
-              <p className="mb-4">Public lobbies will be accesible to anyone with the &apos;Share Link&apos;</p>
-              <p className="mb-4">Private lobbies will be accesible to anyone white listed by the lobby creator</p>
+              <p className="mb-4">Public lobbies will be accessible to anyone with the &apos;Share Link&apos;</p>
+              <p className="mb-4">Private lobbies will be accessible to anyone white listed by the lobby creator</p>
               <p className="mb-4">The lobby will be open for 24 hours from the time it is created</p>
               <p className="mb-4">A winner will be chosen when all players have joined the lobby</p>
               <p className="mb-4">If all players have not joined the lobby by 24 hours, NFTs will be returned to their original owners</p>
@@ -463,7 +459,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
         </form>
       </dialog>
       <dialog id="raffle" className="modal">
-        <RaffleAnimation lobbyDetails={lobbyDetails} />
+        {/* TODO: This needs to be updated for polygon testing to ownerOf also */}
+        <RaffleAnimation lobbyDetails={lobbyDetails} finalPlayerAddress={confirmNft?.owner} />
       </dialog>
     </>
   )

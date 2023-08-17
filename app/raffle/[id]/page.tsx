@@ -90,13 +90,13 @@ export default function RafflePage({ params }: { params: { id: string } }) {
       <div className="w-full relative">
         <RotatingGIF />
         <div className="hidden sm:block absolute bottom-20 left-20 bg-white rounded p-4 drop-shadow-md">
-          <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Lobby Participants</div>
+          <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-3xl mb-4">Player Pool</div>
           {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
-              <p key={index}><span className="font-semibold">Player {index + 1}:
-              </span>
+              <div className="flex justify-center items-center" key={index}>
+                <span className="font-semibold">Player {index + 1}: </span>
                 <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} />
-              </p>
+              </div>
             )
           })}
         </div>
@@ -122,13 +122,14 @@ export default function RafflePage({ params }: { params: { id: string } }) {
         </div>
       </div>
       <div className="block sm:hidden bg-white rounded p-4 drop-shadow-md">
-        <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-2xl mb-4 text-center">Lobby Participants</div>
+        <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 rpo text-2xl mb-4 text-center">Player Pool</div>
         <div className="text-center">
           {lobbyDetails?.data && lobbyDetails?.data.nfts.map((nft: any, index: number) => {
             return (
-              <p key={index}><span className="font-semibold">Player {index + 1}:
-                <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} /></span>
-              </p>
+              <div className="flex justify-center items-center" key={index}>
+                <span className="font-semibold">Player {index + 1}: </span>
+                <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} />
+              </div>
             )
           })}
         </div>
