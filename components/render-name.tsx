@@ -11,7 +11,6 @@ export default function RenderName({ address, isWinner, classData }: any) {
             try {
                 avvyAddress(address, setIsAvvy).then((res: any) => {
                     if (res) {
-                        console.log(res);
                         setDisplay(res);
                         setIsAvvy(true);
                     }

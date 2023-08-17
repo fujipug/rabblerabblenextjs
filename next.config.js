@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   basePath: "",
   images: {
-    domains: ["media0.giphy.com", "media4.giphy.com", "media3.giphy.com"],
+    domains: ["media0.giphy.com", "media4.giphy.com", "media3.giphy.com", "pickasso.nyc3.cdn.digitaloceanspaces.com"],
   },
   reactStrictMode: true,
   webpack: config => {

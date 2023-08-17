@@ -178,9 +178,9 @@ function LobbyNftInfo(props: any) {
                   <div className="card card-compact w-80 bg-base-100 shadow-xl">
                     <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
                     <div className="card-body">
-                      <h2 className="card-title">{nft?.name ? nft?.name : nft?.collectionName} #{nft.tokenId}</h2>
+                      <h2 className="card-title"><span className='truncate'>{nft?.name ? nft?.name : nft?.collectionName}</span> #{nft.tokenId}</h2>
                       <div className='flex justify-between items-center'>
-                        <p><span className="font-semibold truncate">Collection: </span> {nft?.name ? nft?.name : nft?.collectionName}</p>
+                        <p className='truncate'><span className="font-semibold">Collection: </span> {nft?.name ? nft?.name : nft?.collectionName}</p>
                         {nft?.battleCry &&
                           <SoundButton battleCry={nft?.battleCry} />
                         }
@@ -200,7 +200,7 @@ function LobbyNftInfo(props: any) {
                     </div></figure>
                     <div className="card-body">
                       <h2 className="card-title">Waiting for player to join<span className="loading loading-dots loading-xs -mb-3"></span></h2>
-                      <p><span className="font-semibold">Collection: </span> {placeholder.collection}</p>
+                      <p className='truncate'><span className="font-semibold">Collection: </span> {placeholder.collection}</p>
                     </div>
                   </div>
                 </Tilt>

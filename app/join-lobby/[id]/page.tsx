@@ -2,8 +2,6 @@
 import { useAccount, useContractWrite } from "wagmi";
 import { getNetwork, watchNetwork } from "@wagmi/core";
 import { useEffect, useState } from "react";
-import { EvmChain } from "@moralisweb3/common-evm-utils";
-import Moralis from "moralis";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { collection, doc, documentId, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
@@ -16,10 +14,9 @@ import { rabbleAbi } from '../../../utils/config.ts';
 import { useRabbleContract, verifyApproval, useFee, getRaffleById } from '../../../utils/hooks.ts';
 import { firebaseConfig } from '../../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
-import confetti from "canvas-confetti";
-import { generateToken } from "../../../utils/functions.ts";
+import { fireAction } from "../../../utils/functions.ts";
 import SoundBoard from "../../../components/soundboard.tsx";
-import RenderName from "../../../components/render-name.tsx";
+import { getMoralisNfts, getPicassoNfts } from "../../../lib/nfts.ts";
 
 declare global {
   interface Window {
@@ -43,23 +40,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   const rabbleContract = useRabbleContract();
   const fee = useFee();
   const [chain, setChain] = useState(getNetwork().chain);
-
-  // Confetti helper animation
-  const fireConfetti = (particleRatio: number, opts: any) => {
-    const defaults = {
-      origin: { y: 0.7 }
-    };
-    confetti(Object.assign({}, defaults, opts, {
-      particleCount: Math.floor(200 * particleRatio)
-    }));
-  };
-  function fireAction() {
-    fireConfetti(0.25, { spread: 26, startVelocity: 55 });
-    fireConfetti(0.2, { spread: 60 });
-    fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-    fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-    fireConfetti(0.1, { spread: 120, startVelocity: 45 });
-  }
 
   let { data, isLoading, isSuccess, write } = useContractWrite({
     address: rabbleContract?.address,
@@ -97,17 +77,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
 
   // Retrieves Moralis NFts
   const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
-  const getMoralisNfts = async () => {
-    const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
-    const response = await Moralis.EvmApi.nft.getWalletNFTs({
-      address: address as string,
-      chain: networkChain,
-      limit: 100,
-      mediaItems: true,
-      normalizeMetadata: true,
-    });
-    return response.result;
-  }
+
   const fetchData = async (results: any) => {
     try {
       const q = query(collection(db, 'lobbies'), where(documentId(), '==', params.id));
@@ -123,9 +93,9 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
   };
   useEffect(() => {
     if (address && isConnected && chain?.id === 80001)
-      getMoralisNfts().then((nfts) => fetchData(nfts));
+      getMoralisNfts(address).then((response: any) => fetchData(response));
     if (address && isConnected && chain?.id === 43114)
-      getPicassoNfts();
+      getPicassoNfts(address).then((response: any) => fetchData(response));
   }, [address, isConnected, chain?.id]);
 
   // Join player to Lobby
@@ -164,30 +134,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     setBattleCry(newValue);
   };
 
-  const getPicassoNfts = async () => {
-    fetch(
-      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=1000&sortBy=updatedBlock&sortOrder=desc&verified=false`,
-      {
-        headers: {
-          'x-api-token': generateToken(),
-        }
-      },
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Something wrong happened');
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        fetchData(data.docs);
-      })
-      .catch((e) => {
-        console.log('fetch inventory error', e);
-      });
-  }
-
   return (
     <>
       {showErrorAlert &&
@@ -200,8 +146,6 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
         <div className="mt-12 text-center">
           {address && isConnected && lobbyDetails ?
             <>
-              {/* <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-              <RenderName address={address} classData={'text-2xl'} /> */}
               <div className="flex justify-between items-center mt-6">
                 <div className="dropdown">
                   <label tabIndex={0} className="btn m-1 cursor-default">

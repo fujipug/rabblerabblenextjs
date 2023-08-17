@@ -14,8 +14,6 @@ import {
   getWalletClient,
   readContract,
 } from "@wagmi/core";
-import AVVY from "@avvy/client";
-import { providers } from "ethers";
 
 export const verifyApproval = async (
   collectionAddress: any,
@@ -52,9 +50,9 @@ export const verifyApproval = async (
         { from: getAccount().address },
         {
           onLogs() {
+            isApprovalStatusLoading(false);
             write();
             unwatch();
-            isApprovalStatusLoading(false);
           },
         },
       );
@@ -152,7 +150,6 @@ export const avvyAddress = async (
     walletClient: walletClient as any,
   });
   const name = await avvyContract.read.reverseResolveEVMToName([address]);
-  console.log("name", name);
   try {
     if (name == "") {
       return truncateAddress(address);

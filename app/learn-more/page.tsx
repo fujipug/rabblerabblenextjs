@@ -27,7 +27,7 @@ export default function LearnMore() {
     <>
       <div className="hero bg-base-200 rounded-xl">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <Image src={'/images/Quokka_Wave.png'} width={400} height={400} className="hidden sm:block max-w-sm" alt="Quokka Wave" />
+          <Image src={'/images/Quokka_Bowl_Hat.png'} width={400} height={400} className="hidden sm:block max-w-sm" alt="Quokka Hat" />
           <div>
             <h1 className="text-5xl font-bold">Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Rabble Rabble</span></h1>
             <p className="py-6 text-lg sm:text-xl">A thrilling NFT Raffling experience with your friends!</p>
