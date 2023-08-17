@@ -10,6 +10,7 @@ import Moralis from 'moralis';
 import Image from 'next/image';
 import Link from "next/link";
 import { chains, wagmiConfig } from "../utils/wagmi-config";
+import { Analytics } from '@vercel/analytics/react';
 
 const runApp = async () => {
   await Moralis.start({
@@ -33,6 +34,7 @@ export default function RootLayout(
           <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider chains={chains} theme={darkTheme()}>
               {children}
+              <Analytics />
             </RainbowKitProvider>
           </WagmiConfig>
           <footer className="footer p-10 bg-base-200 text-base-content">
