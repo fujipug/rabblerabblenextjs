@@ -3,44 +3,25 @@ import { WagmiConfig, useAccount, useContractWrite } from "wagmi";
 import { wagmiConfig } from "../../utils/wagmi-config.ts";
 import { getNetwork, watchNetwork } from '@wagmi/core'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { getRaffleCount, useRabbleContract, verifyApproval, useFee, getRaffleById } from '../../utils/hooks.ts';
+import { getRaffleCount, useRabbleContract, verifyApproval, useFee } from '../../utils/hooks.ts';
 import { useEffect, useState } from "react";
-import { EvmChain } from "@moralisweb3/common-evm-utils";
-import Moralis from 'moralis';
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import Link from "next/link";
 import Image from "next/image";
-import confetti from "canvas-confetti";
 import { useQRCode } from "next-qrcode";
 import { rabbleAbi } from '../../utils/config.ts';
 import { firebaseConfig } from '../../utils/firebase-config.ts';
 import { formatUnits } from 'viem';
-import { generateToken } from '../../utils/functions.ts';
+import { fireAction } from '../../utils/functions.ts';
 import SoundBoard from "../../components/soundboard.tsx";
-import RenderName from "../../components/render-name.tsx";
+import { getMoralisNfts, getPicassoNfts } from "../../lib/nfts.ts";
+import Tilt from 'react-parallax-tilt';
 
 //Initialize firebase backend
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// Confetti helper animation
-const fireConfetti = (particleRatio: number, opts: any) => {
-  const defaults = {
-    origin: { y: 0.7 }
-  };
-  confetti(Object.assign({}, defaults, opts, {
-    particleCount: Math.floor(200 * particleRatio)
-  }));
-};
-function fireAction() {
-  fireConfetti(0.25, { spread: 26, startVelocity: 55 });
-  fireConfetti(0.2, { spread: 60 });
-  fireConfetti(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-  fireConfetti(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-  fireConfetti(0.1, { spread: 120, startVelocity: 45 });
-}
 
 declare global {
   interface Window {
@@ -103,25 +84,18 @@ export default function CreateLobby() {
 
   // Get Nfts by calling the Moralis API
   const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
-  const getMoralisNfts = async () => {
-    const networkChain = chain?.id === 43114 ? EvmChain.AVALANCHE : EvmChain.MUMBAI;
-    await Moralis.EvmApi.nft.getWalletNFTs({
-      address: address as string,
-      chain: networkChain,
-      limit: 100,
-      mediaItems: true,
-      normalizeMetadata: true,
-    }).then((response) => {
-      setNfts(response.result);
-      setImutableNftList(response.result);
-    });
-  }
 
   useEffect(() => {
     if (address && isConnected && chain?.id === 80001)
-      getMoralisNfts();
+      getMoralisNfts(address).then((response: any) => {
+        setNfts(response);
+        setImutableNftList(response);
+      });
     if (address && isConnected && chain?.id === 43114)
-      getPicassoNfts();
+      getPicassoNfts(address).then((response: any) => {
+        setNfts(response);
+        setImutableNftList(response);
+      });
   }, [address, isConnected, chain?.id]);
 
   useEffect(() => {
@@ -181,7 +155,7 @@ export default function CreateLobby() {
   // Get dropdown list of collections filter
   useEffect(() => {
     const uniqueArray: any[] = [];
-    imutableNftList.map((item: any) => {
+    imutableNftList?.map((item: any) => {
       if (!uniqueArray.includes(item?.collectionName ? item?.collectionName : item?.name)) {
         uniqueArray.push(item?.collectionName ? item?.collectionName : item?.name);
       }
@@ -207,31 +181,6 @@ export default function CreateLobby() {
     setTimeout(() => {
       setShowClipboardAlert(false);
     }, 3000);
-  }
-
-  const getPicassoNfts = async () => {
-    fetch(
-      `https://api.pickasso.net/v1/wallet/${address}/tokens?count=1000&sortBy=updatedBlock&sortOrder=desc&verified=false`,
-      {
-        headers: {
-          'x-api-token': generateToken(),
-        }
-      },
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Something wrong happened');
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setNfts(data.docs);
-        setImutableNftList(data.docs);
-      })
-      .catch((e) => {
-        console.log('fetch inventory error', e);
-      });
   }
 
   // Handle battle cry
@@ -268,39 +217,56 @@ export default function CreateLobby() {
         {(step == 1) &&
           <div className="mt-12 text-center">
             <h1 className="font-semibold text-2xl mb-2">Choose the number of players</h1>
-            <p className="mb-4">Choose the number of players you would like to invite to your lobby and compete for the chance to win all the NFTs from your selected collection.</p>
-            <div className="hidden sm:block join drop-shadow-md">
-              <button onClick={() => processStep2(3)} onMouseEnter={() => setShowQuokkas(3)} className="btn btn-secondary join-item">3 Players</button>
-              <button onClick={() => processStep2(5)} onMouseEnter={() => setShowQuokkas(5)} className="btn btn-secondary join-item">5 Players</button>
-              <button onClick={() => processStep2(7)} onMouseEnter={() => setShowQuokkas(7)} className="btn btn-secondary join-item">7 Players</button>
-              <button onClick={() => processStep2(10)} onMouseEnter={() => setShowQuokkas(10)} className="btn btn-secondary join-item">10 Players</button>
-            </div>
-            <div className="block sm:hidden">
-              <div className="join drop-shadow-md mb-4">
-                <button onClick={() => processStep2(3)} onMouseEnter={() => setShowQuokkas(3)} className="btn btn-secondary join-item">3 Players</button>
-                <button onClick={() => processStep2(5)} onMouseEnter={() => setShowQuokkas(5)} className="btn btn-secondary join-item">5 Players</button>
-              </div>
-              <div className="join drop-shadow-md">
-                <button onClick={() => processStep2(7)} onMouseEnter={() => setShowQuokkas(7)} className="btn btn-secondary join-item">7 Players</button>
-                <button onClick={() => processStep2(10)} onMouseEnter={() => setShowQuokkas(10)} className="btn btn-secondary join-item">10 Players</button>
-              </div>
-            </div>
-            <div className="flex justify-center items-center mt-12">
-              <div className="grid grid-cols-5 gap-1">
-                {quokkas.map((quokka: any, index: any) => (
-                  <div key={index}>
-                    {index < showQuokkas &&
-                      <div className="col-span-1">
-                        <label className="swap swap-flip text-9xl">
-                          <input type="checkbox" />
-                          <div className="swap-on"><Image alt="player amount" width={80} height={80} src={`/images/${quokka}.png`} /></div>
-                          <div className="swap-off"><Image alt="player amount" width={80} height={80} src={`/images/${quokka}.png`} /></div>
-                        </label>
-                      </div>
-                    }
+            <p className="mb-4">Select the amount players you would like to invite to your lobby and compete for the chance to win all the NFTs from your selected collection.</p>
+
+            <div className="p-6 bg-neutral rounded-box w-full grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
+                <div onClick={() => processStep2(3)} onMouseEnter={() => setShowQuokkas(3)}
+                  className="card card-compact w-full h-full bg-base-100 shadow-xl cursor-pointer col-span-1">
+                  <div className="card-body">
+                    <div className="flex items-center justify-center">
+                      <figure><Image alt="player amount" width={200} height={200} src={`/images/Quokka_Cool.png`} /></figure>
+                    </div>
+                    <h2 className="card-title flex items-end justify-center mt-auto">3 Players</h2>
                   </div>
-                ))}
-              </div>
+                </div>
+              </Tilt>
+
+              <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
+                <div onClick={() => processStep2(5)} onMouseEnter={() => setShowQuokkas(5)}
+                  className="card card-compact w-full h-full bg-base-100 shadow-xl cursor-pointer col-span-1">
+                  <div className="card-body">
+                    <div className="flex items-center justify-center">
+                      <figure><Image alt="player amount" width={200} height={200} src={`/images/Quokka.png`} /></figure>
+                    </div>
+                    <h2 className="card-title flex items-end justify-center mt-auto">5 Players</h2>
+                  </div>
+                </div>
+              </Tilt>
+
+              <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
+                <div onClick={() => processStep2(7)} onMouseEnter={() => setShowQuokkas(7)}
+                  className="card card-compact w-full h-full bg-base-100 shadow-xl cursor-pointer col-span-1">
+                  <div className="card-body">
+                    <div className="flex items-center justify-center">
+                      <figure><Image alt="player amount" width={200} height={200} src={`/images/Quokka_Leaf.png`} /></figure>
+                    </div>
+                    <h2 className="card-title flex items-end justify-center mt-auto">7 Players</h2>
+                  </div>
+                </div>
+              </Tilt>
+
+              <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
+                <div onClick={() => processStep2(10)} onMouseEnter={() => setShowQuokkas(10)}
+                  className="card card-compact w-full h-full bg-base-100 shadow-xl cursor-pointer col-span-1">
+                  <div className="card-body">
+                    <div className="flex items-center justify-center">
+                      <figure><Image alt="player amount" width={200} height={200} src={`/images/Quokka_Wave.png`} /></figure>
+                    </div>
+                    <h2 className="card-title flex items-end justify-center mt-auto">10 Players</h2>
+                  </div>
+                </div>
+              </Tilt>
             </div>
           </div >
         }
@@ -310,8 +276,6 @@ export default function CreateLobby() {
           <div className="mt-12 text-center">
             {address && isConnected ?
               <>
-                {/* <h1 className="font-semibold text-2xl mb-4">Connected wallet address</h1>
-                <RenderName address={address} classData={'text-2xl'} /> */}
                 <div className="flex justify-between items-center mt-6">
                   <div className="dropdown">
                     <label tabIndex={0} className="btn m-1">
@@ -336,11 +300,11 @@ export default function CreateLobby() {
                   </button>
                 </div>
                 <div className="flex justify-center bg-base-200 rounded-lg p-5 mt-2 drop-shadow-md">
-                  {nfts.length == 0 ?
+                  {nfts?.length == 0 ?
                     <div className="flex justify-center items-center">No NFTs available</div>
                     :
                     <ul role="list" className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-7 lg:gap-x-7 lg:gap-y-7">
-                      {nfts.map((nft: any, index: any) => (
+                      {nfts?.map((nft: any, index: any) => (
                         <li onClick={() => { setSelectedNft(nft); window.selectNftModal.showModal() }} key={index} className="relative cursor-pointer">
                           <div>
                             {/* TODO: Remove if there is no video data returned from Pickasso */}
@@ -360,9 +324,22 @@ export default function CreateLobby() {
                               </div>
                               :
                               <div className="relative group">
-                                <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
-                                  src={nft.metadata?.pImage ? nft.metadata?.pImage : (nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl)}
-                                  alt="NFT image unreachable" width={150} height={150} />
+                                {chain?.id === 80001 ?
+                                  <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
+                                    src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
+                                    alt="NFT image unreachable" width={150} height={150} />
+                                  :
+                                  <>
+                                    {nft?.metadata?.pImage ?
+                                      <Image className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
+                                        src={nft?.metadata?.pImage}
+                                        alt="NFT image unreachable" width={150} height={150} />
+                                      :
+                                      <Image className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
+                                        src="/images/no-image.png"
+                                        alt="NFT image unreachable" width={150} height={150} />}
+                                  </>
+                                }
                                 <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex justify-center items-center opacity-0 transition-opacity hover:opacity-100">
                                   <div className="absolute top-0 left-0 w-full h-full flex items-start justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <p className="text-white text-lg font-bold truncate px-2"># {nft.tokenId}</p>

@@ -96,7 +96,6 @@ export default function RafflePage({ params }: { params: { id: string } }) {
               <p key={index}><span className="font-semibold">Player {index + 1}:
               </span>
                 <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} isWinner={false} classData={''} />
-
               </p>
             )
           })}
