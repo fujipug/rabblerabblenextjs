@@ -167,12 +167,14 @@ export const ensAddress = async (
   address: any,
   isLoaded: any,
 ) => {
+  let response;
   try {
-    const response = await Moralis.EvmApi.resolve.resolveAddress({ address });
+    response = await Moralis.EvmApi.resolve.resolveAddress({ address });
+
+    if (response == null) return null;
     return response?.toJSON().name;
   } catch (e) {
     console.log(e);
-    return null;
   }
 };
 
