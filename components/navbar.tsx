@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import AVVY from '@avvy/client';
 import { useAccount } from "wagmi";
 import { providers } from 'ethers'
+import RenderName from "./render-name";
 
 export default function Navbar() {
   const provider = new providers.JsonRpcProvider('https://api.avax.network/ext/bc/C/rpc')
@@ -117,9 +118,7 @@ export default function Navbar() {
                       </button>
 
                       <button className="btn btn-outline btn-secondary" onClick={openAccountModal} type="button">
-                        {avvyName ? avvyName
-                          //  : ensName ? ensName
-                          : account.displayName}
+                        <RenderName address={account.address} isWinner={false} classData="text-gray-100" />
                         {account.displayBalance
                           ? ` (${account.displayBalance})`
                           : ''}

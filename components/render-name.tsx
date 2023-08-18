@@ -1,4 +1,4 @@
-import { truncateAddress, avvyAddress } from "../utils/hooks";
+import { truncateAddress, avvyAddress, ensAddress } from "../utils/hooks";
 import { useEffect, useState } from "react";
 import {
   getNetwork,
@@ -23,6 +23,15 @@ export default function RenderName({ address, isWinner, classData }: any) {
           });
         } catch (e) {
           console.log(e);
+          try {
+            ensAddress(address, setIsAvvy).then((res: any) => {
+              if (res) {
+                setDisplay(res);
+              }
+            })
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     }
