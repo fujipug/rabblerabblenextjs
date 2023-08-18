@@ -1,39 +1,22 @@
-import { truncateAddress, avvyAddress, ensAddress } from "../utils/hooks";
+import { truncateAddress, fetchNames } from "../utils/hooks";
 import { useEffect, useState } from "react";
-import {
-  getNetwork,
-} from "@wagmi/core";
 
 export default function RenderName({ address, isWinner, classData }: any) {
   const [display, setDisplay] = useState(null) as any;
   const [isAvvy, setIsAvvy] = useState(false);
-  const network = getNetwork();
-
 
   useEffect(() => {
     if (address) {
       setDisplay(truncateAddress(address));
-      if (network.chain?.id === 43114) {
-        try {
-          avvyAddress(address, setIsAvvy).then((res: any) => {
-            if (res) {
-              setDisplay(res);
-              setIsAvvy(true);
-            }
-          });
-        } catch (e) {
-          console.log(e);
-          try {
-            ensAddress(address, setIsAvvy).then((res: any) => {
-              if (res) {
-                setDisplay(res);
-              }
-            })
-          } catch (e) {
-            console.log(e);
-          }
+      fetchNames(address, isAvvy).then((names: any) => {
+        if (names[1]) {
+          setDisplay(names[1]);
+          setIsAvvy(true);
+        } else {
+          setDisplay(names[0]);
+          setIsAvvy(true);
         }
-      }
+      });
     }
   }, [address, isAvvy]);
   return (

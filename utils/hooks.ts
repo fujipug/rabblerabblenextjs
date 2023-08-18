@@ -167,6 +167,23 @@ export const ensAddress = async (
   address: any,
   isLoaded: any,
 ) => {
-  const response = await Moralis.EvmApi.resolve.resolveAddress({ address });
-  return response?.toJSON().name;
+  try {
+    const response = await Moralis.EvmApi.resolve.resolveAddress({ address });
+    return response?.toJSON().name;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
+export const fetchNames = async (
+  address: any,
+  isLoaded: any,
+) => {
+  const names = await Promise.all([
+    avvyAddress(address, isLoaded),
+    ensAddress(address, isLoaded),
+  ]);
+
+  return names;
 };
