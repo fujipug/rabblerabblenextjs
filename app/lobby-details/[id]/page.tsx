@@ -62,10 +62,10 @@ function LobbyNftInfo(props: any) {
   })
 
   useEffect(() => {
-    const isOwner = lobbyDetails?.data.nfts.find((ownerAddress: any) =>
-      (ownerAddress.owner?.toLowerCase() ? ownerAddress.owner?.toLowerCase() : ownerAddress.ownerOf?.toLowerCase()) === account.address?.toLowerCase());
+    const isOwner: boolean = lobbyDetails?.data.nfts.find((nft: any) =>
+      (nft.owner?.toLowerCase() ? nft.owner?.toLowerCase() : nft.ownerOf?.toLowerCase()) === account.address?.toLowerCase());
+    console.log('isOWner', isOwner);
     setIsOwnerForRefund(isOwner);
-    console.log(isOwner);
   }, [account?.address, lobbyDetails?.data.nfts]);
 
 
