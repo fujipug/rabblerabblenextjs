@@ -54,6 +54,7 @@ function LobbyNftInfo(props: any) {
       }, 3000);
     },
     onError(error) {
+      console.error(error);
       setRefundStatus('Error');
       setTimeout(() => {
         setRefundStatus('');
