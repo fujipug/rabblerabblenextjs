@@ -142,7 +142,8 @@ function LobbyNftInfo(props: any) {
 
         {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
           <span key={index}>
-            {(!winner && lobbyDetails?.data.status === 'Expired' && (nft.owner ? nft.owner : nft.ownerOf) === account.address) &&
+            {/* {nft.owner} : {account.address} */}
+            {(!winner && lobbyDetails?.data.status === 'Expired' && (nft.owner ? nft.owner.toLowerCase() : nft.ownerOf.toLowerCase()) === account.address?.toLowerCase()) &&
               <button onClick={() => handleRefundRaffle(lobbyDetails?.collectionAddress)} className='btn bg-rose-600 hover:bg-rose-400'>
                 {isLoading ? <span className="loading loading-lg"></span> : <span>Refund Raffle</span>}
               </button>
