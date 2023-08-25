@@ -2,9 +2,9 @@
 import { WagmiConfig, useAccount, useContractWrite } from 'wagmi'
 import { getNetwork } from '@wagmi/core';
 import { wagmiConfig } from '../../../utils/wagmi-config';
-import { getFirestore, onSnapshot, doc } from "firebase/firestore";
+import { getFirestore, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import converter from 'number-to-words';
 import localFont from 'next/font/local'
 import Countdown from "../../../components/countdown";
@@ -39,14 +39,14 @@ function LobbyNftInfo(props: any) {
   const network = getNetwork();
   const fee = useFee();
   const [refundStatus, setRefundStatus] = useState('') as any;
+  const [isOwnerForRefund, setIsOwnerForRefund] = useState(false) as any;
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: network.chain?.id === 80001
       ? rabbleTestAddress
       : rabbleAddress,
     abi: rabbleAbi,
     functionName: 'refundRaffle',
-    args: [lobbyDetails?.raffleId && BigInt(lobbyDetails?.raffleId)],
-    // value: fee,
+    args: [lobbyDetails?.data.raffleId && BigInt(lobbyDetails?.data.raffleId)],
     onSuccess: (res: any) => {
       setRefundStatus('Success');
       setTimeout(() => {
@@ -60,6 +60,13 @@ function LobbyNftInfo(props: any) {
       }, 3000);
     }
   })
+
+  useEffect(() => {
+    const isOwner = lobbyDetails?.data.nfts.find((ownerAddress: any) =>
+      (ownerAddress.owner?.toLowerCase() ? ownerAddress.owner?.toLowerCase() : ownerAddress.ownerOf?.toLowerCase()) === account.address?.toLowerCase());
+    setIsOwnerForRefund(isOwner);
+    console.log(isOwner);
+  }, [account?.address, lobbyDetails?.data.nfts]);
 
 
   useEffect(() => {
@@ -116,7 +123,10 @@ function LobbyNftInfo(props: any) {
 
   const handleRefundRaffle = async (collectionAddress: string) => {
     verifyApproval((collectionAddress as `0x${string}`), write, (isApprovalStatusLoading: boolean) => {
-      write();
+      const lobbyRef = doc(db, 'lobbies', lobbyDetails.id);
+      updateDoc(lobbyRef, {
+        refunded: true
+      });
     });
   }
 
@@ -140,16 +150,11 @@ function LobbyNftInfo(props: any) {
           <span className='text-3xl'>Expired</span>
         }
 
-        {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
-          <span key={index}>
-            {/* {nft.owner} : {account.address} */}
-            {(!winner && lobbyDetails?.data.status === 'Expired' && (nft.owner ? nft.owner.toLowerCase() : nft.ownerOf.toLowerCase()) === account.address?.toLowerCase()) &&
-              <button onClick={() => handleRefundRaffle(lobbyDetails?.collectionAddress)} className='btn bg-rose-600 hover:bg-rose-400'>
-                {isLoading ? <span className="loading loading-lg"></span> : <span>Refund Raffle</span>}
-              </button>
-            }
-          </span>
-        ))}
+        {(!winner && lobbyDetails?.data.status === 'Expired' && isOwnerForRefund && !lobbyDetails?.data.refunded) &&
+          <button onClick={() => handleRefundRaffle(lobbyDetails?.data.collectionAddress)} className='btn bg-rose-600 hover:bg-rose-400'>
+            {isLoading ? <span className="loading loading-lg"></span> : <span>Refund Raffle</span>}
+          </button>
+        }
 
         {(!winner && (lobbyDetails?.data.status !== 'Expired') && (lobbyDetails?.data.confirmedPlayers !== lobbyDetails?.data.totalPlayers)) &&
           <Link href={`/join-lobby/${lobbyDetails?.id}`} className="btn btn-secondary drop-shadow-md">Join Lobby</Link>
