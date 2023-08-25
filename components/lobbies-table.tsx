@@ -61,7 +61,8 @@ export default function LobbiesTable() {
                   <th className="cursor-pointer hover:underline">
                     <Link href={`/lobby-details/${lobby.id}`} className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
                       {lobby.lobbyName ? lobby.lobbyName : lobby.id}
-                    </Link></th>
+                    </Link>
+                  </th>
                   {lobby.isPrivate ?
                     <td>Private</td>
                     :
@@ -107,7 +108,6 @@ export default function LobbiesTable() {
             </tbody>
           </table>
 
-
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center pl-2" aria-hidden="true">
               <div className="w-full border-t" />
@@ -119,7 +119,6 @@ export default function LobbiesTable() {
                 </span></span>
             </div>
           </div>
-
 
           {showMoreButton &&
             <div className="flex justify-center my-2">

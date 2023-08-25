@@ -1,5 +1,6 @@
 'use client'
-import { WagmiConfig, useAccount } from 'wagmi'
+import { WagmiConfig, useAccount, useContractWrite } from 'wagmi'
+import { getNetwork } from '@wagmi/core';
 import { wagmiConfig } from '../../../utils/wagmi-config';
 import { getFirestore, onSnapshot, doc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
@@ -9,7 +10,7 @@ import localFont from 'next/font/local'
 import Countdown from "../../../components/countdown";
 import Link from "next/link";
 import { firebaseConfig } from "../../../utils/firebase-config";
-import { getRaffleById } from '../../../utils/hooks';
+import { getRaffleById, useFee, verifyApproval } from '../../../utils/hooks';
 import Confetti from 'react-confetti'
 import Image from 'next/image'
 const myFont = localFont({ src: '../../../public/fonts/Ready-Player-One.otf' })
@@ -17,6 +18,7 @@ import Tilt from 'react-parallax-tilt';
 import RenderName from '../../../components/render-name';
 import RaffleAnimation from '../../../components/raffle-animation';
 import { Lobby } from '../../../types';
+import { rabbleAbi, rabbleAddress, rabbleTestAddress } from '../../../utils/config';
 
 declare global {
   interface Window {
@@ -34,6 +36,31 @@ function LobbyNftInfo(props: any) {
   const [placeholders, setPlaceholders] = useState([]) as any;
   const [winner, setWinner] = useState(null) as any;
   const account = useAccount();
+  const network = getNetwork();
+  const fee = useFee();
+  const [refundStatus, setRefundStatus] = useState('') as any;
+  const { data, isLoading, isSuccess, write } = useContractWrite({
+    address: network.chain?.id === 80001
+      ? rabbleTestAddress
+      : rabbleAddress,
+    abi: rabbleAbi,
+    functionName: 'refundRaffle',
+    args: [lobbyDetails?.raffleId && BigInt(lobbyDetails?.raffleId)],
+    // value: fee,
+    onSuccess: (res: any) => {
+      setRefundStatus('Success');
+      setTimeout(() => {
+        setRefundStatus('');
+      }, 3000);
+    },
+    onError(error) {
+      setRefundStatus('Error');
+      setTimeout(() => {
+        setRefundStatus('');
+      }, 3000);
+    }
+  })
+
 
   useEffect(() => {
     const accountAddress = account.address?.toLocaleLowerCase() ? account.address?.toLocaleLowerCase() : '';
@@ -87,6 +114,13 @@ function LobbyNftInfo(props: any) {
     fetchData();
   }, [props.lobbyId, winner]);
 
+  const handleRefundRaffle = async (collectionAddress: string) => {
+    verifyApproval((collectionAddress as `0x${string}`), write, (isApprovalStatusLoading: boolean) => {
+      write();
+    });
+  }
+
+
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -105,6 +139,17 @@ function LobbyNftInfo(props: any) {
         {(!winner && lobbyDetails?.data.status === 'Expired') &&
           <span className='text-3xl'>Expired</span>
         }
+
+        {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
+          <span key={index}>
+            {(!winner && lobbyDetails?.data.status === 'Expired' && (nft.owner ? nft.owner : nft.ownerOf) === account.address) &&
+              <button onClick={() => handleRefundRaffle(lobbyDetails?.collectionAddress)} className='btn bg-rose-600 hover:bg-rose-400'>
+                {isLoading ? <span className="loading loading-lg"></span> : <span>Refund Raffle</span>}
+              </button>
+            }
+          </span>
+        ))}
+
         {(!winner && (lobbyDetails?.data.status !== 'Expired') && (lobbyDetails?.data.confirmedPlayers !== lobbyDetails?.data.totalPlayers)) &&
           <Link href={`/join-lobby/${lobbyDetails?.id}`} className="btn btn-secondary drop-shadow-md">Join Lobby</Link>
         }
@@ -302,6 +347,18 @@ function LobbyNftInfo(props: any) {
       <dialog id="raffle" className="modal">
         <RaffleAnimation lobbyDetails={lobbyDetails} />
       </dialog>
+      <div className="toast toast-center toast-middle">
+        {refundStatus === 'Success' &&
+          <div className="alert alert-success">
+            <span>Refund succesful.</span>
+          </div>
+        }
+        {refundStatus === 'Error' &&
+          <div className="alert alert-error">
+            <span>Refund error. Please try again.</span>
+          </div>
+        }
+      </div>
     </>
   )
 };
