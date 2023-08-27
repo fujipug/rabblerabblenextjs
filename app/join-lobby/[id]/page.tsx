@@ -58,7 +58,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
       confirmNft.tokenId,
     ],
     value: fee,
-    onSuccess: async () => {
+    onSuccess: async (hash: any) => {
       const completedLobby = ((lobbyDetails?.data.confirmedPlayers + 1) === lobbyDetails?.data.totalPlayers) ? true : false;
       await updateFirebaseLobby(completedLobby).then(async () => {
         fireAction();
