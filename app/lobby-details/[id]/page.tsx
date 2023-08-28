@@ -34,7 +34,6 @@ const db = getFirestore(app);
 function LobbyNftInfo(props: any) {
   const [lobbyDetails, setLobbyDetails] = useState() as Lobby;
   const [placeholders, setPlaceholders] = useState([]) as any;
-  const [winner, setWinner] = useState(null) as any;
   const account = useAccount();
   const network = getNetwork();
   const [refundStatus, setRefundStatus] = useState('') as any;
@@ -68,32 +67,28 @@ function LobbyNftInfo(props: any) {
   useEffect(() => {
     const accountAddress = account.address?.toLocaleLowerCase() ? account.address?.toLocaleLowerCase() : '';
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'f' && winner?.toLowerCase() !== accountAddress.toLocaleLowerCase()) {
+      if (event.key === 'f' && lobbyDetails?.data.winner?.toLowerCase() !== accountAddress.toLocaleLowerCase()) {
         window.showRespects.showModal();
         setTimeout(() => {
           window.showRespects.close()
         }, 5000);
       }
 
-      if (event.key === 'g' && winner?.toLowerCase() === accountAddress.toLocaleLowerCase()) {
+      if (event.key === 'g' && lobbyDetails?.data.winner?.toLowerCase() === accountAddress.toLocaleLowerCase()) {
         window.showCelebrate.showModal();
         setTimeout(() => {
           window.showCelebrate.close();
         }, 5000);
       }
     });
-  }, [account, winner]);
+  }, [account, lobbyDetails?.data.winner]);
 
   useEffect(() => {
     async function fetchData() {
       try {
+        // TODO: also add chain Id
         const unsub = onSnapshot(doc(db, 'lobbies', props.lobbyId), (doc) => {
           setLobbyDetails({ id: doc.id, data: doc.data() });
-          getRaffleById(doc.data()?.raffleId).then((res: any) => {
-            if (res[5] && res[5] !== '0x0000000000000000000000000000000000000000') {
-              setWinner(res[5] as string);
-            }
-          });
           const blanks = [];
           for (let i = 0; i < doc.data()?.totalPlayers - doc.data()?.confirmedPlayers; i++)
             blanks.push({ collection: doc.data()?.collection })
@@ -115,7 +110,7 @@ function LobbyNftInfo(props: any) {
     };
 
     fetchData();
-  }, [props.lobbyId, winner]);
+  }, [props.lobbyId, lobbyDetails?.data.winner]);
 
   const handleRefundRaffle = async (collectionAddress: string) => {
     write();
@@ -125,56 +120,56 @@ function LobbyNftInfo(props: any) {
   return (
     <>
       <div className="flex justify-between items-center mb-4">
-        {winner && <Confetti width={window.outerWidth} />}
-        {winner &&
+        {lobbyDetails?.data.winner && <Confetti width={window.outerWidth} />}
+        {lobbyDetails?.data.winner &&
           <div>
             <span className='font-semibold text-3xl flex items-center'>
               <span>Winner:&nbsp;</span>
-              <RenderName address={winner} isWinner={true} classData={'text-3xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'} />
+              <RenderName address={lobbyDetails?.data.winner} isWinner={true} classData={'text-3xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'} />
             </span>
           </div>
         }
-        {(!winner && lobbyDetails?.data.status === 'Active') &&
+        {(!lobbyDetails?.data.winner && lobbyDetails?.data.status === 'Active') &&
           <Countdown endTime={lobbyDetails?.data.endDate} size={'large'} />
         }
-        {(!winner && lobbyDetails?.data.status === 'Expired') &&
+        {(!lobbyDetails?.data.winner && lobbyDetails?.data.status === 'Expired') &&
           <span className='text-3xl'>Expired</span>
         }
 
-        {(!winner && lobbyDetails?.data.status === 'Expired' && !lobbyDetails?.data.refunded) &&
+        {(!lobbyDetails?.data.winner && lobbyDetails?.data.status === 'Expired' && !lobbyDetails?.data.refunded) &&
           <button onClick={() => handleRefundRaffle(lobbyDetails?.data.collectionAddress)} className='btn bg-rose-600 hover:bg-rose-400'>
             {isLoading ? <span className="loading loading-lg"></span> : <span>Refund Raffle</span>}
           </button>
         }
 
-        {(!winner && lobbyDetails?.data.status === 'Expired' && lobbyDetails?.data.refunded) &&
+        {(!lobbyDetails?.data.winner && lobbyDetails?.data.status === 'Expired' && lobbyDetails?.data.refunded) &&
           <span className='text-xl text-rose-500'>NFTs Refunded</span>
         }
 
-        {(!winner && (lobbyDetails?.data.status !== 'Expired') && (lobbyDetails?.data.confirmedPlayers !== lobbyDetails?.data.totalPlayers)) &&
+        {(!lobbyDetails?.data.winner && (lobbyDetails?.data.status !== 'Expired') && (lobbyDetails?.data.confirmedPlayers !== lobbyDetails?.data.totalPlayers)) &&
           <Link href={`/join-lobby/${lobbyDetails?.id}`} className="btn btn-secondary drop-shadow-md">Join Lobby</Link>
         }
-        {winner && winner?.toLowerCase() !== account.address?.toLocaleLowerCase() &&
+        {lobbyDetails?.data.winner && lobbyDetails?.data.winner?.toLowerCase() !== account.address?.toLocaleLowerCase() &&
           <span className='hidden sm:flex'>Press &nbsp;<kbd className="kbd kbd-sm">F</kbd>&nbsp; to pay respects.</span>
         }
-        {winner && winner?.toLowerCase() === account.address?.toLocaleLowerCase() &&
+        {lobbyDetails?.data.winner && lobbyDetails?.data.winner?.toLowerCase() === account.address?.toLocaleLowerCase() &&
           <span className='hidden sm:flex'>Press &nbsp;<kbd className="kbd kbd-sm">G</kbd>&nbsp; to celebrate.</span>
         }
       </div >
 
       {
-        winner ?
+        lobbyDetails?.data.winner ?
           <>
             < div className="p-6 bg-neutral rounded-box w-full flex justify-center" >
               {
                 lobbyDetails?.data.nfts.map((nft: any, index: number) => (
                   <div key={index}>
-                    {(winner?.toLowerCase() == (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
+                    {(lobbyDetails?.data.winner?.toLowerCase() == (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
                         <div className="card card-compact w-80 bg-base-100 shadow-xl">
                           <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
                           <div className="card-body">
-                            <h2 className="card-title inner-element">{nft?.name ? nft?.name : nft?.collectionName} #{nft.tokenId}</h2>
+                            <h2 className="card-title inner-element">{nft?.symbol ? nft?.symbol : nft?.collectionSymbol} #{nft.tokenId}</h2>
                             <div className='flex justify-between items-center'>
                               <p><span className="font-semibold truncate">Collection: </span> {nft?.name ? nft?.name : nft?.collectionName}</p>
                               {nft?.battleCry &&
@@ -193,7 +188,7 @@ function LobbyNftInfo(props: any) {
               <div className="hidden sm:flex avatar-group -space-x-2">
                 {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
                   <div key={index}>
-                    {(winner?.toLowerCase() != (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
+                    {(lobbyDetails?.data.winner?.toLowerCase() != (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <div className="w-16 ml-2.5 mr-2.5">
                         <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
                       </div>
@@ -204,7 +199,7 @@ function LobbyNftInfo(props: any) {
               <div className="flex sm:hidden avatar-group -space-x-4">
                 {lobbyDetails?.data.nfts.map((nft: any, index: number) => (
                   <div className='ml-3' key={index}>
-                    {(winner?.toLowerCase() != (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
+                    {(lobbyDetails?.data.winner?.toLowerCase() != (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <div className="avatar">
                         <div className="w-12">
                           <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
@@ -227,7 +222,7 @@ function LobbyNftInfo(props: any) {
                   <div className="card card-compact w-80 bg-base-100 shadow-xl">
                     <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
                     <div className="card-body">
-                      <h2 className="card-title"><span className='truncate'>{nft?.name ? nft?.name : nft?.collectionName}</span> #{nft.tokenId}</h2>
+                      <h2 className="card-title"><span className='truncate'>{nft?.symbol ? nft?.symbol : nft?.collectionSymbol}</span> <span className='truncate'>#{nft.tokenId}</span></h2>
                       <div className='flex justify-between items-center'>
                         <p className='truncate'><span className="font-semibold">Collection: </span> {nft?.name ? nft?.name : nft?.collectionName}</p>
                         {nft?.battleCry &&
@@ -258,7 +253,7 @@ function LobbyNftInfo(props: any) {
           </div>
       }
       {
-        !winner &&
+        !lobbyDetails?.data.winner &&
         <div className="flex justify-end mt-2">
           <div className="badge badge-outline">{lobbyDetails?.data.confirmedPlayers}/{lobbyDetails?.data.totalPlayers}</div>
         </div>
@@ -325,7 +320,7 @@ function LobbyNftInfo(props: any) {
                     <tr key={index}>
                       <th>Player {index + 1}</th>
                       <td>
-                        {winner?.toLowerCase() == ((nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) ?
+                        {lobbyDetails?.data.winner?.toLowerCase() == ((nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) ?
                           <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} classData={'text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'} />
                           :
                           <RenderName address={nft.ownerOf ? nft.ownerOf : nft.owner} classData={''} />

@@ -143,6 +143,7 @@ export default function CreateLobby() {
       totalPlayers: playerAmount,
       raffleId: raffleId,
       lobbyName: lobbyName,
+      chainId: chain?.id,
     }
 
     firebaseLobby(lobby);
