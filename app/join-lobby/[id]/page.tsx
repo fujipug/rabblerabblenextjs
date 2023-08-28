@@ -301,8 +301,8 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                         <figure><Image src="/images/no-images.png" alt="NFT Image" width={500} height={500} /></figure>
                       }
                       <div className="card-body">
-                        <h2 className="card-title">{confirmNft?.name ? confirmNft?.name : confirmNft?.collectionName} #{confirmNft?.tokenId}</h2>
-                        <p className="mb-2"><span className="font-semibold">Symbol: </span> {confirmNft?.symbol ? confirmNft?.symbol : confirmNft?.collectionSymbol}</p>
+                        <h2 className="card-title">{confirmNft?.symbol ? confirmNft?.symbol : confirmNft?.collectionSymbol} #{confirmNft?.tokenId}</h2>
+                        <p className="mb-2"><span className="font-semibold truncate">Collection: </span> {confirmNft?.name ? confirmNft?.name : confirmNft?.collectionName}</p>
                         <SoundBoard onValueChange={handleValueChange} />
                       </div>
                     </div>

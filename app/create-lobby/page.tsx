@@ -385,8 +385,8 @@ export default function CreateLobby() {
                           <figure><Image src="/images/no-images.png" alt="NFT Image" width={500} height={500} /></figure>
                         }
                         <div className="card-body">
-                          <h2 className="card-title">{selectedNft?.name ? selectedNft?.name : selectedNft?.collectionName} #{selectedNft?.tokenId}</h2>
-                          <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol ? selectedNft?.collectionSymbol : selectedNft.symbol}</p>
+                          <h2 className="card-title">{selectedNft?.collectionSymbol ? selectedNft?.collectionSymbol : selectedNft.symbol} #{selectedNft?.tokenId}</h2>
+                          <p><span className="font-semibold truncate">Collection: </span>{selectedNft?.name ? selectedNft?.name : selectedNft?.collectionName}</p>
                           <SoundBoard onValueChange={handleValueChange} />
                         </div>
                       </div>
