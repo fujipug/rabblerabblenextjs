@@ -37,8 +37,8 @@ function LobbyNftInfo(props: any) {
   const [winner, setWinner] = useState(null) as any;
   const account = useAccount();
   const network = getNetwork();
-  const fee = useFee();
   const [refundStatus, setRefundStatus] = useState('') as any;
+  // This is used to refund Raffle
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: network.chain?.id === 42161
       ? rabbleTestAddress
