@@ -1,40 +1,27 @@
-## Getting Started
+## Rabble Rabble
+Rabble Rabble has been designed to offer everyone the chance to engage in gameplay with friends, either as teammates or opponents, involving items of potentially low liquidity or utility. This way, individuals can have an enjoyable experience without significant costs.
 
-Create a project using this example:
+The platform is designed for the community to establish open lobbies accommodating 3, 5, 7, or 10 participants. While creating these lobbies, you have the flexibility to set the number of players allowed, the NFT you're willing to stake—this also determines the lobby category—your own rallying cry, and the lobby's name. Once created, you'll receive a shareable QR code and link to distribute among your friends.
 
-```bash
-npx thirdweb create --template next-typescript-starter
-```
+Each lobby remains active for a 24-hour span. After this time, the lobby closes, allowing participants to retrieve their NFTs using the initial fee they contributed.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+When joining an existing lobby, you can only contribute NFTs from the same collection. Once the lobby reaches its capacity, the games start. Fair randomness in determining winners is ensured through Chainlink VRF.
 
-On `pages/_app.tsx`, you'll find our `ThirdwebProvider` wrapping your app, this is necessary for our [hooks](https://portal.thirdweb.com/react) and
-[UI Components](https://portal.thirdweb.com/ui-components) to work.
+In the event of a victory or defeat, the page will come alive with confetti. By pressing 'G' or 'F', you can enjoy GIF memes that either celebrate your triumph or pay homage to the NFT that didn't make the cut.
 
-## Environment Variables
+## Main Pages
 
-To run this project, you will need to add environment variables. Check the `.env.example` file for all the environment variables required and add it to `.env.local` file or set them up on your hosting provider.
+The platform is organized into three key pages:
 
-## Deploy to IPFS
+1. `Lobby Creation -> Choose Lobby Size -> Select NFTs/Collection -> Set Battle Cry & Lobby Name -> Lobby Created.`
 
-Deploy a copy of your application to IPFS using the following command:
+2. `Lobby Page -> Join Raffle -> Choose NFTs -> Joined.`
 
-```bash
-yarn deploy
-```
+3. `Learn More:` This section provides a clear overview of the project. In the footer, you'll find a link to the verified contract for utmost transparency.
 
-## Learn More
+## Link To Contract
+- [RabbleRabble Avalanche](https://snowtrace.io/address/0x15e4e77eC84D61441f7E9074517dce4F9458326A#code) | SnowTrace
+- [RabbleRabble Arbitrum](https://arbiscan.io/address/0x15e4e77ec84d61441f7e9074517dce4f9458326a#code) | Arbiscan
 
-To learn more about thirdweb and Next.js, take a look at the following resources:
-
-- [thirdweb React Documentation](https://docs.thirdweb.com/react) - learn about our React SDK.
-- [thirdweb TypeScript Documentation](https://docs.thirdweb.com/typescript) - learn about our JavaScript/TypeScript SDK.
-- [thirdweb Portal](https://docs.thirdweb.com) - check our guides and development resources.
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Templates](https://thirdweb.com/templates)
-
-You can check out [the thirdweb GitHub organization](https://github.com/thirdweb-dev) - your feedback and contributions are welcome!
-
-## Join our Discord!
-
-For any questions, suggestions, join our discord at [https://discord.gg/thirdweb](https://discord.gg/thirdweb).
+## Twitter!
+For any questions, suggestions, checkout out our Twitter Page at [https://twitter.com/ByQuokkas]By Quokkas.
