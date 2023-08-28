@@ -18,5 +18,5 @@ The platform is organized into three key pages:
 
 3. Learn More: This section provides a clear overview of the project. In the footer, you'll find a link to the verified contract for utmost transparency.
 
-## Link To COntract
+## Link To Contract
 RabbleRabble | Address 0x15e4e77eC84D61441f7E9074517dce4F9458326A | SnowTrace.
