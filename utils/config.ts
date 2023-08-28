@@ -1,5 +1,6 @@
 export const rabbleAddress = "0x15e4e77eC84D61441f7E9074517dce4F9458326A";
-export const rabbleTestAddress = "0x46916D0453c7e835c164dcefdc6e88a646b745d7";
+export const rabbleTestAddress = "0x15e4e77eC84D61441f7E9074517dce4F9458326A"; // Currently Arbitrum Address
+// export const rabbleTestAddress = "0x46916D0453c7e835c164dcefdc6e88a646b745d7";
 export const avvyDomainsAddress = "0x1ea4e7A798557001b99D88D6b4ba7F7fc79406A9";
 export const rabbleAbi = [
   {

@@ -22,7 +22,7 @@ export const verifyApproval = async (
 ) => {
   const network = getNetwork();
   const account = getAccount();
-  const address = network.chain?.id === 80001
+  const address = network.chain?.id === 42161
     ? rabbleTestAddress
     : rabbleAddress;
   const walletClient = await getWalletClient({
@@ -68,7 +68,7 @@ export const verifyApproval = async (
 // get raffle count
 export const getRaffleCount = () => {
   const network = getNetwork();
-  const address = network.chain?.id === 80001
+  const address = network.chain?.id === 42161
     ? rabbleTestAddress
     : rabbleAddress;
   const count = readContract({
@@ -82,7 +82,7 @@ export const getRaffleCount = () => {
 
 export const getRaffleById = (id: number) => {
   const network = getNetwork();
-  const address = network.chain?.id === 80001
+  const address = network.chain?.id === 42161
     ? rabbleTestAddress
     : rabbleAddress;
   const raffle = readContract({
@@ -100,7 +100,7 @@ export const useRabbleContract = () => {
   const network = getNetwork();
 
   useEffect(() => {
-    const address = network.chain?.id === 80001
+    const address = network.chain?.id === 42161
       ? rabbleTestAddress
       : rabbleAddress;
     const contract = getContract({
@@ -118,7 +118,7 @@ export const useFee = () => {
   const network = getNetwork();
   const [fee, setFee] = useState<bigint>(0n);
   let fees = new Map<number, bigint>([
-    [80001, 1000000000000n], // mumbai
+    [42161, 1000000000000000n], // mumbai
     [43114, 100000000000000000n], // avalanche
   ]);
 

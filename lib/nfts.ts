@@ -6,7 +6,7 @@ export const getMoralisNfts = async (address: string) => {
   let result: any = [];
   await Moralis.EvmApi.nft.getWalletNFTs({
     address: address as string,
-    chain: EvmChain.MUMBAI,
+    chain: EvmChain.ARBITRUM,
     limit: 100,
     mediaItems: true,
     normalizeMetadata: true,

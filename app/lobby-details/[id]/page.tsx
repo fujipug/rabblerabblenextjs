@@ -40,7 +40,7 @@ function LobbyNftInfo(props: any) {
   const fee = useFee();
   const [refundStatus, setRefundStatus] = useState('') as any;
   const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: network.chain?.id === 80001
+    address: network.chain?.id === 42161
       ? rabbleTestAddress
       : rabbleAddress,
     abi: rabbleAbi,

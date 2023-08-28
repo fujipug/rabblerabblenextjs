@@ -63,7 +63,8 @@ export default function RootLayout(
             </div>
             <div>
               <span className="footer-title">Transparency</span>
-              <Link href="https://snowtrace.io/address/0x15e4e77eC84D61441f7E9074517dce4F9458326A#code" className="link link-hover">Contract</Link>
+              <Link href="https://snowtrace.io/address/0x15e4e77eC84D61441f7E9074517dce4F9458326A#code" className="link link-hover">Avalanche Contract</Link>
+              <Link href="https://arbiscan.io/address/0x15e4e77ec84d61441f7e9074517dce4f9458326a#code" className="link link-hover">Arbitrum Contract</Link>
               <Link href="/learn-more" className="link link-hover">Learn More</Link>
             </div>
             <div className="w-52">

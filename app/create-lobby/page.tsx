@@ -82,7 +82,7 @@ export default function CreateLobby() {
   const unwatchNetwork = watchNetwork((network) => setChain(network.chain));
 
   useEffect(() => {
-    if (address && isConnected && chain?.id === 80001)
+    if (address && isConnected && chain?.id === 42161)
       getMoralisNfts(address).then((response: any) => {
         setNfts(response);
         setImutableNftList(response);
@@ -322,7 +322,7 @@ export default function CreateLobby() {
                               </div>
                               :
                               <div className="relative group">
-                                {chain?.id === 80001 ?
+                                {chain?.id === 42161 ?
                                   <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
                                     src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
                                     alt="NFT image unreachable" width={150} height={150} />
@@ -378,7 +378,11 @@ export default function CreateLobby() {
 
                     <div className="p-6 bg-neutral rounded-box flex justify-center">
                       <div className="card card-compact w-80 bg-base-200 shadow-xl">
-                        <figure><img src={selectedNft.metadata?.pImage ? selectedNft.metadata?.pImage : (selectedNft.media?.mediaCollection?.high.url ? selectedNft.media?.mediaCollection?.high.url : selectedNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
+                        {selectedNft.metadata?.pImage || selectedNft.media?.mediaCollection?.high.url || selectedNft?.media?.originalMediaUrl ?
+                          <figure><img src={selectedNft.metadata?.pImage ? selectedNft.metadata?.pImage : (selectedNft.media?.mediaCollection?.high.url ? selectedNft.media?.mediaCollection?.high.url : selectedNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
+                          :
+                          <figure><Image src="/images/no-image.png" alt="NFT Image" width={200} height={200} /></figure>
+                        }
                         <div className="card-body">
                           <h2 className="card-title">{selectedNft?.name ? selectedNft?.name : selectedNft?.collectionName} #{selectedNft?.tokenId}</h2>
                           <p><span className="font-semibold">Symbol: </span> {selectedNft?.collectionSymbol ? selectedNft?.collectionSymbol : selectedNft.symbol}</p>
@@ -490,17 +494,18 @@ export default function CreateLobby() {
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             <div className="grid grid-cols-1 mt-4 sm:grid-cols-2 sm:space-x-6">
               <div className="col-span-1">
-                {selectedNft?.media?.mimetype === 'video/mp4' ?
-                  // TODO: remove this maybe
+                {selectedNft?.metadata?.pImage || selectedNft?.media?.mediaCollection?.high?.url || selectedNft?.media?.originalMediaUrl ?
                   <figure>
-                    <video className="rounded-lg drop-shadow-md" width="500" height="500" autoPlay muted loop>
-                      <source src={selectedNft?.media?.mediaCollection?.high?.url} type="video/mp4" />
-                    </video>
+                    <img className="rounded-lg drop-shadow-md"
+                      src={selectedNft?.metadata?.pImage ? selectedNft?.metadata?.pImage : selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl}
+                      alt="NFT image unreachable" />
                   </figure>
                   :
                   <figure>
-                    <img className="rounded-lg drop-shadow-md"
-                      src={selectedNft?.metadata?.pImage ? selectedNft?.metadata?.pImage : (selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl)}
+                    <Image className="rounded-lg drop-shadow-md"
+                      src="/images/no-image.png"
+                      height={200}
+                      width={200}
                       alt="NFT image unreachable" />
                   </figure>
                 }

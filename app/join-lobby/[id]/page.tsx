@@ -96,7 +96,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
     }
   };
   useEffect(() => {
-    if (address && isConnected && chain?.id === 80001)
+    if (address && isConnected && chain?.id === 42161)
       getMoralisNfts(address).then((response: any) => fetchData(response));
     if (address && isConnected && chain?.id === 43114)
       getPicassoNfts(address).then((response: any) => fetchData(response));
@@ -241,7 +241,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                           </div>
                           :
                           <div className="relative group">
-                            {chain?.id === 80001 ?
+                            {chain?.id === 42161 ?
                               <img className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
                                 src={nft.media?.mediaCollection?.medium.url ? nft.media?.mediaCollection?.medium.url : nft?.media?.originalMediaUrl}
                                 alt="NFT image unreachable" width={150} height={150} />
@@ -295,9 +295,11 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
 
                   <div className="p-6 bg-neutral rounded-box flex justify-center">
                     <div className="card card-compact w-80 bg-base-200 shadow-xl">
-                      <figure><img
-                        src={confirmNft?.metadata?.pImage ? confirmNft?.metadata?.pImage : confirmNft?.media?.mediaCollection?.high?.url ? confirmNft?.media?.mediaCollection?.high?.url : confirmNft?.media?.originalMediaUrl}
-                        alt="NFT Image" /></figure>
+                      {confirmNft.metadata?.pImage || confirmNft.media?.mediaCollection?.high.url || confirmNft?.media?.originalMediaUrl ?
+                        <figure><img src={confirmNft.metadata?.pImage ? confirmNft.metadata?.pImage : (confirmNft.media?.mediaCollection?.high.url ? confirmNft.media?.mediaCollection?.high.url : confirmNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
+                        :
+                        <figure><Image src="/images/no-image.png" alt="NFT Image" width={200} height={200} /></figure>
+                      }
                       <div className="card-body">
                         <h2 className="card-title">{confirmNft?.name ? confirmNft?.name : confirmNft?.collectionName} #{confirmNft?.tokenId}</h2>
                         <p className="mb-2"><span className="font-semibold">Symbol: </span> {confirmNft?.symbol ? confirmNft?.symbol : confirmNft?.collectionSymbol}</p>
@@ -404,17 +406,18 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           <div className="grid grid-cols-1 mt-4 sm:grid-cols-2 sm:space-x-6">
             <div className="col-span-1">
-              {/* TODO: Maybe remove this */}
-              {selectedNft?.media?.mimetype === 'video/mp4' ?
-                <figure>
-                  <video className="rounded-lg drop-shadow-md" width="500" height="500" autoPlay muted loop>
-                    <source src={selectedNft?.media?.mediaCollection?.high?.url} type="video/mp4" />
-                  </video>
-                </figure>
-                :
+              {selectedNft?.metadata?.pImage || selectedNft?.media?.mediaCollection?.high?.url || selectedNft?.media?.originalMediaUrl ?
                 <figure>
                   <img className="rounded-lg drop-shadow-md"
                     src={selectedNft?.metadata?.pImage ? selectedNft?.metadata?.pImage : selectedNft?.media?.mediaCollection?.high?.url ? selectedNft?.media?.mediaCollection?.high?.url : selectedNft?.media?.originalMediaUrl}
+                    alt="NFT image unreachable" />
+                </figure>
+                :
+                <figure>
+                  <Image className="rounded-lg drop-shadow-md"
+                    src="/images/no-image.png"
+                    height={150}
+                    width={150}
                     alt="NFT image unreachable" />
                 </figure>
               }
