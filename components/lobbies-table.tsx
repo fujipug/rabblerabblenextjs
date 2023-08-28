@@ -47,6 +47,7 @@ export default function LobbiesTable() {
             <thead>
               <tr>
                 <th>Lobby</th>
+                <th>Network</th>
                 <th>Type</th>
                 <th>Status</th>
                 <th>Collection</th>
@@ -63,6 +64,7 @@ export default function LobbiesTable() {
                       {lobby.lobbyName ? lobby.lobbyName : lobby.id}
                     </Link>
                   </th>
+                  <td>{lobby?.evmChain}</td>
                   {lobby.isPrivate ?
                     <td>Private</td>
                     :
