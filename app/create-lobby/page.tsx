@@ -335,7 +335,7 @@ export default function CreateLobby() {
                                         alt="NFT image unreachable" width={150} height={150} />
                                       :
                                       <Image className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
-                                        src="/images/no-image.png"
+                                        src="/images/no-images.png"
                                         alt="NFT image unreachable" width={150} height={150} />}
                                   </>
                                 }
@@ -382,7 +382,7 @@ export default function CreateLobby() {
                         {selectedNft.metadata?.pImage || selectedNft.media?.mediaCollection?.high.url || selectedNft?.media?.originalMediaUrl ?
                           <figure><img src={selectedNft.metadata?.pImage ? selectedNft.metadata?.pImage : (selectedNft.media?.mediaCollection?.high.url ? selectedNft.media?.mediaCollection?.high.url : selectedNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
                           :
-                          <figure><Image src="/images/no-image.png" alt="NFT Image" width={200} height={200} /></figure>
+                          <figure><Image src="/images/no-images.png" alt="NFT Image" width={500} height={500} /></figure>
                         }
                         <div className="card-body">
                           <h2 className="card-title">{selectedNft?.name ? selectedNft?.name : selectedNft?.collectionName} #{selectedNft?.tokenId}</h2>
@@ -504,7 +504,7 @@ export default function CreateLobby() {
                   :
                   <figure>
                     <Image className="rounded-lg drop-shadow-md"
-                      src="/images/no-image.png"
+                      src="/images/no-images.png"
                       height={200}
                       width={200}
                       alt="NFT image unreachable" />

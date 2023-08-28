@@ -253,7 +253,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                                     alt="NFT image unreachable" width={150} height={150} />
                                   :
                                   <Image className="transform transition-transform rounded-lg drop-shadow-md outline outline-offset-1 outline-2 outline-accent group-hover:outline-success"
-                                    src="/images/no-image.png"
+                                    src="/images/no-images.png"
                                     alt="NFT image unreachable" width={150} height={150} />}
                               </>
                             }
@@ -298,7 +298,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                       {confirmNft.metadata?.pImage || confirmNft.media?.mediaCollection?.high.url || confirmNft?.media?.originalMediaUrl ?
                         <figure><img src={confirmNft.metadata?.pImage ? confirmNft.metadata?.pImage : (confirmNft.media?.mediaCollection?.high.url ? confirmNft.media?.mediaCollection?.high.url : confirmNft?.media?.originalMediaUrl)} alt="NFT Image" /></figure>
                         :
-                        <figure><Image src="/images/no-image.png" alt="NFT Image" width={200} height={200} /></figure>
+                        <figure><Image src="/images/no-images.png" alt="NFT Image" width={500} height={500} /></figure>
                       }
                       <div className="card-body">
                         <h2 className="card-title">{confirmNft?.name ? confirmNft?.name : confirmNft?.collectionName} #{confirmNft?.tokenId}</h2>
@@ -415,7 +415,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                 :
                 <figure>
                   <Image className="rounded-lg drop-shadow-md"
-                    src="/images/no-image.png"
+                    src="/images/no-images.png"
                     height={150}
                     width={150}
                     alt="NFT image unreachable" />

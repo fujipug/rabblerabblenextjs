@@ -167,7 +167,11 @@ function LobbyNftInfo(props: any) {
                     {(lobbyDetails?.data.winner?.toLowerCase() == (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <Tilt glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="right" glareBorderRadius="20px">
                         <div className="card card-compact w-80 bg-base-100 shadow-xl">
-                          <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                          {nft?.metadata?.pImage || nft?.media?.mediaCollection?.high?.url || nft?.media?.originalMediaUrl ?
+                            <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                            :
+                            <figure><Image src="/images/no-images.png" width={500} height={500} alt="NFT image unreachable" /></figure>
+                          }
                           <div className="card-body">
                             <h2 className="card-title inner-element">{nft?.symbol ? nft?.symbol : nft?.collectionSymbol} #{nft.tokenId}</h2>
                             <div className='flex justify-between items-center'>
@@ -190,7 +194,11 @@ function LobbyNftInfo(props: any) {
                   <div key={index}>
                     {(lobbyDetails?.data.winner?.toLowerCase() != (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <div className="w-16 ml-2.5 mr-2.5">
-                        <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
+                        {nft?.metadata?.pImage || nft?.media?.mediaCollection?.high?.url || nft?.media?.originalMediaUrl ?
+                          <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
+                          :
+                          <Image className='rounded-lg' src="/images/no-images.png" width={200} height={200} alt="NFT image unreachable" />
+                        }
                       </div>
                     }
                   </div>
@@ -202,7 +210,11 @@ function LobbyNftInfo(props: any) {
                     {(lobbyDetails?.data.winner?.toLowerCase() != (nft.ownerOf?.toLowerCase() ? nft.ownerOf?.toLowerCase() : nft.owner?.toLowerCase())) &&
                       <div className="avatar">
                         <div className="w-12">
-                          <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" className='rounded-lg' />
+                          {nft?.metadata?.pImage || nft?.media?.mediaCollection?.high?.url || nft?.media?.originalMediaUrl ?
+                            <img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" />
+                            :
+                            <Image src="/images/no-images.png" width={200} height={200} alt="NFT image unreachable" />
+                          }
                         </div>
                       </div>
                     }
@@ -220,7 +232,11 @@ function LobbyNftInfo(props: any) {
               <div key={index} className="snap-center">
                 <Tilt tiltEnable={false} glareEnable={true} glareMaxOpacity={0.8} glareColor="lightblue" glarePosition="all" glareBorderRadius="20px">
                   <div className="card card-compact w-80 bg-base-100 shadow-xl">
-                    <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                    {nft?.metadata?.pImage || nft?.media?.mediaCollection?.high?.url || nft?.media?.originalMediaUrl ?
+                      <figure><img src={nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url ? nft?.metadata?.pImage ? nft?.metadata?.pImage : nft?.media?.mediaCollection?.high?.url : nft?.media?.originalMediaUrl} alt="NFT image unreachable" /></figure>
+                      :
+                      <figure><Image src="/images/no-images.png" width={500} height={500} alt="NFT image unreachable" /></figure>
+                    }
                     <div className="card-body">
                       <h2 className="card-title"><span className='truncate'>{nft?.symbol ? nft?.symbol : nft?.collectionSymbol}</span> <span className='truncate'>#{nft.tokenId}</span></h2>
                       <div className='flex justify-between items-center'>
