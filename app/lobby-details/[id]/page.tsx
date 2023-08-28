@@ -280,7 +280,7 @@ function LobbyNftInfo(props: any) {
           <p className="leading-8"><span className="font-semibold">Lobby: </span>
             <span className='text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 truncate'>{lobbyDetails?.data.lobbyName ? lobbyDetails?.data.lobbyName : lobbyDetails?.id}</span>
           </p>
-          <p className="leading-8"><span className="font-semibold">EVM Chain: </span>{lobbyDetails?.data.evmChain}</p>
+          <p className="leading-8"><span className="font-semibold">Network: </span>{lobbyDetails?.data.evmChain}</p>
           <p className="leading-8"><span className="font-semibold">Started: </span>
             {`${(lobbyDetails?.data.createdAt)?.toDate().toLocaleDateString(undefined, {
               year: 'numeric',

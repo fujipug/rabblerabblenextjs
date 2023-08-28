@@ -317,7 +317,7 @@ export default function JoinLobbyPage({ params }: { params: { id: string } }) {
                     </div>
 
                     <div className="mb-4">
-                      <h2 className="font-semibold">EVM Chain</h2>
+                      <h2 className="font-semibold">Network</h2>
                       <p>{lobbyDetails.data.evmChain} </p>
                     </div>
 

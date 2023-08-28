@@ -397,7 +397,7 @@ export default function CreateLobby() {
                     <div>
                       <div className="flex flex-col w-full border-opacity-50">
                         <div className="mb-4">
-                          <h2 className="font-semibold">EVM Chain</h2>
+                          <h2 className="font-semibold">Network</h2>
                           <p>{chain?.name}</p>
                         </div>
 
