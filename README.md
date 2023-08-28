@@ -24,4 +24,4 @@ The platform is organized into three key pages:
 - [RabbleRabble Arbitrum](https://arbiscan.io/address/0x15e4e77ec84d61441f7e9074517dce4f9458326a#code) | Arbiscan
 
 ## Twitter!
-For any questions, suggestions, checkout out our Twitter Page at [https://twitter.com/ByQuokkas]By Quokkas.
+For any questions, suggestions, checkout out our Twitter Page at [By Quokkas](https://twitter.com/ByQuokkas).
