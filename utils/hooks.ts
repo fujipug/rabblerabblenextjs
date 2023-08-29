@@ -14,6 +14,8 @@ import {
   getWalletClient,
   readContract,
 } from "@wagmi/core";
+import Moralis from "moralis";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 
 export const verifyApproval = async (
   collectionAddress: any,
@@ -159,4 +161,31 @@ export const avvyAddress = async (
   } catch (e) {
     console.log("approval error", e);
   }
+};
+
+export const ensAddress = async (
+  address: any,
+  isLoaded: any,
+) => {
+  let response;
+  try {
+    response = await Moralis.EvmApi.resolve.resolveAddress({ address });
+
+    if (response == null) return null;
+    return response?.toJSON().name;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const fetchNames = async (
+  address: any,
+  isLoaded: any,
+) => {
+  const names = await Promise.all([
+    avvyAddress(address, isLoaded),
+    ensAddress(address, isLoaded),
+  ]);
+
+  return names;
 };
