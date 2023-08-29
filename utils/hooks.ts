@@ -151,8 +151,9 @@ export const avvyAddress = async (
     abi: avvyAbi,
     walletClient: walletClient as any,
   });
-  const name = await avvyContract.read.reverseResolveEVMToName([address]);
   try {
+    const name = await avvyContract.read.reverseResolveEVMToName([address]);
+
     if (name == "") {
       return truncateAddress(address);
     } else {
@@ -160,6 +161,7 @@ export const avvyAddress = async (
     }
   } catch (e) {
     console.log("approval error", e);
+    return undefined;
   }
 };
 
